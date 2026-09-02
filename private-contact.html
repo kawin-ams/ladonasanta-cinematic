@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>La Doña Santa — Private Contact Map</title>
+<link rel="stylesheet" href="site.css" />
+<link rel="stylesheet" href="pages.css" />
+<link rel="stylesheet" href="lds-shared.css" />
+<style>
+  .accept{display:flex;gap:.7rem;align-items:flex-start;margin-top:1.4rem;font-size:.9rem;color:var(--ink-2)}
+  .accept input{margin-top:.25rem;accent-color:var(--gold)}
+  .terms{background:var(--paper-2);border:1px solid var(--line);border-radius:8px;padding:1.1rem 1.3rem;max-height:180px;overflow:auto;font-size:.86rem;color:var(--ink-2);margin-top:1.4rem}
+</style>
+</head>
+<body>
+  <div class="pchrome"><a href="index.html" aria-label="Return to the entrance" style="display:inline-flex;line-height:0"><img src="uploads/01 Logo - Group (Final Ver 2).png" alt="La Doña Santa" /></a><span class="tag">Restricted Business-Card Access</span></div>
+
+  <main class="container">
+    <p class="eyebrow">Restricted Business-Card Access</p>
+    <h1>Private Contact Map</h1>
+    <p class="lead" style="margin-top:1rem">A protected professional entry into the La Doña Santa ecosystem.</p>
+    <p style="margin-top:1.4rem">This page is available only through approved La Doña Santa business-card access. It provides a structured view of the Group, its divisions and the professional functions through which an authorized inquiry may be directed.</p>
+
+    <!-- company map -->
+    <div class="divisions">
+      <div class="division"><h3>Group</h3><p class="role">Vision &amp; governance</p>
+        <div class="node"><span class="nm">Founder &amp; Executive Chairman</span><br><span class="tt">Group</span></div>
+        <div class="node"><span class="nm">Approved biography</span><br><span class="tt">Chief Executive Function</span></div></div>
+      <div class="division"><h3>ARK</h3><p class="role">Architecture &amp; development</p>
+        <div class="node"><span class="nm">Approved biography</span><br><span class="tt">Architecture</span></div>
+        <div class="node"><span class="nm">Approved biography</span><br><span class="tt">Engineering</span></div></div>
+      <div class="division"><h3>Guardian</h3><p class="role">Stewardship &amp; care</p>
+        <div class="node"><span class="nm">Approved biography</span><br><span class="tt">Operations</span></div>
+        <div class="node"><span class="nm">Approved biography</span><br><span class="tt">Wellness / Lumina</span></div></div>
+      <div class="division"><h3>Partner structure</h3><p class="role">International network</p>
+        <div class="node"><span class="nm">Approved biography</span><br><span class="tt">Advisory</span></div></div>
+    </div>
+    <p class="hint" style="margin-top:1rem">Approved photographs, names, titles and biographies attach here. No direct personal emails, phone numbers or contact buttons are shown — inquiries are directed through the form below.</p>
+
+    <!-- protected download -->
+    <section class="section">
+      <p class="eyebrow">Protected Company Material</p>
+      <h2>Access the La Doña Santa company presentation</h2>
+      <p style="margin-top:1rem">The official company presentation contains private structural, architectural, operational and development information. Access is restricted, recorded and subject to confidentiality acceptance.</p>
+      <form onsubmit="return acceptDownload(event)">
+        <div class="form">
+          <div class="field"><label>Full legal name</label><input type="text" /></div>
+          <div class="field"><label>Company / organization</label><input type="text" /></div>
+          <div class="field"><label>Position</label><input type="text" /></div>
+          <div class="field"><label>Email</label><input type="email" /></div>
+          <div class="field"><label>Country</label><input type="text" /></div>
+          <div class="field"><label>Purpose of access</label><input type="text" /></div>
+        </div>
+        <div class="terms">Confidentiality Agreement — Web Access and Download. By accepting, you agree that all protected documents, presentations, files, images, videos, drawings, designs and data accessed through this link are confidential; you will not disclose, copy, forward, publish, upload to artificial-intelligence systems, commercially use or provide them to any unauthorized person. You intend to be legally bound by this Agreement.</div>
+        <label class="accept"><input type="checkbox" required /> I have read, understood and accepted the confidentiality terms.</label>
+        <div class="form" style="margin-top:1rem"><div class="field full"><label>Type full legal name (signature)</label><input type="text" placeholder="Sign here" required /></div></div>
+        <button class="btn" type="submit" style="margin-top:1.4rem">Accept and download</button>
+        <p class="hint" id="dl-note" style="margin-top:.8rem"></p>
+      </form>
+    </section>
+
+    <!-- executive inquiry -->
+    <section class="section">
+      <p class="eyebrow">Professional Communication</p>
+      <h2>Executive Inquiry</h2>
+      <p style="margin-top:1rem">Please identify yourself, the purpose of your approach and the La Doña Santa function you wish to reach. Your inquiry will be received centrally and assigned to the selected person or department for direct response.</p>
+      <form class="form" onsubmit="return sendInquiry(event)">
+        <div class="field"><label>Full name</label><input type="text" /></div>
+        <div class="field"><label>Company / organization</label><input type="text" /></div>
+        <div class="field"><label>Position</label><input type="text" /></div>
+        <div class="field"><label>Country</label><input type="text" /></div>
+        <div class="field"><label>Email</label><input type="email" /></div>
+        <div class="field"><label>Telephone <span class="hint">(optional)</span></label><input type="tel" /></div>
+        <div class="field full"><label>Intended recipient or function</label>
+          <select><option>Founder &amp; Executive Chairman</option><option>Chief Executive Function</option><option>Chief Operating Officer</option><option>Chief Financial Officer</option><option>Investment Committee</option><option>Legal</option><option>Architecture</option><option>Interior Design</option><option>Engineering</option><option>Construction</option><option>Project Delivery</option><option>Guardian</option><option>Wellness / Lumina</option><option>Partnership</option><option>Media</option><option>Other</option></select></div>
+        <div class="field full"><label>Message</label><textarea></textarea></div>
+        <div class="field full"><button class="btn block" type="submit">Submit executive inquiry</button><p class="hint" id="inq-note" style="margin-top:.8rem"></p></div>
+      </form>
+    </section>
+  </main>
+
+<script>
+  function acceptDownload(e){ e.preventDefault(); document.getElementById('dl-note').textContent='Your acceptance has been recorded. The download begins immediately (prototype).'; return false; }
+  function sendInquiry(e){ e.preventDefault(); document.getElementById('inq-note').textContent='Your inquiry has been received and directed to the selected La Doña Santa function.'; return false; }
+</script>
+<script src="lds-shared.js"></script>
+</body>
+</html>

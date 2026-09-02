@@ -1,0 +1,91 @@
+/* La Doña Santa — shared layer used on every page.
+   1) Seamless fade-to-white transition between pages.
+   2) One consistent button language across the whole site. */
+
+/* ---------- page transition: fade to / from white ---------- */
+/* the per-page "loading…" indicators are removed entirely — never shown */
+#loading{display:none !important}
+
+/* page-to-page transitions fade through a warm off-white everywhere.
+   (The Visual Sanctuary Vault's own black dissolves are separate — #vfade in that page.) */
+#lds-fade{
+  position:fixed;inset:0;z-index:99999;background:var(--lds-fade,#F2EDE3);pointer-events:none;
+  opacity:1;transition:opacity .7s cubic-bezier(.22,1,.36,1);will-change:opacity}
+#lds-fade.gone{opacity:0}
+#lds-fade.cover{opacity:1}
+@media (prefers-reduced-motion:reduce){#lds-fade{transition:opacity .25s linear}}
+
+/* ---------- unified button geometry ----------
+   body-scoped selectors so this wins regardless of stylesheet order,
+   without needing !important. Colours / glass are left to each context;
+   only the size, type and rhythm are normalised so every button matches. */
+body .threshold a,
+body .close a{
+  font-size:12.5px;letter-spacing:.22em;padding:18px 46px;border-radius:2px}
+body .submit button{
+  font-size:12.5px;letter-spacing:.22em;padding:18px;border-radius:2px}
+
+/* Canonical journey CTA — used by the Vault and any new call-to-action.
+   Same geometry as the threshold buttons above, two contrast skins. */
+.lds-cta{
+  display:inline-flex;align-items:center;gap:.9em;
+  font-family:'Ortica Linear',sans-serif;font-size:12.5px;letter-spacing:.22em;
+  text-transform:uppercase;text-decoration:none;line-height:1;cursor:pointer;
+  padding:18px 46px;border-radius:2px;border:1px solid rgba(251,250,248,.55);
+  background:rgba(20,19,14,.28);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  color:#FBFAF8;transition:background .3s,color .3s,border-color .3s,transform .3s}
+.lds-cta:hover{background:#FBFAF8;color:#14130E;border-color:#FBFAF8;transform:translateY(-2px)}
+/* skin for CTAs sitting on a light (fade-to-white) background */
+.lds-cta--ink{border-color:rgba(20,19,14,.38);background:rgba(251,250,248,.6);color:#14130E}
+.lds-cta--ink:hover{background:#14130E;color:#FBFAF8;border-color:#14130E}
+
+/* ---------- uniform readability on the immersive (dark) pages ----------
+   Faint labels/eyebrows/cues/numbers/captions sit over bright marble AND dark
+   footage. A single dark text-halo keeps them legible over both, plus a lift of
+   the faintest whites and a brighter accent gold. Scoped to .lds-immersive so the
+   light working surfaces are untouched. */
+.lds-immersive :is(
+  h1,h2,h3,
+  .eyebrow,.lds-eyebrow,.lds-world-title,.lds-world-statement,.lds-system-world__descriptor,.lds-group-note,
+  .scrollcue,.idx,.cue,.note,
+  .k,.n,.num,.ch-num,.role,.tt,.nm,
+  .film-eyebrow,.film-dur,.film-slot-note,.film .label,.label,
+  .intro,.lede,.support,.sub,.body,
+  .blocks p,.principle p,.principle h3,.chapter p,.layer p,.band p,.division h3,
+  .fld label
+){
+  text-shadow:0 1px 2px rgba(0,0,0,.45), 0 0 20px rgba(0,0,0,.55);
+}
+
+/* lift the faintest whites toward .9 for contrast over blown-out marble */
+.lds-immersive :is(
+  .eyebrow,.lds-eyebrow,.lds-system-world__descriptor,
+  .scrollcue,.idx,.cue,.film-eyebrow,.film-dur,.film .label,.principle p,.role,.tt
+){
+  color:rgba(251,250,248,.9) !important;
+}
+
+/* brighten the accent gold so it survives over bright stone */
+.lds-immersive :is(
+  .n,.k,.num,.ch-num,.film-slot-note,.note,.open .eyebrow
+){
+  color:#D8B98C !important;
+}
+
+/* ---------- scroll cue as a proper UI element (mouse + travelling dot) ----------
+   Replaces the plain hairline on every scroll cue with a recognisable indicator. */
+.lds-immersive :is(.scrollcue,.cue){gap:1rem !important}
+.lds-immersive :is(.scrollcue,.open .cue)::after{
+  content:"" !important;width:20px !important;height:32px !important;
+  border:1.5px solid currentColor !important;border-radius:11px !important;
+  background-image:radial-gradient(circle, currentColor 2px, transparent 2.6px) !important;
+  background-repeat:no-repeat !important;background-position:center 6px !important;
+  opacity:.85;animation:lds-scrolldot 1.9s cubic-bezier(.5,0,.35,1) infinite !important;
+  flex:none}
+@keyframes lds-scrolldot{
+  0%{background-position:center 6px;opacity:0}
+  25%{opacity:.9}
+  70%{background-position:center 19px;opacity:.15}
+  100%{background-position:center 19px;opacity:0}}
+@media (prefers-reduced-motion:reduce){
+  .lds-immersive :is(.scrollcue,.open .cue)::after{animation:none !important;background-position:center 12px !important;opacity:.7}}

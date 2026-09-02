@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>La Doña Santa — Private Meeting Access</title>
+<link rel="stylesheet" href="site.css" />
+<link rel="stylesheet" href="pages.css" />
+<link rel="stylesheet" href="lds-shared.css" />
+</head>
+<body>
+  <div class="pchrome"><a href="index.html" aria-label="Return to the entrance" style="display:inline-flex;line-height:0"><img src="uploads/01 Logo - Group (Final Ver 2).png" alt="La Doña Santa" /></a><span class="tag">Private Meeting Access</span></div>
+
+  <main class="container">
+    <div id="form-view">
+      <p class="eyebrow">Private Meeting Access</p>
+      <h1>Propose a meeting time</h1>
+      <p class="lead" style="margin-top:1rem">Suggest a meeting window that suits you. The La Doña Santa team will review the request and confirm directly with you and your authorized representative.</p>
+
+      <form class="form" onsubmit="return sendProposed(event)">
+        <div class="field"><label for="d">Preferred date</label><input id="d" type="date" /></div>
+        <div class="field"><label for="t">Preferred time</label><input id="t" type="time" /></div>
+        <div class="field"><label for="tz">Time zone</label><input id="tz" type="text" placeholder="e.g. GMT+7" /></div>
+        <div class="field"><label for="mf">Meeting format</label>
+          <select id="mf"><option>In Person — La Doña Santa Office</option><option>Secure Video Meeting</option><option>To Be Confirmed</option></select></div>
+        <div class="field"><label for="cn">Client name</label><input id="cn" type="text" /></div>
+        <div class="field"><label for="ce">Client email</label><input id="ce" type="email" /></div>
+        <div class="field full"><label for="re">Representative email</label><input id="re" type="email" /></div>
+        <div class="field full"><label for="note">Optional scheduling note</label><textarea id="note"></textarea></div>
+        <div class="field full"><button class="btn block" type="submit">Send proposed time</button></div>
+      </form>
+    </div>
+
+    <div id="done-view" style="display:none">
+      <p class="eyebrow">Proposal received</p>
+      <h1>We will confirm your meeting directly</h1>
+      <p class="lead" style="margin-top:1rem">Your preferred meeting window has been received and shared with your authorized representative. The La Doña Santa Private Client Division will confirm the final appointment after internal review.</p>
+    </div>
+  </main>
+
+<script>
+  function sendProposed(e){ e.preventDefault();
+    document.getElementById('form-view').style.display='none';
+    document.getElementById('done-view').style.display='block';
+    window.scrollTo(0,0); return false; }
+</script>
+<script src="lds-shared.js"></script>
+</body>
+</html>

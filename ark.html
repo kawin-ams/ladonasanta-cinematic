@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>La Doña Santa — ARK · The Living System (prototype)</title>
+<link rel="stylesheet" href="site.css" />
+<link rel="stylesheet" href="lds-shared.css" />
+<style>
+  /* Page 02 — ARK: The Living System.
+     Background = a scroll-driven FRAME SEQUENCE painted to canvas (no video
+     seeking, so it's perfectly smooth). White type + slight dark scrim, as the hero. */
+  html{scroll-behavior:smooth}  body{margin:0;background:#EDE7DC;color:#FBFAF8;overflow-x:hidden}
+
+  #arkbg{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block;background:#EDE7DC}
+  .veil{position:fixed;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(135% 100% at 50% 45%,rgba(10,9,7,.46),rgba(10,9,7,.28) 55%,rgba(10,9,7,.5) 100%)}
+
+  .ark-wrap{position:relative;z-index:2;max-width:74rem;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+  .chrome{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
+    padding:clamp(13px,1.5vw,16px) clamp(24px,5vw,64px)}
+  .chrome img{width:clamp(46px,4.4vw,58px);filter:brightness(0) invert(1)}
+  .chrome .idx{font-family:'Ortica Linear',sans-serif;font-size:10.5px;letter-spacing:.28em;
+    text-transform:uppercase;color:rgba(251,250,248,.65)}
+
+  .rv{opacity:0;transform:translateY(24px);transition:opacity 1s cubic-bezier(.22,1,.36,1),transform 1s cubic-bezier(.22,1,.36,1)}
+  .rv.in{opacity:1;transform:none}
+
+  .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:14vh 0 8vh}
+  .hero .lds-eyebrow{color:rgba(251,250,248,.72)}
+  .hero h1{font-family:'Cormorant Brand',Georgia,serif;font-weight:500;font-size:clamp(2.6rem,8vw,6rem);
+    line-height:.98;letter-spacing:.005em;margin:.4rem 0 0;color:#FBFAF8}
+  .lede{font-family:'Cormorant Brand',Georgia,serif;font-size:clamp(1.25rem,2.5vw,1.9rem);line-height:1.4;
+    max-width:30ch;color:#FBFAF8;margin:1.6rem 0 0}
+  .scrollcue{margin-top:3.2rem;font-family:'Ortica Linear',sans-serif;font-size:11px;letter-spacing:.28em;
+    text-transform:uppercase;color:rgba(251,250,248,.6);display:flex;align-items:center;gap:.8rem}
+  .scrollcue::after{content:"";width:1px;height:34px;background:linear-gradient(#FBFAF8,transparent);
+    animation:cue 2.4s ease-in-out infinite}
+  @keyframes cue{0%,100%{opacity:.2;transform:scaleY(.7)}50%{opacity:.85;transform:scaleY(1)}}
+  @media (prefers-reduced-motion:reduce){.scrollcue::after{animation:none}}
+
+  .blocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(20rem,1fr));gap:clamp(1.5rem,4vw,4rem);padding:10vh 0}
+  .blocks p{font-family:'Ortica Linear',sans-serif;font-weight:300;font-size:clamp(1rem,1.5vw,1.18rem);
+    line-height:1.85;color:rgba(251,250,248,.94);margin:0}
+  .blocks .n{font-family:'Ortica Linear',sans-serif;font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+    color:#C4A075;display:block;margin-bottom:1rem}
+
+  .film{padding:12vh 0}
+  .film-eyebrow{font-family:'Ortica Linear',sans-serif;font-size:11px;letter-spacing:.26em;text-transform:uppercase;
+    color:rgba(251,250,248,.7);text-align:center;margin-bottom:1.4rem}
+  .film-frame{position:relative;aspect-ratio:16/9;border:1px solid rgba(251,250,248,.4);
+    background:linear-gradient(135deg,rgba(20,19,14,.16),rgba(20,19,14,.28));backdrop-filter:blur(3px);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.1rem;overflow:hidden}
+  .film-play{width:88px;height:88px;border-radius:50%;border:1px solid rgba(251,250,248,.75);background:rgba(20,19,14,.28);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    transition:transform .4s cubic-bezier(.22,1,.36,1),background .4s}
+  .film-play:hover{transform:scale(1.06);background:rgba(20,19,14,.5)}
+  .film-title{font-family:'Cormorant Brand',Georgia,serif;font-size:clamp(1.4rem,3vw,2.1rem);color:#FBFAF8;text-align:center}
+  .film-dur{font-family:'Ortica Linear',sans-serif;font-size:11px;letter-spacing:.26em;text-transform:uppercase;
+    color:rgba(251,250,248,.7);margin-top:.5rem;text-align:center}
+  .film-slot-note{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-family:'Ortica Linear',sans-serif;
+    font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#C4A075;opacity:.85}
+
+  .principles{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:1.5rem;padding:8vh 0 2vh}
+  .principle{border-top:1px solid rgba(251,250,248,.28);padding-top:1rem}
+  .principle .dot{width:6px;height:6px;border-radius:50%;background:#C4A075;margin-bottom:1rem}
+  .principle h3{font-family:'Cormorant Brand',Georgia,serif;font-weight:500;font-size:1.3rem;margin:0 0 .4rem;color:#FBFAF8}
+  .principle p{font-family:'Ortica Linear',sans-serif;font-weight:300;font-size:.92rem;line-height:1.6;color:rgba(251,250,248,.7);margin:0}
+
+  .threshold{padding:12vh 0 18vh;text-align:center}
+  .threshold .cue{font-family:'Ortica Linear',sans-serif;font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+    color:rgba(251,250,248,.7);margin-bottom:1.2rem}
+  .threshold a{display:inline-flex;align-items:center;gap:1em;font-family:'Ortica Linear',sans-serif;font-size:13px;
+    letter-spacing:.24em;text-transform:uppercase;color:#FBFAF8;text-decoration:none;padding:20px 54px;
+    background:rgba(20,19,14,.28);backdrop-filter:blur(16px);border:1px solid rgba(251,250,248,.5);border-radius:2px;
+    transition:background .3s,color .3s,transform .3s}
+  .threshold a:hover{background:#FBFAF8;color:#14130E;transform:translateY(-2px)}
+  :focus-visible{outline:2px solid #C4A075;outline-offset:3px}
+
+  /* faint loading hint until frames are ready */
+  #loading{position:fixed;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;
+    font-family:'Ortica Linear',sans-serif;font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+    color:rgba(251,250,248,.6);pointer-events:none;transition:opacity .6s}
+</style>
+</head>
+<body class="lds-immersive">
+
+  <canvas id="arkbg" aria-hidden="true"></canvas>
+  <div class="veil" aria-hidden="true"></div>
+
+  <div class="chrome">
+    <a href="index.html" aria-label="Return to the entrance" style="display:inline-flex;line-height:0"><img src="uploads/01 Logo - Group (Final Ver 2).png" alt="La Doña Santa" /></a>
+    <span class="idx">01 — 05</span>
+  </div>
+
+  <div class="ark-wrap">
+    <section class="hero">
+      <p class="lds-eyebrow rv">La Doña Santa ARK</p>
+      <h1 class="rv" style="transition-delay:.1s">The Living System</h1>
+      <p class="lede rv" style="transition-delay:.25s">A residence drawn, calculated, structured and awakened around one life.</p>
+      <div class="scrollcue rv" style="transition-delay:.4s">Scroll to enter the system</div>
+    </section>
+
+    <section class="blocks">
+      <p class="rv"><span class="n">Block 01</span>La Doña Santa ARK unites architecture, development, engineering, construction, wellness and long-term residential intelligence within one uninterrupted process.</p>
+      <p class="rv" style="transition-delay:.15s"><span class="n">Block 02</span>A single vision governs every discipline, preserving the integrity of the residence from its earliest conception through the way it is inhabited, protected and evolved across generations.</p>
+    </section>
+
+    <section class="film">
+      <p class="film-eyebrow rv">The Six-Minute Film</p>
+      <div class="film-frame rv" style="transition-delay:.1s">
+        <button class="film-play" aria-label="Play the film (to be attached)">
+          <svg width="24" height="26" viewBox="0 0 24 26" fill="#FBFAF8"><path d="M2 2 L22 13 L2 24 Z"/></svg>
+        </button>
+        <div>
+          <div class="film-title">The Private Origin of Architecture</div>
+          <div class="film-dur">06:00 minutes</div>
+        </div>
+        <div class="film-slot-note">Film to be attached — 6-minute ARK film</div>
+      </div>
+    </section>
+
+    <section class="principles">
+      <div class="principle rv"><div class="dot"></div><h3>Architecture</h3><p>Sacred geometry, function and beauty in unity.</p></div>
+      <div class="principle rv" style="transition-delay:.1s"><div class="dot"></div><h3>Engineering</h3><p>Structural intelligence, precision and performance.</p></div>
+      <div class="principle rv" style="transition-delay:.2s"><div class="dot"></div><h3>Wellness</h3><p>Spaces that restore balance, clarity and longevity.</p></div>
+      <div class="principle rv" style="transition-delay:.3s"><div class="dot"></div><h3>Environment</h3><p>Land, water, air and living systems in harmony.</p></div>
+      <div class="principle rv" style="transition-delay:.4s"><div class="dot"></div><h3>Legacy</h3><p>Timeless value designed to evolve across generations.</p></div>
+    </section>
+
+    <section class="threshold">
+      <p class="cue rv">The floor plan slows. The frame becomes a threshold.</p>
+      <a class="rv" style="transition-delay:.1s" href="chamber.html">Enter the Source Chamber →</a>
+    </section>
+  </div>
+
+<script>
+  // reveals
+  const io = new IntersectionObserver((es)=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);}}),{threshold:.16});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+  // ---- scroll-driven frame sequence on canvas (no video seeking = smooth) ----
+  const COUNT = 160;                         // ark-frames/f_001.jpg … f_160.jpg
+  const cv = document.getElementById('arkbg');
+  const ctx = cv.getContext('2d', { alpha:false });
+  const imgs = new Array(COUNT);
+  let loaded = 0, W = 0, H = 0, dpr = 1, target = 0, cur = 0, primed = false;
+
+  const url = (i)=> 'ark-frames/f_' + String(i+1).padStart(3,'0') + '.jpg';
+
+  function resize(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+    cv.style.width = W+'px'; cv.style.height = H+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    paint(cur);
+  }
+  function nearestLoaded(i){
+    i = Math.max(0, Math.min(COUNT-1, i));
+    if(imgs[i] && imgs[i].__ok) return imgs[i];
+    for(let d=1; d<COUNT; d++){
+      const a=imgs[i-d], b=imgs[i+d];
+      if(a && a.__ok) return a; if(b && b.__ok) return b;
+    }
+    return null;
+  }
+  function paint(idx){
+    const im = nearestLoaded(Math.round(idx));
+    if(!im) return;
+    const iw=im.naturalWidth, ih=im.naturalHeight;
+    const s=Math.max(W/iw, H/ih), w=iw*s, h=ih*s;
+    ctx.drawImage(im, (W-w)/2, (H-h)/2, w, h);
+  }
+
+  // preload every frame (2.7 MB total)
+  for(let i=0;i<COUNT;i++){
+    const im = new Image();
+    im.decoding = 'async';
+    im.onload = ()=>{ im.__ok = true; loaded++;
+      if(!primed){ primed = true; resize(); paint(0); }
+      if(loaded === COUNT){ const l=document.getElementById('loading'); if(l){ l.style.opacity=0; setTimeout(()=>l.remove(),600);} }
+    };
+    im.src = url(i);
+    imgs[i] = im;
+  }
+
+  function maxScroll(){ return Math.max(1,(document.documentElement.scrollHeight||document.body.scrollHeight)-innerHeight); }
+  function onScroll(){ target = (scrollY/maxScroll()) * (COUNT-1); }
+  addEventListener('scroll', onScroll, {passive:true});
+  addEventListener('resize', ()=>{ resize(); onScroll(); });
+  onScroll();
+
+  (function loop(){
+    cur += (target - cur) * 0.16;           // ease toward scroll position
+    if(Math.abs(target - cur) > 0.02) paint(cur);
+    requestAnimationFrame(loop);
+  })();
+</script>
+<script src="lds-shared.js"></script>
+</body>
+</html>

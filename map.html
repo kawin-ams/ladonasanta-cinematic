@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>La Doña Santa — Prototype Map</title>
+<link rel="stylesheet" href="site.css" />
+<link rel="stylesheet" href="pages.css" />
+<link rel="stylesheet" href="lds-shared.css" />
+<style>
+  .grp{margin-top:3rem}
+  .grp > .eyebrow{margin-bottom:1.2rem}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:1rem}
+  .card{display:block;text-decoration:none;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:8px;
+    padding:1.2rem 1.3rem;transition:transform .25s,border-color .25s,box-shadow .25s}
+  .card:hover{transform:translateY(-3px);border-color:var(--gold-soft);box-shadow:0 8px 30px rgba(31,27,20,.08)}
+  .card .n{font-family:var(--serif);color:var(--gold);font-size:1.1rem}
+  .card h3{font-size:1.12rem;margin:.2rem 0 .4rem}
+  .card p{font-size:.85rem;color:var(--ink-2);margin:0}
+  .card .flag{display:inline-block;margin-top:.7rem;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+  .note{color:var(--ink-2);font-size:.86rem;margin-top:.6rem;max-width:60ch}
+</style>
+</head>
+<body>
+  <div class="pchrome"><a href="index.html" aria-label="Return to the entrance" style="display:inline-flex;line-height:0"><img src="uploads/01 Logo - Group (Final Ver 2).png" alt="La Doña Santa" /></a><span class="tag">Prototype Map · Internal Review</span></div>
+
+  <main class="container">
+    <p class="eyebrow">La Doña Santa · Web Prototype</p>
+    <h1>Every page, one map</h1>
+    <p class="note">Click any page to open it. The public journey is the immersive dark-video experience; the private areas are the calm working surfaces. Videos are attached where the client specified; the two narrative films remain blank slots.</p>
+
+    <div class="grp">
+      <p class="eyebrow">Public journey — the guided sequence</p>
+      <div class="cards">
+        <a class="card" href="index.html"><div class="n">00–01</div><h3>World Entrance → System</h3><p>The cinematic descent; ENTER plays to the twin arches, then the La Doña Santa System (ARK · Guardian).</p><span class="flag">Video ✓</span></a>
+        <a class="card" href="ark.html"><div class="n">02</div><h3>ARK · The Living System</h3><p>Floor plans drawing themselves; the 6-minute film (blank slot).</p><span class="flag">Video ✓</span></a>
+        <a class="card" href="chamber.html"><div class="n">03</div><h3>The Source Chamber</h3><p>The long narrative; the 40-minute film (blank slot).</p><span class="flag">Video ✓</span></a>
+        <a class="card" href="vault.html"><div class="n">04</div><h3>Visual Sanctuary Vault</h3><p>The property reveal — his six villa clips, chapter by chapter.</p><span class="flag">His footage (dark)</span></a>
+        <a class="card" href="lumina.html"><div class="n">05</div><h3>Lumina Platinum Access</h3><p>The nine private access layers.</p><span class="flag">Placeholder clip</span></a>
+        <a class="card" href="contact.html"><div class="n">06</div><h3>Contact Group Scale</h3><p>The living company map → Private Entry Review form.</p><span class="flag">Video ✓</span></a>
+        <a class="card" href="meeting.html"><div class="n">07</div><h3>Private Meeting Access</h3><p>Propose a meeting time (opens from the emailed link).</p></a>
+      </div>
+    </div>
+
+    <div class="grp">
+      <p class="eyebrow">Guardian — private client (password-protected)</p>
+      <div class="cards">
+        <a class="card" href="guardian.html"><div class="n">G00</div><h3>Private Client Access</h3><p>Guardian code gate.</p></a>
+        <a class="card" href="design-key.html"><div class="n">G01</div><h3>Client Design Key</h3><p>The guided Development Screening.</p></a>
+        <a class="card" href="portal.html"><div class="n">G01</div><h3>Private Project Current</h3><p>The live project dashboard — ten modules + Residence Operating Mode.</p></a>
+      </div>
+    </div>
+
+    <div class="grp">
+      <p class="eyebrow">Hidden business-card route (QR / token)</p>
+      <div class="cards">
+        <a class="card" href="private-contact.html"><div class="n">H01</div><h3>Private Contact Map</h3><p>Company directory · protected presentation download · Executive Inquiry.</p></a>
+      </div>
+    </div>
+
+    <div class="grp">
+      <p class="eyebrow">System governance</p>
+      <div class="cards">
+        <a class="card" href="admin.html"><div class="n">—</div><h3>Administration</h3><p>Codes, content, clients, reports, NDA log, meeting requests.</p></a>
+      </div>
+    </div>
+  </main>
+<script src="lds-shared.js"></script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>La Doña Santa — The Source Chamber (prototype)</title>
+<link rel="stylesheet" href="site.css" />
+<link rel="stylesheet" href="lds-shared.css" />
+<style>
+  /* Page 03 — The Source Chamber. The longest written narrative on the site.
+     Brief: "As the visitor scrolls, the text must cause the architecture to appear."
+     Same locked mechanic: scroll-driven frame sequence on canvas, white type, dark scrim. */
+  html{scroll-behavior:smooth}  body{margin:0;background:#EDE7DC;color:#FBFAF8;overflow-x:hidden}
+  #bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block;background:#EDE7DC}
+  .veil{position:fixed;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(140% 110% at 50% 40%,rgba(9,8,6,.5),rgba(9,8,6,.4) 55%,rgba(9,8,6,.6) 100%)}
+  #loading{position:fixed;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;
+    font-family:'Ortica Linear',sans-serif;font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+    color:rgba(251,250,248,.6);pointer-events:none;transition:opacity .6s}
+
+  .wrap{position:relative;z-index:2;max-width:70rem;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+  .chrome{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
+    padding:clamp(13px,1.5vw,16px) clamp(24px,5vw,64px)}
+  .chrome img{width:clamp(46px,4.4vw,58px);filter:brightness(0) invert(1)}
+  .chrome .idx{font-family:'Ortica Linear',sans-serif;font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;color:rgba(251,250,248,.65)}
+
+  .rv{opacity:0;transform:translateY(24px);transition:opacity 1.1s cubic-bezier(.22,1,.36,1),transform 1.1s cubic-bezier(.22,1,.36,1)}
+  .rv.in{opacity:1;transform:none}
+
+  .eyebrow{font-family:'Ortica Linear',sans-serif;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:rgba(251,250,248,.72);margin:0}
+
+  .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:16vh 0 10vh}
+  .hero h1{font-family:'Cormorant Brand',Georgia,serif;font-weight:500;font-size:clamp(2.2rem,5.6vw,4.4rem);
+    line-height:1.04;letter-spacing:.005em;margin:1rem 0 0;max-width:20ch;color:#FBFAF8}
+  .hero .intro{font-family:'Ortica Linear',sans-serif;font-weight:300;font-size:clamp(1rem,1.5vw,1.18rem);
+    line-height:1.85;max-width:52ch;color:rgba(251,250,248,.9);margin:1.8rem 0 0}
+  .scrollcue{margin-top:3rem;font-family:'Ortica Linear',sans-serif;font-size:11px;letter-spacing:.28em;
+    text-transform:uppercase;color:rgba(251,250,248,.6);display:flex;align-items:center;gap:.8rem}
+  .scrollcue::after{content:"";width:1px;height:34px;background:linear-gradient(#FBFAF8,transparent);animation:cue 2.4s ease-in-out infinite}
+  @keyframes cue{0%,100%{opacity:.2;transform:scaleY(.7)}50%{opacity:.85;transform:scaleY(1)}}
+  @media (prefers-reduced-motion:reduce){.scrollcue::after{animation:none}.rv{transition:opacity .4s}}
+
+  /* 40-minute film */
+  .film{padding:12vh 0}
+  .film .label{font-family:'Ortica Linear',sans-serif;font-size:11px;letter-spacing:.3em;text-transform:uppercase;
+    color:rgba(251,250,248,.7);text-align:center;margin-bottom:1.3rem}
+  .film-frame{position:relative;aspect-ratio:16/9;border:1px solid rgba(251,250,248,.4);
+    background:linear-gradient(135deg,rgba(20,19,14,.2),rgba(20,19,14,.34));backdrop-filter:blur(3px);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.1rem;overflow:hidden}
+  .film-play{width:88px;height:88px;border-radius:50%;border:1px solid rgba(251,250,248,.75);background:rgba(20,19,14,.3);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .4s cubic-bezier(.22,1,.36,1),background .4s}
+  .film-play:hover{transform:scale(1.06);background:rgba(20,19,14,.5)}
+  .film-title{font-family:'Cormorant Brand',Georgia,serif;font-size:clamp(1.4rem,3vw,2.1rem);color:#FBFAF8;text-align:center}
+  .film-dur{font-family:'Ortica Linear',sans-serif;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:rgba(251,250,248,.7);margin-top:.5rem;text-align:center}
+  .film-slot-note{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-family:'Ortica Linear',sans-serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#C4A075;opacity:.85}
+
+  /* long narrative */
+  .narrative{max-width:44rem;margin:0 auto;padding:6vh 0}
+  .chapter{padding:9vh 0}
+  .chapter h2{font-family:'Cormorant Brand',Georgia,serif;font-weight:500;font-size:clamp(1.6rem,3.4vw,2.6rem);
+    line-height:1.1;letter-spacing:.01em;margin:0 0 1.4rem;color:#FBFAF8}
+  .chapter .k{font-family:'Ortica Linear',sans-serif;font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;
+    color:#C4A075;display:block;margin-bottom:1rem}
+  .chapter p{font-family:'Ortica Linear',sans-serif;font-weight:300;font-size:clamp(1rem,1.4vw,1.15rem);
+    line-height:1.9;color:rgba(251,250,248,.9);margin:0 0 1.2rem;max-width:60ch}
+
+  .threshold{padding:12vh 0 20vh;text-align:center}
+  .threshold .cue{font-family:'Cormorant Brand',Georgia,serif;font-size:clamp(1.3rem,2.6vw,1.9rem);color:#FBFAF8;
+    max-width:24ch;margin:0 auto 1.6rem;line-height:1.3}
+  .threshold a{display:inline-flex;align-items:center;gap:1em;font-family:'Ortica Linear',sans-serif;font-size:13px;
+    letter-spacing:.24em;text-transform:uppercase;color:#FBFAF8;text-decoration:none;padding:20px 54px;
+    background:rgba(20,19,14,.3);backdrop-filter:blur(16px);border:1px solid rgba(251,250,248,.5);border-radius:2px;
+    transition:background .3s,color .3s,transform .3s}
+  .threshold a:hover{background:#FBFAF8;color:#14130E;transform:translateY(-2px)}
+  :focus-visible{outline:2px solid #C4A075;outline-offset:3px}
+</style>
+</head>
+<body class="lds-immersive">
+  <canvas id="bg" aria-hidden="true"></canvas>
+  <div class="veil" aria-hidden="true"></div>
+
+  <div class="chrome">
+    <a href="index.html" aria-label="Return to the entrance" style="display:inline-flex;line-height:0"><img src="uploads/01 Logo - Group (Final Ver 2).png" alt="La Doña Santa" /></a>
+    <span class="idx">02 — 05</span>
+  </div>
+
+  <div class="wrap">
+    <section class="hero">
+      <p class="eyebrow rv">The Source Chamber</p>
+      <h1 class="rv" style="transition-delay:.1s">Before La Doña Santa became architecture, it became a responsibility.</h1>
+      <p class="intro rv" style="transition-delay:.25s">A responsibility to create environments whose purpose extends far beyond the visible. Environments conceived to support the body, quiet the nervous system, preserve absolute privacy, and bring human life, architecture and nature into a more coherent whole.</p>
+      <div class="scrollcue rv" style="transition-delay:.4s">Scroll to descend</div>
+    </section>
+
+    <!-- 40-minute film -->
+    <section class="film">
+      <p class="label rv">The Core</p>
+      <div class="film-frame rv" style="transition-delay:.1s">
+        <button class="film-play" aria-label="Play the film (to be attached)">
+          <svg width="24" height="26" viewBox="0 0 24 26" fill="#FBFAF8"><path d="M2 2 L22 13 L2 24 Z"/></svg>
+        </button>
+        <div>
+          <div class="film-title">Inside La Doña Santa</div>
+          <div class="film-dur">40:00 minutes</div>
+        </div>
+        <div class="film-slot-note">Film to be attached — 40-minute film</div>
+      </div>
+    </section>
+
+    <!-- the full narrative -->
+    <div class="narrative">
+      <section class="chapter rv"><span class="k">Architecture once knew more</span><h2>Space is never neutral</h2>
+        <p>La Doña Santa was born from an understanding that is both ancient and urgently contemporary: space is never neutral. Light, water, sound, material, proportion, air, privacy and natural rhythm do not merely compose an atmosphere. They continuously influence how a person feels, sleeps, thinks, recovers, works, connects and lives.</p>
+        <p>A residence is therefore never only a container for life. Whether intentionally designed or not, it becomes an active force within it.</p>
+      </section>
+
+      <section class="chapter rv"><h2>Before buildings became products</h2>
+        <p>Across civilizations, architecture was once inseparable from the observation of nature. Mathematics, astronomy, geometry, proportion, cardinal orientation, solar and lunar cycles, prevailing winds, water, terrain and material behaviour informed where important structures were placed and how they were formed.</p>
+        <p>Builders studied the movement of shadows. They observed the seasons, the sky and the behaviour of the land. Geometry was used not only to create visual order, but to establish relationships between the human being, the structure and the greater environment surrounding it.</p>
+        <p>What we now call sacred architecture was not defined by decoration alone. It emerged from the belief that a building carried consequence — that orientation, proportion, sequence and spatial rhythm could influence human perception and connect daily life with a larger order. Architecture was shelter, but it was also knowledge made inhabitable.</p>
+      </section>
+
+      <section class="chapter rv"><h2>The biological memory of nature</h2>
+        <p>Long before biophilia became a modern term, human settlements were formed around courtyards, gardens, water, natural materials, changing light, protected thresholds and direct contact with the living world.</p>
+        <p>Biophilia gave a contemporary name to an ancient biological reality: the human being is not separate from nature. The body continues to respond to daylight, airflow, temperature, vegetation, water, texture, sound, spatial refuge and the perception of safety. These relationships affect us before conscious thought begins.</p>
+        <p>For La Doña Santa, biophilia is therefore not an aesthetic category. It is not the addition of plants to an otherwise conventional interior. It is the restoration of a fundamental relationship between human biology, architecture and the natural world.</p>
+      </section>
+
+      <section class="chapter rv"><h2>What contemporary development forgot</h2>
+        <p>Modern construction brought extraordinary advances in engineering, safety, technology and performance. But as property became a globally repeatable product, architecture was increasingly divided into disconnected disciplines.</p>
+        <p>The land became an acquisition. The villa became a typology. Engineering was asked to make a predetermined form stand. Wellness was added as a room. Landscape arrived at the end. Long-term operation was considered after handover.</p>
+        <p>Residences became larger, cleaner and more spectacular — yet increasingly interchangeable. What is expensive is not necessarily intelligent. What is visually impressive is not necessarily capable of protecting the person who lives within it.</p>
+      </section>
+
+      <section class="chapter rv"><h2>The necessary convergence</h2>
+        <p>La Doña Santa emerged at the point where these separated forms of intelligence had to meet again. This was never a proposal to reject modernism, technology or contemporary engineering. Nor was it an attempt to reproduce the architecture of the past.</p>
+        <p>It was the recognition that the analytical precision of the present had to be reunited with older disciplines of observation, proportion, orientation, nature and human meaning. Not assembled after the concept. Present from its origin.</p>
+      </section>
+
+      <section class="chapter rv"><h2>The Founder’s journey</h2>
+        <p>La Doña Santa did not begin as a conventional real-estate proposition. Its foundation developed through the Founder’s years of movement between countries, cultures, remote landscapes, traditional communities, ceremonial environments and radically different ways of living.</p>
+        <p>He studied not only what buildings looked like, but what they produced within the people who entered them. Some spatial systems emerged through what the Founder describes as channelled perception: a disciplined form of listening in which architecture appeared not as an isolated image, but as a complete relationship between geometry, movement, water, nature, human state and purpose.</p>
+        <p>Yet intuition was never granted exemption from reality. Every idea had to become structurally possible, technically resolved, operationally intelligent and executable at the highest level of construction. That dual discipline — receiving freely and verifying rigorously — became one of the foundations of La Doña Santa.</p>
+      </section>
+
+      <section class="chapter rv"><h2>Making the invisible legible</h2>
+        <p>Before architecture is imposed upon a site, the land must be understood in layers. Topographical surveying, geotechnical and hydrogeological investigation, ecological mapping, soil analysis, groundwater behaviour, drainage, solar-path studies, prevailing-wind analysis, microclimate modelling, acoustic conditions, privacy exposure and environmental risk are examined before the permanent geometry is resolved.</p>
+        <p>Sacred geometry is not applied as decoration. Its principles are translated into proportion, orientation, thresholds, axial relationships, circulation, compression and release, the placement of water, the movement of light and the rhythm through which the residence is experienced. Nothing symbolic is permitted to bypass engineering. Nothing technically efficient is allowed to erase human meaning.</p>
+      </section>
+
+      <section class="chapter rv"><h2>Engineered as a living system</h2>
+        <p>The architecture is developed through coordinated structural, civil, mechanical, electrical, water, energy and environmental engineering. Building physics, daylight and thermal simulation, airflow, acoustic performance, façade behaviour, lighting, material performance, specialist wellness technologies, digital infrastructure and security are resolved in relation to one another — not as separate technical packages competing for space inside a completed design.</p>
+        <p>The objective is not complexity for its own sake. It is coherence at a level where nothing important has been left to accident.</p>
+      </section>
+
+      <section class="chapter rv"><h2>An institution, not a style</h2>
+        <p>La Doña Santa is not a visual style, a conventional architectural studio or another luxury developer. It is being formed as an institution capable of holding the complete intelligence of a private residence across its entire life.</p>
+        <p>The client is not left to reconcile disconnected consultants or protect the original vision from dilution. One integrated system carries that vision from the first reading of the land to the completed residence and beyond.</p>
+      </section>
+
+      <section class="chapter rv"><h2>Luxury is total resolution</h2>
+        <p>At this level, luxury is not an abundance of expensive materials. It is the absence of unresolved decisions. It is found in the quality of silence, the movement of air, the temperature beneath bare feet, the weight of a door, the privacy of an approach, the acoustics of a room, the reflection of water, the changing shadow of a wall and the precision with which every space supports the life taking place within it.</p>
+        <p>It should never need to announce its cost. Its intelligence should be felt long before its value needs to be explained.</p>
+      </section>
+
+      <section class="chapter rv"><h2>The client as patron</h2>
+        <p>This degree of architecture cannot be produced through capital alone. It requires a client with vision, freedom of mind and the courage to pursue a result for which no existing reference is sufficient.</p>
+        <p>At this level, the client is no longer simply purchasing a residence. The client becomes a patron of what private architecture can become — together creating spatial languages, living systems and entirely new residential variations capable of establishing the foundations of a new modernism.</p>
+      </section>
+
+      <section class="chapter rv"><h2>The future of private living</h2>
+        <p>The work does not end when construction is completed. A truly intelligent residence must be capable of evolving with its owner — with changing biological needs, technologies, family structures, levels of privacy, methods of recovery and ways of living across time.</p>
+        <p>In a world where almost every recognised symbol of luxury can be acquired, replicated or replaced, true rarity has moved beyond possession. For those who can access almost anything, the final luxury is authorship — the creation of a private world that did not exist before them, and could not have existed without them. This is the responsibility La Doña Santa was created to carry.</p>
+      </section>
+    </div>
+
+    <section class="threshold">
+      <p class="cue rv">The next chamber reveals how this intelligence becomes physical.</p>
+      <a class="rv" style="transition-delay:.1s" href="vault.html">Enter the Visual Sanctuary Vault →</a>
+    </section>
+  </div>
+
+<script>
+  const io = new IntersectionObserver((es)=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);}}),{threshold:.14});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+  // scroll-driven frame sequence on canvas
+  const COUNT = 80;
+  const cv = document.getElementById('bg');
+  const ctx = cv.getContext('2d', { alpha:false });
+  const imgs = new Array(COUNT);
+  let loaded=0, W=0, H=0, dpr=1, target=0, cur=0, primed=false;
+  const url = (i)=> 'chamber-frames/f_' + String(i+1).padStart(3,'0') + '.jpg';
+  function resize(){ dpr=Math.min(devicePixelRatio||1,2); W=innerWidth; H=innerHeight;
+    cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr); cv.style.width=W+'px'; cv.style.height=H+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0); paint(cur); }
+  function nearestLoaded(i){ i=Math.max(0,Math.min(COUNT-1,i)); if(imgs[i]&&imgs[i].__ok) return imgs[i];
+    for(let d=1;d<COUNT;d++){ const a=imgs[i-d],b=imgs[i+d]; if(a&&a.__ok)return a; if(b&&b.__ok)return b; } return null; }
+  function paint(idx){ const im=nearestLoaded(Math.round(idx)); if(!im) return;
+    const iw=im.naturalWidth, ih=im.naturalHeight, s=Math.max(W/iw,H/ih), w=iw*s, h=ih*s;
+    ctx.drawImage(im,(W-w)/2,(H-h)/2,w,h); }
+  for(let i=0;i<COUNT;i++){ const im=new Image(); im.decoding='async';
+    im.onload=()=>{ im.__ok=true; loaded++; if(!primed){ primed=true; resize(); paint(0);}
+      if(loaded===COUNT){ const l=document.getElementById('loading'); if(l){ l.style.opacity=0; setTimeout(()=>l.remove(),600);} } };
+    im.src=url(i); imgs[i]=im; }
+  function maxScroll(){ return Math.max(1,(document.documentElement.scrollHeight||document.body.scrollHeight)-innerHeight); }
+  function onScroll(){ target=(scrollY/maxScroll())*(COUNT-1); }
+  addEventListener('scroll', onScroll, {passive:true});
+  addEventListener('resize', ()=>{ resize(); onScroll(); });
+  onScroll();
+  (function loop(){ cur += (target-cur)*0.16; if(Math.abs(target-cur)>0.02) paint(cur); requestAnimationFrame(loop); })();
+</script>
+<script src="lds-shared.js"></script>
+</body>
+</html>

@@ -1,0 +1,2288 @@
+/* La Doña Santa — global styles & brand system (ported from the design-system page).
+   Cream paper, ink text, one antique-gold accent. Cormorant display + Ortica Linear body. */
+
+@font-face {
+  font-family: 'Ortica Linear';
+  src: url('uploads/OrticaLinear-Light.otf') format('opentype');
+  font-weight: 300;
+  font-display: swap;
+}
+
+/* PDF direction — the system is a three-part architectural instrument rather
+   than two product cards divided by a decorative icon. These late rules
+   intentionally supersede the earlier system study while preserving its
+   responsive foundation. */
+.lds-system-stage__worlds {
+  width: min(100%, 88rem);
+  grid-template-columns: minmax(0, 1fr) minmax(17rem, 0.78fr) minmax(0, 1fr);
+  gap: clamp(1rem, 2.4vw, 2.4rem);
+}
+.lds-system-stage__worlds::before {
+  left: 16%;
+  right: 16%;
+  top: 42%;
+}
+.lds-system-world__disc { width: min(25vw, 32vh, 18rem); }
+.lds-system-world__action {
+  min-width: 0;
+  width: min(100%, 18rem);
+  border: 0;
+  border-top: 1px solid oklch(56% 0.035 72 / 0.6);
+  border-bottom: 1px solid oklch(56% 0.035 72 / 0.38);
+  background: linear-gradient(90deg, transparent, oklch(100% 0 0 / 0.68), transparent);
+  clip-path: none;
+}
+.lds-system-world__action i { font-style: normal; }
+.lds-system-group {
+  position: relative;
+  z-index: 3;
+  align-self: center;
+  padding: clamp(1.25rem, 2.2vw, 2rem) clamp(1rem, 2vw, 1.75rem);
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  border-inline: 1px solid oklch(56% 0.035 72 / 0.28);
+  background: radial-gradient(circle at 50% 25%, oklch(100% 0 0 / 0.88), oklch(98% 0.008 78 / 0.46) 56%, transparent 78%);
+  backdrop-filter: blur(7px);
+}
+.lds-system-group::before,
+.lds-system-group::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 0.42rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--world-platinum-deep);
+  box-shadow: 0 0 0 0.4rem oklch(100% 0 0 / 0.55), 0 0 2rem white;
+  transform: translateX(-50%);
+}
+.lds-system-group::before { top: -0.2rem; }
+.lds-system-group::after { bottom: -0.2rem; }
+.lds-system-group__seal {
+  width: clamp(5.25rem, 8vw, 7.5rem);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid oklch(56% 0.035 72 / 0.48);
+  border-radius: 50%;
+  box-shadow: 0 0 2.5rem white;
+}
+.lds-system-group__seal img { width: 76%; height: 76%; object-fit: contain; filter: grayscale(1) contrast(1.15); }
+.lds-system-group > p {
+  max-width: 28ch;
+  margin: 0.8rem auto 1.2rem;
+  font: 400 0.75rem/1.55 var(--lds-serif);
+  color: var(--world-ink-soft);
+}
+.lds-client-access { width: min(100%, 28rem); margin-inline: auto; }
+.lds-client-access > label {
+  display: block;
+  margin-bottom: 0.7rem;
+  font: 500 0.6rem/1.2 var(--lds-sans);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.lds-client-access__control { display: flex; gap: 0.65rem; }
+.lds-client-access__cells {
+  position: relative;
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  border-bottom: 1px solid oklch(45% 0.025 72 / 0.6);
+}
+.lds-client-access__cells span {
+  min-width: 0;
+  min-height: 2.75rem;
+  display: grid;
+  place-items: center;
+  border-right: 1px solid oklch(56% 0.035 72 / 0.18);
+}
+.lds-client-access__cells span:last-of-type { border-right: 0; }
+.lds-client-access__cells input { position: absolute; inset: 0; opacity: 0.01; cursor: text; }
+.lds-client-access__control button {
+  width: 3rem;
+  min-height: 2.75rem;
+  border: 1px solid oklch(45% 0.025 72 / 0.5);
+  background: oklch(99% 0.005 78 / 0.68);
+  color: var(--world-ink);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+.lds-client-access > p { margin: 0.7rem 0 0; color: var(--world-error); font-size: 0.72rem; }
+.lds-client-access--compact > label { font-size: 0.52rem; }
+.lds-client-access--compact .lds-client-access__cells span,
+.lds-client-access--compact .lds-client-access__control button { min-height: 2.25rem; }
+.lds-client-access--compact .lds-client-access__control button { width: 2.4rem; }
+
+.lds-guardian-gate {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 7rem 1.5rem 3rem;
+}
+.lds-guardian-gate__panel {
+  width: min(100%, 42rem);
+  padding: clamp(2rem, 5vw, 5rem);
+  text-align: center;
+  border: 1px solid oklch(56% 0.035 72 / 0.34);
+  background: oklch(99% 0.007 78 / 0.66);
+  box-shadow: 0 2rem 8rem oklch(40% 0.03 225 / 0.12);
+  backdrop-filter: blur(14px);
+}
+.lds-guardian-gate__panel h1 {
+  margin: 0;
+  font: 300 clamp(2.4rem, 6vw, 5.1rem)/0.94 var(--lds-serif);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.lds-guardian-gate__panel > p:not(.lds-eyebrow) {
+  max-width: 54ch;
+  margin: 1.25rem auto 2rem;
+  line-height: 1.7;
+}
+.lds-guardian-gate__panel > small {
+  display: block;
+  margin-top: 1.5rem;
+  color: var(--world-ink-soft);
+  font: 500 0.58rem/1.4 var(--lds-sans);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+  .lds-system-stage { height: auto; min-height: 100svh; overflow: visible; }
+  .lds-system-stage__worlds { grid-template-columns: 1fr 1fr; padding-top: 2rem; }
+  .lds-system-group { grid-column: 1 / -1; grid-row: 1; width: min(100%, 30rem); margin: 0 auto; }
+  .lds-system-world__disc { width: min(36vw, 16rem); }
+  .lds-system-stage__worlds::before { display: none; }
+}
+@media (max-width: 620px) {
+  .lds-system-stage { padding-inline: 1rem; }
+  .lds-system-stage__header h1 { font-size: clamp(2rem, 11vw, 3.3rem); }
+  .lds-system-stage__worlds { grid-template-columns: 1fr; }
+  .lds-system-group { grid-column: auto; }
+  .lds-system-world__disc { width: min(70vw, 15rem); }
+}
+@font-face {
+  font-family: 'Ortica Linear';
+  src: url('uploads/OrticaLinear-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cormorant Brand';
+  src: url('uploads/Cormorant-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cormorant Brand';
+  src: url('uploads/Cormorant-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root {
+  /* Brand tokens.
+     The accent is PLATINUM, taken from the liquid-silver rivers running through
+     the brochure cover. The previous antique gold contradicted both the cover
+     and the brief, which asks for platinum and explicitly rejects gold-cliché
+     luxury. Bronze survives only as a rare pull-quote accent — the one place
+     the brochure itself uses a warm tone.
+
+     Two roles, kept apart, so the page reads as one system:
+       PLATINUM  structure — hairlines, rules, frames, position markers.
+                 Never text on the cream: #9BA0A3 is 2.53:1 there.
+       BRONZE    warmth and intent — active states, focus, the live step in a
+                 flow, pull-quote marks. The brochure's own warm tone, so this
+                 is a mix of the two metals rather than a second palette.
+     Each has a -deep member for anything that has to carry text weight. */
+  --lds-paper: #FBFAF8;
+  --lds-paper-warm: #F5F1EA;
+  --lds-panel: #EDE6DA;
+  --lds-ink: #14130E;
+  --lds-ink-soft: #4A4740;
+  /* Was #8A8073 — 3.72:1, short of AA at the 10–13px this is mostly used at.
+     Hierarchy below ink-soft is now carried by size and tracking, the way a
+     printed page does it, rather than by fading the grey out further. */
+  --lds-muted: #6E6559;
+  /* Disabled and fine print ONLY. Exempt from contrast, never for live text. */
+  --lds-faint: #B4AB9C;
+  --lds-line: #E0D8C9;
+
+  --lds-platinum: #9BA0A3;
+  --lds-platinum-deep: #6E7477;
+  --lds-platinum-light: #C7CCCE;
+
+  --lds-bronze: #B08A5E;        /* 3.03:1 — marks and rules, not text */
+  --lds-bronze-deep: #856338;   /* 5.24:1 on paper — text, focus, active */
+  --lds-bronze-light: #C4A075;  /* 7.64:1 on ink — the reversed sections */
+
+  /* The visible focus ring. Bronze-deep clears 3:1 on all three grounds, so it
+     is legible as an outline everywhere and reads as intent rather than as a
+     browser default. */
+  --lds-focus: var(--lds-bronze-deep);
+
+  /* Kept as aliases so the ~76 existing accent references resolve to platinum
+     rather than needing a rename in every file. */
+  --lds-gold: var(--lds-platinum);
+  --lds-gold-deep: var(--lds-platinum-deep);
+  --lds-gold-light: var(--lds-platinum-light);
+
+  --lds-serif: 'Cormorant Brand', 'Cormorant', serif;
+  --lds-sans: 'Ortica Linear', 'Jost', sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--lds-paper);
+  color: var(--lds-ink);
+  font-family: var(--lds-sans);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: rgba(155,160,163, 0.22); }
+
+a { color: inherit; text-decoration: none; }
+
+img { max-width: 100%; }
+
+/* ── Motion keyframes (ported from the per-page dc-runtime styles) ── */
+@keyframes ldsCue { 0%, 100% { opacity: 0.35; transform: translateY(0); } 50% { opacity: 0.85; transform: translateY(7px); } }
+@keyframes ldsShimmer { 0%, 100% { opacity: 0.28; } 50% { opacity: 0.6; } }
+@keyframes ldsDraw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes ldsFloatA { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-13px); } }
+@keyframes ldsFloatB { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(11px); } }
+@keyframes ldsFloatC { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+@keyframes vsvFloatA { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+@keyframes vsvFloatB { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(10px); } }
+@keyframes vsvFloatC { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes cdkIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+/* ── Brochure display type ──
+   The brochure's signature: letterspaced Cormorant caps carrying a horizontal
+   tonal fade, ink on the left dissolving to pale on the right. Lifted straight
+   from spreads like "THE PHILOSOPHY BEHIND THE TECHNOLOGY".
+
+   The fade used to bottom out at #CFC9BE — 1.58:1 on the cream, which made the
+   last word of every headline the palest thing in it. That is the wrong word to
+   lose: the payoff sits at the end ("Welcome to La Doña Santa *World*",
+   "Contact *Group Scale*"). The fade now floors at #6E6A61 (5.17:1), so the
+   tonal shift still reads as the brochure's but no glyph drops out.
+
+   `color` carries ink as the resting value and only goes transparent inside the
+   @supports, so a browser without background-clip renders solid headlines
+   instead of nothing. Forced-colors strips background images, hence the reset. */
+.lds-display {
+  font-family: var(--lds-serif);
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  color: var(--lds-ink);
+}
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+  .lds-display {
+    background-image: linear-gradient(
+      100deg,
+      var(--lds-ink) 0%,
+      var(--lds-ink) 30%,
+      #4A4740 66%,
+      #6E6A61 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+/* On dark grounds the fade runs the other way — pale into shadow. */
+.lds-display--light {
+  color: #FBFAF8;
+}
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+  .lds-display--light {
+    background-image: linear-gradient(
+      100deg,
+      #FBFAF8 0%,
+      #FBFAF8 30%,
+      #D6D2CA 68%,
+      #9A958C 100%
+    );
+  }
+}
+@media (forced-colors: active) {
+  .lds-display,
+  .lds-display--light {
+    background-image: none;
+    color: CanvasText;
+  }
+}
+
+/* ── Film grain ──
+   A single tiled turbulence layer over the whole page. This is what removes the
+   flat, too-clean CG quality; print has tooth and screens usually do not. */
+.lds-grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  pointer-events: none;
+  opacity: 0.3;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  /* Shifting background-position rather than transforming an oversized layer:
+     the element stays exactly viewport-sized and nothing overdraws. */
+  animation: ldsGrain 7s steps(6) infinite;
+  mix-blend-mode: multiply;
+}
+@keyframes ldsGrain {
+  0%   { background-position: 0 0; }
+  20%  { background-position: -22px 14px; }
+  40%  { background-position: 16px -20px; }
+  60%  { background-position: -12px -12px; }
+  80%  { background-position: 20px 18px; }
+  100% { background-position: 0 0; }
+}
+
+/* A whisper of vignette so the page reads as a lit surface, not a flat fill. */
+.lds-vignette::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 899;
+  pointer-events: none;
+  background: radial-gradient(
+    130% 100% at 50% 42%,
+    rgba(0, 0, 0, 0) 42%,
+    rgba(31, 27, 20, 0.07) 78%,
+    rgba(31, 27, 20, 0.15) 100%
+  );
+}
+
+/* ── The hexagon transition (components/PageTransition.tsx) ──
+   The outgoing page settles back quickly and gets out of the way; the incoming
+   page is revealed through the brand hexagon opening from the centre. The exit
+   is fast and the entrance slower and delayed, so the two never fight. */
+::view-transition-group(root) {
+  animation-duration: 1250ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* The outgoing page settles back and dissolves; the two overlap for most of the
+   move, so the cut reads as one continuous movement rather than a swap. */
+::view-transition-old(.lds-exit) {
+  animation: 760ms cubic-bezier(0.32, 0, 0.24, 1) both ldsPageRecede;
+}
+::view-transition-new(.lds-enter) {
+  animation:
+    1180ms cubic-bezier(0.22, 1, 0.36, 1) 90ms both ldsHexOpen,
+    900ms cubic-bezier(0.22, 1, 0.36, 1) 90ms both ldsPageArrive;
+}
+
+@keyframes ldsPageRecede {
+  to {
+    opacity: 0;
+    transform: scale(0.982);
+  }
+}
+
+@keyframes ldsPageArrive {
+  from {
+    opacity: 0.4;
+    transform: scale(1.012);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Flat-top hexagon, matching the seal panel on the brochure cover, scaled from
+   a point at the centre to well beyond the viewport corners. */
+@keyframes ldsHexOpen {
+  from {
+    clip-path: polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%);
+    opacity: 0.55;
+  }
+  to {
+    clip-path: polygon(
+      -100% 50%,
+      -25% -100%,
+      125% -100%,
+      200% 50%,
+      125% 200%,
+      -25% 200%
+    );
+    opacity: 1;
+  }
+}
+
+/* ── The entry gate on a short screen ──
+   The gate has exactly one action and no scroll cue, because it is meant to read
+   as a finished title card. On a 1280×720 or 1366×768 laptop the vh-based
+   padding pushed that one action off the bottom — measured at top:735 in a
+   720px viewport, so a visitor saw a beautiful page with nothing to do on it.
+   Mobile fits already (ENTER at 589 of 812), so this only tightens the vertical
+   rhythm on the short-and-wide case that broke.
+
+   The !important is not decoration: every size on that page is an inline style
+   object, and inline wins over any stylesheet rule without it. */
+@media (min-width: 700px) and (max-height: 880px) {
+  .lds-gate {
+    padding-top: clamp(64px, 8vh, 104px) !important;
+    padding-bottom: clamp(32px, 4vh, 52px) !important;
+  }
+  .lds-gate .lds-display {
+    font-size: clamp(32px, 4.2vw, 56px) !important;
+    margin-bottom: clamp(16px, 2vw, 24px) !important;
+  }
+  .lds-gate .lds-gate-lede {
+    font-size: clamp(16px, 1.5vw, 19px) !important;
+    margin-bottom: clamp(24px, 2.8vw, 34px) !important;
+  }
+  .lds-gate .lds-gate-seal {
+    margin-bottom: clamp(18px, 2.2vw, 26px) !important;
+  }
+  .lds-gate .lds-gate-seal img {
+    width: clamp(68px, 6.5vw, 92px) !important;
+  }
+}
+
+/* ── Focus ──
+   There was no focus rule anywhere in the system, so keyboard users had only
+   whatever the UA drew — and on every input that was suppressed by an
+   `outline:none` in a style-focus attribute, replaced by a 3px ring at 0.14
+   alpha (1.09:1 on the cream: invisible).
+
+   One ring, defined once, in the brand's own accent. :focus-visible so a mouse
+   click never draws it. The offset keeps it clear of the hairline borders the
+   whole system is built from, and the two-layer shadow means it stays visible
+   over both the cream and the reversed dark sections. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--lds-focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+/* Windows High Contrast draws its own ring; ours would fight it. */
+@media (forced-colors: active) {
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid CanvasText;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] { opacity: 1 !important; transform: none !important; }
+  .lds-grain::after { animation: none !important; }
+  ::view-transition-old(.lds-exit),
+  ::view-transition-new(.lds-enter) { animation: none !important; }
+  /* Blanket, rather than the old [data-cue],[data-float] pair. That list missed
+     every inline `animation: … infinite` that carried no hook — the crest float
+     and water-light shimmer on the entry page, and the Guardian pulse dot — so
+     the first screen kept moving for someone who asked for stillness. Catching
+     it at the root means a new animation cannot reintroduce the bug. */
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   2026 APPROVED WORLD SYSTEM
+   Pearl light, platinum construction geometry, pale stone and water. These
+   classes implement the final restructure brief without flattening the
+   existing portal and admin surfaces into the same visual treatment.
+   ────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --world-pearl: oklch(98.5% 0.008 78);
+  --world-ivory: oklch(95.8% 0.016 78);
+  --world-stone: oklch(89% 0.018 72);
+  --world-platinum: oklch(67% 0.012 235);
+  --world-platinum-deep: oklch(43% 0.018 235);
+  --world-ink: oklch(25% 0.014 65);
+  --world-ink-soft: oklch(38% 0.014 65);
+  --world-line: oklch(73% 0.012 78 / 0.48);
+  --world-line-soft: oklch(78% 0.01 235 / 0.28);
+  --world-success: oklch(45% 0.07 155);
+  --world-error: oklch(47% 0.09 28);
+  --world-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lds-approved {
+  min-height: 100svh;
+  overflow-x: clip;
+  color: var(--world-ink);
+  background: var(--world-pearl);
+  font-family: var(--lds-sans);
+  font-weight: 300;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.lds-approved .lds-display,
+.lds-approved .lds-display--light {
+  background: none;
+  color: inherit;
+  -webkit-text-fill-color: currentColor;
+}
+
+.lds-world {
+  --world-x: 0px;
+  --world-y: 0px;
+  --world-rx: 0deg;
+  position: relative;
+  min-height: 100svh;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 22%, oklch(100% 0 0 / 0.96), transparent 33%),
+    linear-gradient(180deg, var(--world-pearl), var(--world-ivory));
+}
+
+.lds-world__media,
+.lds-world__wash,
+.lds-world__water,
+.lds-world__plan,
+.lds-world__orbit,
+.lds-world__axis {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* The public threshold remains intentionally abstract: no private property
+   render is revealed before Group access. The artwork already contains its
+   own water and construction geometry, so the shared effects recede here. */
+.lds-world--landing .lds-world__media {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  filter: grayscale(0.05) saturate(0.72) brightness(0.9) contrast(1.12);
+  transform: translate3d(
+    calc(var(--world-x) * 0.25),
+    calc(var(--world-y) * 0.2),
+    0
+  ) scale(1.018);
+}
+
+.lds-world--landing .lds-world__wash {
+  background:
+    radial-gradient(ellipse 42% 52% at 50% 48%, oklch(98.5% 0.008 78 / 0.2), transparent 82%),
+    linear-gradient(180deg, transparent 58%, oklch(90% 0.018 230 / 0.1));
+}
+
+.lds-world--landing .lds-world__water,
+.lds-world--landing .lds-world__plan,
+.lds-world--landing .lds-world__orbit,
+.lds-world--landing .lds-world__axis {
+  opacity: 0.08;
+}
+
+/* The Welcome Gate is a title card, not a document. Fix it to the dynamic
+   viewport so browser chrome and short screens cannot introduce a stray page
+   scroll, then let vertical spacing respond to the available height. */
+.lds-landing-page {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100svh;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+.lds-landing-page .lds-world,
+.lds-landing-page .lds-world__content,
+.lds-landing-page .lds-world-hero {
+  height: 100%;
+  min-height: 0;
+}
+.lds-landing-page .lds-world-hero {
+  padding: clamp(5.25rem, 10.5vh, 7rem) clamp(1rem, 5vw, 5rem) clamp(1rem, 3.5vh, 2.5rem);
+}
+.lds-landing-page .lds-seal { width: clamp(7rem, 17vh, 10rem); }
+.lds-brand-lock { white-space: nowrap; }
+.lds-landing-page .lds-eyebrow { margin-bottom: clamp(0.65rem, 1.5vh, 1rem); }
+.lds-landing-page .lds-world-title {
+  font-size: clamp(2.15rem, min(5.4vw, 7.2vh), 5.4rem);
+  line-height: 0.96;
+}
+.lds-landing-page .lds-world-statement {
+  max-width: 64ch;
+  margin-top: clamp(0.9rem, 2.5vh, 1.75rem);
+  font-size: clamp(0.78rem, min(1vw, 1.8vh), 0.95rem);
+  line-height: 1.65;
+}
+.lds-landing-page .lds-threshold {
+  margin-top: clamp(1.1rem, 3.2vh, 2.25rem);
+}
+
+@media (max-width: 560px) {
+  .lds-world--landing .lds-world__media { object-position: 28% center !important; }
+}
+
+@media (max-height: 620px) {
+  .lds-landing-page .lds-world-hero { padding: 4.65rem 1rem 0.65rem; }
+  .lds-landing-page .lds-seal { width: 5.4rem; }
+  .lds-landing-page .lds-eyebrow { margin-bottom: 0.4rem; font-size: 0.6rem; }
+  .lds-landing-page .lds-world-title { font-size: clamp(1.9rem, min(5vw, 8vh), 3rem); }
+  .lds-landing-page .lds-world-statement { max-width: 72ch; margin-top: 0.6rem; font-size: 0.7rem; line-height: 1.45; }
+  .lds-landing-page .lds-threshold { min-height: 2.75rem; margin-top: 0.7rem; padding-block: 0.55rem; }
+}
+
+/* The public thresholds share a drafting language, not a repeated picture.
+   Each route owns a separate architectural study while live type and controls
+   remain readable over the calm center of the artwork. */
+.lds-world--blueprint .lds-world__media {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.92;
+  filter: saturate(0.7) brightness(1.01) contrast(0.94);
+  transform: translate3d(
+    calc(var(--world-x) * 0.2),
+    calc(var(--world-y) * 0.16),
+    0
+  ) scale(1.014);
+}
+.lds-world--blueprint .lds-world__wash {
+  background:
+    radial-gradient(circle at 50% 48%, oklch(99.5% 0.004 78 / 0.34), transparent 40%),
+    linear-gradient(180deg, oklch(99% 0.006 78 / 0.06), oklch(96% 0.012 78 / 0.14));
+}
+.lds-world--blueprint .lds-world__water,
+.lds-world--blueprint .lds-world__plan,
+.lds-world--blueprint .lds-world__orbit,
+.lds-world--blueprint .lds-world__axis {
+  opacity: 0.06;
+}
+.lds-world--system .lds-world__media {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-position: center;
+  opacity: 0.94;
+  filter: saturate(0.62) brightness(1.06) contrast(0.9);
+  transform: translate3d(
+    calc(var(--world-x) * 0.24),
+    calc(var(--world-y) * 0.2),
+    0
+  ) scale(1.018);
+}
+.lds-world--system .lds-world__wash {
+  background:
+    radial-gradient(circle at 50% 23%, oklch(100% 0 0 / 0.18), transparent 31%),
+    linear-gradient(180deg, oklch(99% 0.006 78 / 0.02), oklch(90% 0.018 230 / 0.16));
+}
+.lds-world--system .lds-world__water,
+.lds-world--system .lds-world__plan,
+.lds-world--system .lds-world__orbit,
+.lds-world--system .lds-world__axis { opacity: 0.16; }
+.lds-world--ark-access .lds-world__media { object-position: center 46%; }
+.lds-world--guardian .lds-world__media { object-position: center 54%; }
+
+.lds-world__media {
+  z-index: -7;
+  inset: -3%;
+  width: 106%;
+  height: 106%;
+  object-fit: cover;
+  transform: translate3d(var(--world-x), var(--world-y), 0) scale(1.025);
+  filter: grayscale(0.38) saturate(0.42) sepia(0.08) brightness(1.62) contrast(0.62);
+  opacity: 0.52;
+  transition: transform 1.2s var(--world-ease);
+}
+
+.lds-world__wash {
+  z-index: -6;
+  inset: 0;
+  background:
+    linear-gradient(90deg, var(--world-pearl) 0%, transparent 20%, transparent 80%, var(--world-pearl) 100%),
+    linear-gradient(180deg, oklch(99% 0.006 78 / 0.38), oklch(96% 0.012 78 / 0.7));
+}
+
+.lds-world__water {
+  z-index: -5;
+  left: -8%;
+  right: -8%;
+  bottom: -22%;
+  height: 55%;
+  opacity: 0.42;
+  transform: translate3d(calc(var(--world-x) * -0.35), 0, 0);
+  background:
+    repeating-radial-gradient(
+      ellipse at 50% 100%,
+      transparent 0 26px,
+      oklch(76% 0.02 225 / 0.32) 27px,
+      transparent 29px 58px
+    );
+  mask-image: linear-gradient(to top, black, transparent 76%);
+}
+
+.lds-world__plan {
+  z-index: -4;
+  inset: -8%;
+  opacity: 0.48;
+  transform: perspective(1000px) rotateX(54deg) rotateZ(var(--world-rx)) translate3d(calc(var(--world-x) * -0.45), calc(var(--world-y) * -0.3), 0);
+  background-image:
+    linear-gradient(var(--world-line-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--world-line-soft) 1px, transparent 1px),
+    repeating-radial-gradient(circle at 50% 50%, transparent 0 74px, var(--world-line-soft) 75px, transparent 77px 122px);
+  background-size: 72px 72px, 72px 72px, auto;
+  mask-image: radial-gradient(circle at 50% 45%, black 0%, transparent 74%);
+  transition: transform 1.3s var(--world-ease);
+}
+
+.lds-world__orbit {
+  z-index: -3;
+  border: 1px solid var(--world-line);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 1px oklch(100% 0 0 / 0.42) inset,
+    0 0 60px oklch(100% 0 0 / 0.75);
+  transform: translate3d(calc(var(--world-x) * -0.65), calc(var(--world-y) * -0.65), 0);
+  transition: transform 1.2s var(--world-ease);
+}
+
+.lds-world__orbit::before,
+.lds-world__orbit::after {
+  content: "";
+  position: absolute;
+  border-radius: inherit;
+  border: 1px solid var(--world-line-soft);
+}
+
+.lds-world__orbit::before { inset: 11%; }
+.lds-world__orbit::after { inset: 26%; }
+.lds-world__orbit--one { width: 42vw; aspect-ratio: 1; left: -18vw; top: 14%; }
+.lds-world__orbit--two { width: 36vw; aspect-ratio: 1; right: -13vw; top: 7%; }
+
+.lds-world__axis {
+  z-index: -2;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: linear-gradient(transparent, var(--world-line) 18%, var(--world-line) 74%, transparent);
+}
+
+.lds-world__content {
+  position: relative;
+  z-index: 1;
+  min-height: inherit;
+}
+
+.lds-seal {
+  position: relative;
+  width: clamp(7.5rem, 11vw, 10.5rem);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  margin-inline: auto;
+}
+
+.lds-seal img {
+  position: relative;
+  z-index: 2;
+  width: 72%;
+  height: auto;
+  filter: grayscale(1) contrast(0.82);
+}
+
+.lds-seal__halo {
+  position: absolute;
+  inset: -12%;
+  border: 1px solid var(--world-line);
+  border-radius: 50%;
+  animation: ldsWorldBreathe 6.5s ease-in-out infinite;
+}
+
+.lds-seal__halo::before,
+.lds-seal__halo::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--world-line-soft);
+}
+.lds-seal__halo::before { inset: 10%; }
+.lds-seal__halo::after { inset: 24%; }
+.lds-seal--compact { width: clamp(5.6rem, 7vw, 7.5rem); }
+
+@keyframes ldsWorldBreathe {
+  0%, 100% { opacity: 0.46; transform: scale(0.985); }
+  50% { opacity: 0.9; transform: scale(1.02); }
+}
+
+.lds-spatial-index {
+  position: absolute;
+  top: clamp(5.5rem, 8vw, 7rem);
+  left: clamp(1.25rem, 4vw, 4.5rem);
+  z-index: 5;
+  display: grid;
+  grid-template-columns: auto 2.5rem;
+  grid-template-areas: "number line" "label label";
+  align-items: center;
+  column-gap: 0.75rem;
+  color: var(--world-ink-soft);
+  text-transform: uppercase;
+}
+.lds-spatial-index > span {
+  grid-area: number;
+  font-family: var(--lds-serif);
+  font-size: 1.75rem;
+  line-height: 1;
+  letter-spacing: 0.08em;
+}
+.lds-spatial-index > i { grid-area: line; display: block; height: 1px; background: var(--world-platinum); }
+.lds-spatial-index > small {
+  grid-area: label;
+  margin-top: 0.65rem;
+  font-size: 0.62rem;
+  line-height: 1.45;
+  letter-spacing: 0.22em;
+  max-width: 15rem;
+}
+
+.lds-world-hero {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: clamp(8rem, 16vh, 12rem) clamp(1.5rem, 6vw, 6rem) clamp(4rem, 9vh, 7rem);
+  text-align: center;
+}
+
+.lds-world-hero__inner {
+  width: min(100%, 70rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lds-eyebrow {
+  margin: 0 0 1.5rem;
+  font-family: var(--lds-sans);
+  font-size: 0.7rem;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--world-ink-soft);
+}
+
+.lds-world-title {
+  margin: 0;
+  max-width: 18ch;
+  font-family: var(--lds-serif);
+  font-size: clamp(2.7rem, 6.2vw, 6.6rem);
+  font-weight: 300;
+  line-height: 0.98;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.lds-world-title--wide { max-width: 23ch; font-size: clamp(2.4rem, 5.2vw, 5.6rem); }
+
+.lds-world-statement {
+  max-width: 62ch;
+  margin: clamp(1.75rem, 3.5vw, 3rem) auto 0;
+  font-size: clamp(0.9rem, 1.15vw, 1.08rem);
+  font-weight: 400;
+  line-height: 1.85;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-wrap: balance;
+  color: var(--world-ink-soft);
+}
+
+.lds-world-body {
+  max-width: 62ch;
+  margin: 1.75rem auto 0;
+  font-family: var(--lds-serif);
+  font-size: clamp(1.15rem, 1.7vw, 1.45rem);
+  line-height: 1.65;
+  color: var(--world-ink-soft);
+}
+
+.lds-threshold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  min-height: 3.25rem;
+  margin-top: clamp(2.5rem, 5vw, 4.5rem);
+  padding: 0.8rem 1.25rem;
+  border: 0;
+  border-bottom: 1px solid var(--world-platinum-deep);
+  background: transparent;
+  color: var(--world-ink);
+  font: 400 0.75rem/1.2 var(--lds-sans);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 180ms ease, transform 180ms var(--world-ease), border-color 180ms ease;
+}
+.lds-threshold::after { content: "→"; font-size: 1rem; letter-spacing: 0; }
+.lds-threshold:hover { color: var(--world-platinum-deep); transform: translateY(-2px); }
+.lds-threshold:active { transform: translateY(0); }
+.lds-threshold:disabled { cursor: wait; opacity: 0.55; }
+
+.lds-access-form {
+  width: min(100%, 33rem);
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  text-align: left;
+}
+.lds-field-label {
+  display: block;
+  margin-bottom: 0.7rem;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--world-ink-soft);
+}
+.lds-field,
+.lds-select,
+.lds-textarea {
+  width: 100%;
+  min-height: 3.2rem;
+  border: 1px solid var(--world-line);
+  border-radius: 0;
+  background: oklch(99% 0.006 78 / 0.74);
+  color: var(--world-ink);
+  padding: 0.9rem 1rem;
+  font: 400 1rem/1.4 var(--lds-sans);
+  backdrop-filter: blur(18px);
+  transition: border-color 160ms ease, background 160ms ease;
+}
+.lds-field::placeholder,
+.lds-textarea::placeholder { color: oklch(48% 0.012 70); opacity: 1; }
+.lds-field:focus,
+.lds-select:focus,
+.lds-textarea:focus { outline: none; border-color: var(--world-platinum-deep); background: var(--world-pearl); }
+.lds-code-field { text-align: center; letter-spacing: 0.42em; text-transform: uppercase; }
+.lds-textarea { min-height: 8rem; resize: vertical; }
+.lds-form-error,
+.lds-form-success { margin: 0.85rem 0 0; font-size: 0.86rem; line-height: 1.5; }
+.lds-form-error { color: var(--world-error); }
+.lds-form-success { color: var(--world-success); }
+
+.lds-system-stage {
+  height: 100svh;
+  min-height: 42rem;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  padding: clamp(5.25rem, 9vh, 7rem) clamp(1.5rem, 5vw, 5rem) clamp(1rem, 2.5vh, 2rem);
+  overflow: hidden;
+}
+.lds-system-stage__header {
+  position: relative;
+  z-index: 3;
+  max-width: 48rem;
+  margin: 0 auto;
+  text-align: center;
+}
+.lds-system-stage__header .lds-eyebrow { margin-bottom: 0.7rem; }
+.lds-system-stage__header h1 {
+  margin: 0;
+  font: 300 clamp(2.35rem, 4.4vw, 4.65rem)/0.96 var(--lds-serif);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.lds-system-stage__header > p:last-child {
+  margin: 0.8rem 0 0;
+  font: 400 0.72rem/1.4 var(--lds-sans);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.lds-system-stage__worlds {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 74rem);
+  min-height: 0;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(3.5rem, 8vw, 7rem) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1rem, 2.8vw, 2.75rem);
+}
+.lds-system-stage__worlds::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 20%;
+  right: 20%;
+  top: 45%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, oklch(67% 0.045 75 / 0.7) 20%, oklch(67% 0.045 75 / 0.7) 80%, transparent);
+}
+.lds-system-world {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.lds-system-world__disc {
+  position: relative;
+  width: min(28vw, 35vh, 20rem);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid oklch(56% 0.035 72 / 0.55);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 42%, oklch(100% 0 0 / 0.7), oklch(96% 0.012 78 / 0.32) 62%, transparent 76%);
+  box-shadow:
+    0 0 0 0.45rem oklch(100% 0 0 / 0.18),
+    0 1.5rem 5rem oklch(36% 0.025 230 / 0.16),
+    0 0 5rem oklch(100% 0 0 / 0.72) inset;
+  backdrop-filter: blur(5px);
+}
+.lds-system-world__disc::before,
+.lds-system-world__disc::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid oklch(70% 0.035 75 / 0.35);
+}
+.lds-system-world__disc::before { inset: 5%; }
+.lds-system-world__disc::after { inset: 14%; border-style: dotted; }
+.lds-system-world__orbit {
+  position: absolute;
+  inset: -1.25rem;
+  border: 1px solid oklch(90% 0.025 78 / 0.62);
+  border-radius: 50%;
+  box-shadow: 0 0 3rem oklch(100% 0 0 / 0.9);
+}
+.lds-system-world__orbit::before,
+.lds-system-world__orbit::after {
+  content: "";
+  position: absolute;
+  width: 0.42rem;
+  aspect-ratio: 1;
+  top: 50%;
+  border: 1px solid oklch(56% 0.035 72 / 0.72);
+  border-radius: 50%;
+  background: var(--world-pearl);
+  transform: translateY(-50%);
+  box-shadow: 0 0 0 0.3rem oklch(100% 0 0 / 0.45);
+}
+.lds-system-world__orbit::before { left: -0.25rem; }
+.lds-system-world__orbit::after { right: -0.25rem; }
+.lds-system-world__mark {
+  position: relative;
+  z-index: 2;
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
+  filter: grayscale(1) contrast(1.05) brightness(0.58);
+}
+.lds-system-world--guardian .lds-system-world__disc { opacity: 0.78; }
+.lds-system-world__descriptor {
+  margin: clamp(0.65rem, 1.4vh, 1rem) 0 0;
+  font: 400 0.62rem/1.35 var(--lds-sans);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.lds-system-world__action {
+  min-width: min(100%, 19rem);
+  min-height: 2.9rem;
+  margin-top: clamp(0.65rem, 1.4vh, 1rem);
+  padding: 0.75rem 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  border: 1px solid oklch(56% 0.035 72 / 0.55);
+  background: oklch(99% 0.006 78 / 0.72);
+  color: var(--world-ink);
+  clip-path: polygon(0.7rem 0, calc(100% - 0.7rem) 0, 100% 50%, calc(100% - 0.7rem) 100%, 0.7rem 100%, 0 50%);
+  font: 500 0.64rem/1.2 var(--lds-sans);
+  letter-spacing: 0.23em;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+  transition: background 220ms ease, transform 220ms var(--world-ease), border-color 220ms ease;
+}
+.lds-system-world__action:not(.lds-system-world__action--soon):hover {
+  border-color: var(--world-platinum-deep);
+  background: oklch(100% 0 0 / 0.9);
+  transform: translateY(-2px);
+}
+.lds-system-world__action--soon {
+  justify-content: center;
+  border-style: dotted;
+  color: var(--world-ink-soft);
+  opacity: 0.68;
+}
+.lds-system-junction {
+  position: relative;
+  width: clamp(3.25rem, 6vw, 5.25rem);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+  border: 1px solid oklch(56% 0.035 72 / 0.58);
+  border-radius: 50%;
+  background: radial-gradient(circle, oklch(100% 0 0 / 0.94), oklch(90% 0.04 78 / 0.38));
+  box-shadow: 0 0 2.8rem oklch(100% 0 0 / 0.92);
+}
+.lds-system-junction::before,
+.lds-system-junction::after {
+  content: "";
+  position: absolute;
+  inset: 18%;
+  border: 1px solid oklch(62% 0.04 75 / 0.48);
+  transform: rotate(45deg);
+}
+.lds-system-junction::after { inset: 32%; transform: rotate(0); }
+.lds-system-junction span {
+  width: 0.42rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--world-platinum-deep);
+  box-shadow: 0 0 1rem var(--world-pearl);
+}
+
+.lds-ark-access {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: clamp(8rem, 16vh, 12rem) clamp(1.5rem, 6vw, 6rem) clamp(4rem, 9vh, 7rem);
+}
+.lds-ark-access__inner {
+  width: min(100%, 72rem);
+  display: grid;
+  grid-template-columns: minmax(16rem, 0.72fr) minmax(30rem, 1.28fr);
+  align-items: end;
+  gap: clamp(3rem, 8vw, 8rem);
+}
+.lds-ark-access h1 {
+  margin: 0;
+  font: 300 clamp(2.7rem, 5.6vw, 5.6rem)/0.94 var(--lds-serif);
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.lds-ark-access h1 span { display: block; }
+.lds-ark-access__subtitle {
+  margin: 1.25rem 0 0;
+  font: 500 clamp(1rem, 1.8vw, 1.35rem)/1.2 var(--lds-sans);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.lds-ark-code {
+  width: 100%;
+  margin: 0;
+}
+.lds-ark-code > label {
+  display: block;
+  margin-bottom: 1.25rem;
+  font: 500 0.72rem/1.2 var(--lds-sans);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: left;
+}
+.lds-ark-code > label span {
+  margin-left: 0.35rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  color: var(--world-ink-soft);
+}
+.lds-ark-code__row {
+  display: flex;
+  justify-content: center;
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+}
+.lds-ark-code__cells {
+  position: relative;
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+.lds-ark-code__cells input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  opacity: 0.01;
+  cursor: text;
+  caret-color: transparent;
+}
+.lds-ark-code__cells input:focus { outline: none; }
+.lds-ark-code__cell,
+.lds-ark-code__submit {
+  min-width: 0;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--world-line);
+  background: oklch(99% 0.006 78 / 0.36);
+  color: var(--world-ink);
+  font: 400 clamp(1rem, 2vw, 1.35rem)/1 var(--lds-sans);
+  backdrop-filter: blur(8px);
+  transition: border-color 180ms ease, background 180ms ease, transform 180ms var(--world-ease);
+}
+.lds-ark-code__cell + .lds-ark-code__cell { border-left: 0; }
+.lds-ark-code__cells:focus-within .lds-ark-code__cell {
+  border-color: var(--world-platinum-deep);
+  background: oklch(99% 0.006 78 / 0.7);
+}
+.lds-ark-code__submit {
+  flex: 0 0 auto;
+  width: clamp(3.25rem, 7vw, 5.5rem);
+  cursor: pointer;
+  font-size: clamp(1.35rem, 2.5vw, 2rem);
+}
+.lds-ark-code__submit:hover:not(:disabled) {
+  border-color: var(--world-platinum-deep);
+  background: oklch(99% 0.006 78 / 0.82);
+  transform: translateX(3px);
+}
+.lds-ark-code__submit:disabled { cursor: not-allowed; opacity: 0.42; }
+.lds-ark-code .lds-form-error { max-width: 42rem; margin: 1.25rem auto 0; text-align: center; }
+
+.lds-page-section {
+  position: relative;
+  padding: clamp(6rem, 11vw, 10rem) clamp(1.5rem, 6vw, 6rem);
+  border-top: 1px solid var(--world-line-soft);
+  overflow: hidden;
+}
+.lds-page-section__inner { position: relative; z-index: 2; width: min(100%, 78rem); margin: 0 auto; }
+.lds-page-section__split { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(2.5rem, 7vw, 7rem); align-items: center; }
+.lds-page-section h2,
+.lds-page-section h3 { font-family: var(--lds-serif); font-weight: 300; text-wrap: balance; }
+.lds-page-section h2 { margin: 0; font-size: clamp(2.4rem, 5vw, 5.1rem); line-height: 1; letter-spacing: 0.045em; text-transform: uppercase; }
+.lds-page-section h3 { margin: 0 0 1.25rem; font-size: clamp(1.8rem, 3.2vw, 3.4rem); line-height: 1.08; }
+.lds-page-section p { max-width: 68ch; font-size: 1rem; line-height: 1.85; color: var(--world-ink-soft); }
+
+.lds-film-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid var(--world-line);
+  background: var(--world-stone);
+  box-shadow: 0 2rem 5rem oklch(31% 0.02 70 / 0.1);
+}
+.lds-film-frame::before,
+.lds-film-frame::after { content: ""; position: absolute; z-index: 2; pointer-events: none; }
+.lds-film-frame::before { inset: 0.65rem; border: 1px solid oklch(98% 0.006 78 / 0.62); }
+.lds-film-frame::after { inset: 0; background: linear-gradient(180deg, transparent 55%, oklch(22% 0.015 70 / 0.45)); }
+.lds-film-frame video,
+.lds-film-frame img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.16) saturate(0.72) brightness(1.1); }
+.lds-film-frame__play {
+  position: absolute;
+  z-index: 3;
+  inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  border: 1px solid oklch(98% 0.006 78 / 0.82);
+  background: oklch(27% 0.01 70 / 0.34);
+  color: var(--world-pearl);
+  display: grid;
+  place-items: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+.lds-film-frame__play span { transform: translateX(0.12rem); }
+.lds-film-frame__caption { position: absolute; z-index: 3; left: 1.6rem; right: 1.6rem; bottom: 1.35rem; color: var(--world-pearl); display: flex; justify-content: space-between; gap: 1rem; font-size: 0.66rem; letter-spacing: 0.22em; text-transform: uppercase; }
+
+.lds-narrative {
+  background: linear-gradient(180deg, var(--world-pearl), var(--world-ivory));
+}
+.lds-narrative-chapter {
+  position: relative;
+  min-height: min(84svh, 58rem);
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+  gap: clamp(2.5rem, 8vw, 8rem);
+  align-items: center;
+  padding: clamp(5rem, 10vw, 9rem) clamp(1.5rem, 7vw, 7rem);
+  border-top: 1px solid var(--world-line-soft);
+}
+.lds-narrative-chapter:nth-child(even) { grid-template-columns: minmax(0, 1.28fr) minmax(0, 0.72fr); }
+.lds-narrative-chapter:nth-child(even) .lds-narrative-chapter__copy { order: 2; }
+.lds-narrative-chapter__copy { position: relative; z-index: 2; width: min(100%, 46rem); }
+.lds-narrative-chapter__number { display: block; margin-bottom: 1.25rem; font: 300 1.4rem/1 var(--lds-serif); letter-spacing: 0.14em; color: var(--world-platinum-deep); }
+.lds-narrative-chapter h2 { margin: 0 0 2rem; font: 300 clamp(2.2rem, 4vw, 4.6rem)/1.02 var(--lds-serif); letter-spacing: 0.045em; text-transform: uppercase; }
+.lds-narrative-chapter p { margin: 0 0 1.25rem; font-size: 1rem; line-height: 1.9; color: var(--world-ink-soft); }
+.lds-narrative-chapter__figure {
+  position: relative;
+  min-height: clamp(22rem, 48vw, 42rem);
+  border-radius: 50% 50% 2rem 2rem;
+  overflow: hidden;
+  border: 1px solid var(--world-line);
+}
+.lds-narrative-chapter__figure img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.35) saturate(0.45) brightness(1.48) contrast(0.72); }
+.lds-narrative-chapter__figure::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, oklch(99% 0.006 78 / 0.05), oklch(96% 0.012 78 / 0.58)); }
+.lds-narrative-chapter__signal { position: absolute; z-index: 2; left: 1.5rem; right: 1.5rem; bottom: 1.5rem; padding-top: 1rem; border-top: 1px solid oklch(99% 0.006 78 / 0.62); color: var(--world-pearl); font-size: 0.65rem; line-height: 1.6; letter-spacing: 0.18em; text-transform: uppercase; }
+
+.lds-passage {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(min(82vw, 24rem), 1fr);
+  gap: 1rem;
+  overflow-x: auto;
+  padding: 0 clamp(1.5rem, 6vw, 6rem) 2rem;
+  scroll-snap-type: x mandatory;
+  scrollbar-color: var(--world-platinum) transparent;
+}
+.lds-passage__chapter {
+  position: relative;
+  min-height: min(72svh, 46rem);
+  overflow: hidden;
+  scroll-snap-align: center;
+  border: 1px solid var(--world-line);
+  border-radius: 14rem 14rem 0 0;
+  background: var(--world-stone);
+}
+.lds-passage__chapter img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.34) saturate(0.45) brightness(1.42) contrast(0.68); }
+.lds-passage__chapter::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 20%, oklch(25% 0.015 70 / 0.78) 100%); }
+.lds-passage__copy { position: absolute; z-index: 2; left: 1.5rem; right: 1.5rem; bottom: 1.7rem; color: var(--world-pearl); }
+.lds-passage__copy span { font-size: 0.68rem; letter-spacing: 0.24em; text-transform: uppercase; }
+.lds-passage__copy h2 { margin: 0.75rem 0 0.9rem; font: 300 clamp(1.75rem, 3vw, 2.8rem)/1.03 var(--lds-serif); text-transform: uppercase; letter-spacing: 0.04em; }
+.lds-passage__copy p { margin: 0; font-size: 0.9rem; line-height: 1.65; color: oklch(95% 0.01 78); }
+
+.lds-lumina-layer {
+  position: relative;
+  min-height: 84svh;
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  align-items: center;
+  gap: clamp(2.5rem, 8vw, 8rem);
+  padding: clamp(5rem, 10vw, 9rem) clamp(1.5rem, 7vw, 7rem);
+  border-top: 1px solid var(--world-line-soft);
+}
+.lds-lumina-layer:nth-child(even) { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); }
+.lds-lumina-layer:nth-child(even) .lds-lumina-layer__visual { order: 2; }
+.lds-lumina-layer__visual { min-height: clamp(24rem, 52vw, 45rem); border-radius: 18rem 18rem 2rem 2rem; overflow: hidden; border: 1px solid var(--world-line); }
+.lds-lumina-layer__visual img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.28) saturate(0.48) brightness(1.4) contrast(0.68); }
+.lds-lumina-layer__copy { width: min(100%, 46rem); }
+.lds-lumina-layer__copy > span { font-size: 0.68rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--world-platinum-deep); }
+.lds-lumina-layer__copy h2 { margin: 1rem 0 1.75rem; font: 300 clamp(2.1rem, 4vw, 4.4rem)/1.02 var(--lds-serif); text-transform: uppercase; letter-spacing: 0.04em; }
+.lds-lumina-layer__copy p { font-size: 1rem; line-height: 1.9; color: var(--world-ink-soft); }
+
+.lds-map {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1rem, 3vw, 2rem);
+  padding: clamp(2rem, 5vw, 4rem) 0;
+}
+.lds-map::before { content: ""; position: absolute; left: 10%; right: 10%; top: 50%; height: 1px; background: var(--world-line); }
+.lds-map-node { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 1rem; border: 0; background: transparent; color: inherit; cursor: pointer; text-align: center; }
+.lds-map-node__disc { width: clamp(7.5rem, 13vw, 11rem); aspect-ratio: 1; display: grid; place-items: center; border: 1px solid var(--world-line); border-radius: 50%; background: var(--world-pearl); font: 300 clamp(2rem, 4vw, 3.8rem)/1 var(--lds-serif); }
+.lds-map-node strong { font: 300 1.35rem/1.1 var(--lds-serif); }
+.lds-map-node small { font-size: 0.62rem; line-height: 1.5; letter-spacing: 0.18em; text-transform: uppercase; color: var(--world-ink-soft); }
+.lds-map-node[aria-pressed="true"] .lds-map-node__disc { border-color: var(--world-platinum-deep); box-shadow: 0 0 0 0.5rem oklch(72% 0.01 235 / 0.14); }
+.lds-bio-layer { min-height: 16rem; padding: clamp(2rem, 5vw, 4rem); border-top: 1px solid var(--world-line); border-bottom: 1px solid var(--world-line); background: oklch(99% 0.006 78 / 0.6); }
+.lds-bio-layer__grid { display: grid; grid-template-columns: minmax(10rem, 0.55fr) minmax(0, 1.45fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+.lds-bio-layer h3 { margin: 0; font: 300 clamp(2rem, 4vw, 4rem)/1 var(--lds-serif); }
+.lds-bio-layer p { font-size: 1rem; line-height: 1.85; color: var(--world-ink-soft); }
+
+.lds-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.35rem; }
+.lds-form-grid__full { grid-column: 1 / -1; }
+.lds-form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 2rem; margin-top: 1.75rem; }
+.lds-checkbox { display: flex; gap: 0.8rem; align-items: flex-start; font-size: 0.9rem; line-height: 1.6; color: var(--world-ink-soft); }
+.lds-checkbox input { width: 1.2rem; height: 1.2rem; margin-top: 0.15rem; accent-color: var(--world-platinum-deep); }
+
+.lds-private-shell {
+  min-height: 100svh;
+  padding: clamp(7rem, 13vw, 11rem) clamp(1.5rem, 6vw, 6rem) clamp(4rem, 8vw, 7rem);
+}
+.lds-private-panel { width: min(100%, 76rem); margin: 0 auto; padding: clamp(2rem, 5vw, 5rem); border: 1px solid var(--world-line); background: oklch(99% 0.006 78 / 0.7); backdrop-filter: blur(20px); }
+
+/* Contact Group Scale — practical final-step workspace */
+.lds-world--contact .lds-world__media {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.46;
+  filter: grayscale(0.34) saturate(0.48) brightness(1.35) contrast(0.7);
+  transform: translate3d(calc(var(--world-x) * 0.14), calc(var(--world-y) * 0.12), 0) scale(1.012);
+}
+.lds-world--contact .lds-world__wash {
+  background:
+    linear-gradient(90deg, oklch(98.5% 0.008 78 / 0.75), oklch(98.5% 0.008 78 / 0.48)),
+    linear-gradient(180deg, oklch(99% 0.006 78 / 0.16), oklch(93% 0.018 215 / 0.42));
+}
+.lds-world--contact .lds-world__plan { opacity: 0.34; }
+.lds-world--contact .lds-world__orbit { opacity: 0.18; }
+
+.lds-contact-stage {
+  min-height: 100svh;
+  padding: clamp(5.5rem, 9vh, 7rem) clamp(1rem, 4vw, 4rem) clamp(1.25rem, 3vh, 2.5rem);
+}
+.lds-contact-heading {
+  width: min(100%, 86rem);
+  margin: 0 auto clamp(1rem, 2vh, 1.6rem);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.62fr);
+  align-items: end;
+  gap: clamp(2rem, 6vw, 6rem);
+}
+.lds-contact-heading .lds-eyebrow { margin-bottom: 0.45rem; }
+.lds-contact-heading h1 {
+  margin: 0;
+  font: 300 clamp(2.4rem, 4vw, 4rem)/0.98 var(--lds-serif);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.lds-contact-heading > p {
+  max-width: 48ch;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--world-ink-soft);
+}
+.lds-contact-workspace {
+  --contact-accent: oklch(46% 0.065 70);
+  --contact-accent-soft: oklch(95% 0.018 75);
+  --contact-on-accent: oklch(98% 0.006 78);
+  width: min(100%, 86rem);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(18rem, 0.72fr) minmax(34rem, 1.28fr);
+  border: 1px solid var(--world-line);
+  background: oklch(98.5% 0.008 78 / 0.9);
+  box-shadow: 0 1.25rem 4rem oklch(32% 0.018 70 / 0.08);
+}
+.lds-contact-structure,
+.lds-contact-review { min-width: 0; padding: clamp(1.35rem, 2.5vw, 2.4rem); }
+.lds-contact-structure {
+  border-right: 1px solid var(--world-line);
+  background: oklch(97% 0.012 75 / 0.72);
+}
+.lds-contact-structure__intro h2 {
+  max-width: 16ch;
+  margin: 0;
+  font: 300 clamp(1.7rem, 2.5vw, 2.45rem)/1.05 var(--lds-serif);
+  text-transform: uppercase;
+}
+.lds-contact-structure__intro > p:last-child {
+  max-width: 46ch;
+  margin: 0.75rem 0 0;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: var(--world-ink-soft);
+}
+.lds-contact-tabs {
+  margin-top: clamp(1.25rem, 2.5vh, 2rem);
+  display: grid;
+  border-top: 1px solid var(--world-line);
+}
+.lds-contact-tabs button {
+  width: 100%;
+  min-height: 4.65rem;
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.9rem;
+  border: 0;
+  border-bottom: 1px solid var(--world-line);
+  background: transparent;
+  color: var(--world-ink);
+  padding: 0.72rem 0.85rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 220ms cubic-bezier(0.22, 1, 0.36, 1), color 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lds-contact-tabs button:hover { background: var(--contact-accent-soft); }
+.lds-contact-tabs button[aria-pressed="true"] {
+  background: var(--world-ink);
+  color: var(--contact-on-accent);
+}
+.lds-contact-tabs button:focus-visible { position: relative; z-index: 1; outline: 2px solid var(--contact-accent); outline-offset: 2px; }
+.lds-contact-tabs__index {
+  display: block;
+  font: 300 0.88rem/1 var(--lds-serif);
+  letter-spacing: 0.1em;
+  color: var(--contact-accent);
+}
+.lds-contact-tabs button[aria-pressed="true"] .lds-contact-tabs__index { color: oklch(76% 0.055 75); }
+.lds-contact-tabs__copy { min-width: 0; display: grid; gap: 0.22rem; }
+.lds-contact-tabs strong { overflow: hidden; font: 400 0.88rem/1.2 var(--lds-sans); text-overflow: ellipsis; white-space: nowrap; }
+.lds-contact-tabs small { font-size: 0.7rem; line-height: 1.3; color: var(--world-ink-soft); }
+.lds-contact-tabs button[aria-pressed="true"] small { color: color-mix(in oklch, var(--contact-on-accent) 78%, transparent); }
+.lds-contact-tabs__state {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--contact-accent);
+}
+.lds-contact-tabs button[aria-pressed="true"] .lds-contact-tabs__state { color: oklch(84% 0.035 75); }
+.lds-contact-tabs button[aria-pressed="true"] .lds-contact-tabs__state::before { content: "✓"; font-size: 0.72rem; }
+.lds-contact-responsibility {
+  margin-top: 1.2rem;
+  padding: 1rem 0;
+  border-top: 1px solid color-mix(in oklch, var(--contact-accent) 50%, var(--world-line));
+  border-bottom: 1px solid color-mix(in oklch, var(--contact-accent) 50%, var(--world-line));
+}
+.lds-contact-responsibility > p:first-child {
+  margin: 0 0 0.35rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--contact-accent);
+}
+.lds-contact-responsibility h3 { margin: 0; font: 300 1.55rem/1.1 var(--lds-serif); color: var(--world-ink); }
+.lds-contact-responsibility > p:last-child { margin: 0.55rem 0 0; font-size: 0.86rem; line-height: 1.6; color: var(--world-ink-soft); }
+
+.lds-contact-review { background: oklch(99% 0.006 78 / 0.94); }
+.lds-contact-review__heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(14rem, 0.7fr);
+  align-items: end;
+  gap: 2rem;
+  margin-bottom: 1.4rem;
+}
+.lds-contact-review__heading .lds-eyebrow { margin-bottom: 0.4rem; }
+.lds-contact-review__heading h2,
+.lds-contact-success h2 { margin: 0; font: 300 clamp(1.9rem, 3vw, 2.8rem)/1.04 var(--lds-serif); text-transform: uppercase; }
+.lds-contact-route {
+  min-height: 3.6rem;
+  display: grid;
+  align-content: center;
+  gap: 0.2rem;
+  margin: 0;
+  padding: 0.7rem 0;
+  border-top: 1px solid color-mix(in oklch, var(--contact-accent) 55%, var(--world-line));
+  border-bottom: 1px solid var(--world-line);
+}
+.lds-contact-route span { font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--contact-accent); }
+.lds-contact-route strong { font: 400 0.82rem/1.25 var(--lds-sans); color: var(--world-ink); }
+.lds-contact-form__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.95rem 1rem; }
+.lds-contact-form label { min-width: 0; display: grid; gap: 0.45rem; }
+.lds-contact-form label > span,
+.lds-contact-note > span {
+  font-size: 0.7rem;
+  line-height: 1.3;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--world-ink-soft);
+}
+.lds-contact-form label small { font-size: inherit; color: var(--world-platinum-deep); }
+.lds-contact-form input,
+.lds-contact-form textarea {
+  width: 100%;
+  min-height: 2.9rem;
+  border: 1px solid var(--world-line);
+  border-radius: 0;
+  background: oklch(99% 0.006 78 / 0.72);
+  color: var(--world-ink);
+  padding: 0.72rem 0.85rem;
+  font: 400 1rem/1.4 var(--lds-sans);
+  transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+.lds-contact-form textarea { min-height: 5.8rem; resize: vertical; }
+.lds-contact-form input:focus,
+.lds-contact-form textarea:focus { outline: none; border-color: var(--contact-accent); background: var(--world-pearl); box-shadow: 0 0 0 3px color-mix(in oklch, var(--contact-accent) 18%, transparent); }
+.lds-contact-optional { margin-top: 1rem; border-top: 1px solid var(--world-line-soft); border-bottom: 1px solid var(--world-line-soft); }
+.lds-contact-optional summary {
+  min-height: 2.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.lds-contact-optional summary::-webkit-details-marker { display: none; }
+.lds-contact-optional summary::after { content: "+"; margin-left: auto; font-size: 1.1rem; }
+.lds-contact-optional[open] summary::after { content: "−"; }
+.lds-contact-optional summary small { color: var(--world-ink-soft); }
+.lds-contact-optional > div { padding: 0 0 1rem; }
+.lds-contact-note { margin-top: 1rem; }
+.lds-contact-form__footer { margin-top: 1rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.9fr); align-items: center; gap: 1rem; }
+.lds-contact-form__footer > p { max-width: 46ch; margin: 0; font-size: 0.72rem; line-height: 1.5; color: var(--world-ink-soft); }
+.lds-contact-form__footer button,
+.lds-contact-success button {
+  min-height: 3rem;
+  border: 1px solid var(--contact-accent);
+  border-radius: 0;
+  background: var(--world-ink);
+  color: var(--contact-on-accent);
+  padding: 0.8rem 1rem;
+  font: 500 0.72rem/1.2 var(--lds-sans);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 220ms cubic-bezier(0.22, 1, 0.36, 1), color 220ms cubic-bezier(0.22, 1, 0.36, 1), transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lds-contact-form__footer button { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.lds-contact-form__footer button:hover,
+.lds-contact-success button:hover { background: var(--contact-accent); color: var(--contact-on-accent); transform: translateY(-1px); }
+.lds-contact-form__footer button:focus-visible,
+.lds-contact-success button:focus-visible { outline: 2px solid var(--contact-accent); outline-offset: 3px; }
+.lds-contact-success { min-height: 32rem; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; max-width: 38rem; margin: 0 auto; }
+.lds-contact-success > span { width: 3.2rem; aspect-ratio: 1; display: grid; place-items: center; margin-bottom: 1.4rem; border: 1px solid var(--contact-accent); border-radius: 50%; color: var(--contact-accent); font-size: 1.25rem; }
+.lds-contact-success > p:not(.lds-eyebrow) { max-width: 52ch; font-size: 1rem; line-height: 1.7; color: var(--world-ink-soft); }
+.lds-contact-success .lds-eyebrow { color: var(--contact-accent); }
+.lds-contact-success button { margin-top: 1rem; background: transparent; color: var(--contact-accent); }
+
+@media (max-width: 960px) {
+  .lds-contact-heading { grid-template-columns: 1fr; gap: 0.8rem; }
+  .lds-contact-workspace { grid-template-columns: 1fr; }
+  .lds-contact-structure { border-right: 0; border-bottom: 1px solid var(--world-line); }
+  .lds-contact-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .lds-contact-tabs button { grid-template-columns: 2.5rem minmax(0, 1fr); }
+  .lds-contact-tabs button + button { border-left: 1px solid var(--world-line); }
+  .lds-contact-tabs__state { grid-column: 2; }
+}
+
+@media (max-width: 620px) {
+  .lds-contact-stage { padding: 6rem 0.75rem 1.25rem; }
+  .lds-contact-heading h1 { font-size: clamp(2.2rem, 11vw, 3.2rem); }
+  .lds-contact-structure,
+  .lds-contact-review { padding: 1.2rem; }
+  .lds-contact-tabs { grid-template-columns: 1fr; }
+  .lds-contact-tabs button { grid-template-columns: 2.5rem minmax(0, 1fr) auto; }
+  .lds-contact-tabs button + button { border-left: 0; }
+  .lds-contact-tabs__state { grid-column: auto; }
+  .lds-contact-review__heading,
+  .lds-contact-form__grid,
+  .lds-contact-form__footer { grid-template-columns: 1fr; }
+  .lds-contact-form__footer button { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lds-contact-workspace,
+  .lds-contact-structure,
+  .lds-contact-tabs button,
+  .lds-contact-responsibility,
+  .lds-contact-route,
+  .lds-contact-form__footer button,
+  .lds-contact-success button { transition: none; }
+  .lds-contact-tabs button:hover,
+  .lds-contact-form__footer button:hover,
+  .lds-contact-success button:hover { transform: none; }
+}
+
+/* ── ARK journey: four distinct spatial chapters ───────────────────────── */
+
+.lds-journey-page {
+  background: var(--world-pearl);
+}
+
+.lds-journey-page .lds-world__content {
+  min-height: 100svh;
+}
+
+.lds-world--ark-journey .lds-world__media {
+  opacity: 0.74;
+  filter: grayscale(0.2) saturate(0.62) brightness(1.22) contrast(0.76);
+}
+.lds-world--ark-journey .lds-world__wash {
+  background:
+    linear-gradient(90deg, oklch(95% 0.012 78 / 0.34), oklch(99% 0.004 78 / 0.82) 29%, oklch(99% 0.004 78 / 0.84) 71%, oklch(95% 0.012 78 / 0.34)),
+    linear-gradient(180deg, oklch(99% 0.004 78 / 0.16), oklch(94% 0.018 225 / 0.3));
+}
+.lds-world--ark-journey .lds-world__plan,
+.lds-world--ark-journey .lds-world__orbit { opacity: 0.34; }
+
+.lds-world--chamber-journey .lds-world__media {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.76;
+  object-position: center;
+  filter: grayscale(0.32) saturate(0.42) brightness(1.32) contrast(0.7);
+  transform: translate3d(calc(var(--world-x) * 0.16), calc(var(--world-y) * 0.12), 0) scale(1.012);
+}
+.lds-world--chamber-journey .lds-world__wash {
+  background:
+    linear-gradient(90deg, oklch(98% 0.009 78 / 0.96) 0%, oklch(98% 0.009 78 / 0.88) 39%, oklch(98% 0.009 78 / 0.24) 67%, oklch(94% 0.015 210 / 0.32) 100%),
+    linear-gradient(180deg, oklch(99% 0.005 78 / 0.08), oklch(93% 0.018 210 / 0.36));
+}
+.lds-world--chamber-journey .lds-world__plan { opacity: 0.56; }
+.lds-world--chamber-journey .lds-world__orbit { opacity: 0.18; }
+.lds-world--chamber-journey .lds-world__axis { opacity: 0.5; left: 41%; }
+
+.lds-world--vault-journey .lds-world__media {
+  opacity: 0.88;
+  filter: grayscale(0.08) saturate(0.42) brightness(1.06) contrast(0.94);
+}
+.lds-world--vault-journey .lds-world__wash {
+  background:
+    radial-gradient(circle at 50% 28%, oklch(100% 0 0 / 0.7), transparent 34%),
+    linear-gradient(180deg, oklch(99% 0.005 78 / 0.2), oklch(91% 0.022 225 / 0.28));
+}
+.lds-world--vault-journey .lds-world__plan,
+.lds-world--vault-journey .lds-world__orbit { opacity: 0.26; }
+
+.lds-world--lumina-journey .lds-world__media {
+  opacity: 0.64;
+  filter: grayscale(0.3) saturate(0.5) brightness(1.32) contrast(0.7);
+}
+.lds-world--lumina-journey .lds-world__wash {
+  background:
+    radial-gradient(circle at 50% 18%, oklch(100% 0 0 / 0.7), transparent 32%),
+    linear-gradient(180deg, oklch(99% 0.006 78 / 0.38), oklch(93% 0.016 215 / 0.46));
+}
+.lds-world--lumina-journey .lds-world__water { opacity: 0.5; }
+
+.lds-ark-seal {
+  position: relative;
+  width: clamp(8rem, 11vw, 10rem);
+  display: grid;
+  place-items: center;
+}
+.lds-ark-seal > span {
+  position: absolute;
+  width: 72%;
+  aspect-ratio: 1;
+  top: 1%;
+  left: 14%;
+  border: 1px solid var(--world-line);
+  border-radius: 50%;
+  box-shadow: 0 0 3rem oklch(100% 0 0 / 0.84);
+}
+.lds-ark-seal > span::before,
+.lds-ark-seal > span::after {
+  content: "";
+  position: absolute;
+  border: 1px solid var(--world-line-soft);
+  border-radius: 50%;
+}
+.lds-ark-seal > span::before { inset: -16%; }
+.lds-ark-seal > span::after { inset: 18%; }
+.lds-ark-seal img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  filter: grayscale(1) contrast(1.08) brightness(0.58);
+}
+.lds-ark-seal--compact { width: clamp(6.3rem, 8vw, 8.1rem); }
+
+.lds-journey-heading {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.lds-journey-heading .lds-eyebrow { margin: 0.5rem 0 0.6rem; }
+.lds-journey-heading h1 {
+  max-width: 22ch;
+  margin: 0;
+  font: 300 clamp(2.55rem, 5vw, 5.2rem)/0.96 var(--lds-serif);
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.lds-journey-heading > p:last-child:not(.lds-eyebrow) {
+  max-width: 66ch;
+  margin: 0.85rem auto 0;
+  font-size: 0.86rem;
+  line-height: 1.65;
+  letter-spacing: 0.08em;
+  color: var(--world-ink-soft);
+  text-wrap: balance;
+}
+
+/* Living System */
+.lds-ark-overview {
+  min-height: 100svh;
+  height: 100svh;
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: clamp(0.7rem, 1.6vh, 1.15rem);
+  padding: clamp(5rem, 8vh, 6.5rem) clamp(1.5rem, 5vw, 5rem) clamp(1rem, 2vh, 1.5rem);
+  overflow: hidden;
+}
+.lds-ark-overview .lds-journey-heading .lds-ark-seal { width: clamp(5.5rem, 7vh, 6.8rem); }
+.lds-ark-overview .lds-journey-heading h1 { font-size: clamp(2.6rem, 5vh, 4.4rem); }
+.lds-ark-overview__composition {
+  width: min(100%, 78rem);
+  min-height: 0;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(13rem, 0.72fr) minmax(26rem, 1.45fr) minmax(13rem, 0.72fr);
+  align-items: center;
+  gap: clamp(1.25rem, 3vw, 3.5rem);
+}
+.lds-ark-overview__copy {
+  position: relative;
+  padding-block: 1rem;
+  font-size: clamp(0.76rem, 0.92vw, 0.9rem);
+  line-height: 1.7;
+  color: var(--world-ink-soft);
+}
+.lds-ark-overview__copy::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 4rem;
+  height: 1px;
+  background: var(--world-platinum-deep);
+}
+.lds-ark-overview__copy--left { text-align: right; }
+.lds-ark-overview__copy--left::before { right: 0; }
+.lds-ark-overview__copy--right::before { left: 0; }
+.lds-ark-overview__copy p { margin: 0 0 0.85rem; }
+.lds-ark-overview__copy .lds-eyebrow { margin-bottom: 0.8rem; }
+.lds-ark-overview__copy strong {
+  display: block;
+  margin-top: 1rem;
+  font: 300 clamp(1.2rem, 1.7vw, 1.75rem)/1.15 var(--lds-serif);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--world-ink);
+}
+.lds-ark-overview__film .lds-film-frame { box-shadow: 0 1rem 4rem oklch(31% 0.02 70 / 0.13); }
+.lds-ark-overview__film .lds-film-frame__play { width: 4rem; height: 4rem; }
+.lds-ark-principles {
+  width: min(100%, 66rem);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1px;
+  border-top: 1px solid var(--world-line-soft);
+}
+.lds-ark-principles > div { padding: 0.75rem clamp(0.45rem, 1vw, 0.9rem) 0; text-align: center; }
+.lds-ark-principles span {
+  width: 0.42rem;
+  aspect-ratio: 1;
+  margin: -0.98rem auto 0.58rem;
+  display: block;
+  border: 1px solid var(--world-platinum-deep);
+  border-radius: 50%;
+  background: var(--world-pearl);
+}
+.lds-ark-principles h2 {
+  margin: 0;
+  font: 400 0.63rem/1.2 var(--lds-sans);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.lds-ark-principles p { margin: 0.35rem 0 0; font-size: 0.58rem; line-height: 1.35; color: var(--world-ink-soft); }
+.lds-ark-overview > .lds-threshold { width: min(100%, 23rem); margin: 0 auto; }
+
+/* Source Chamber */
+.lds-chamber-threshold {
+  position: relative;
+  height: 100svh;
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: minmax(3rem, 0.42fr) repeat(10, minmax(0, 1fr)) minmax(2rem, 0.3fr);
+  grid-template-rows: minmax(3.5rem, 0.5fr) repeat(9, minmax(0, 1fr)) minmax(2.5rem, 0.35fr);
+  gap: 0;
+  padding: clamp(4.8rem, 7vh, 6rem) clamp(1rem, 3vw, 3rem) clamp(1rem, 2vh, 1.5rem);
+  overflow: hidden;
+}
+.lds-chamber-threshold__index {
+  grid-column: 1;
+  grid-row: 2 / 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 0;
+  padding-right: clamp(0.6rem, 1.5vw, 1.4rem);
+  border-right: 1px solid var(--world-line);
+  color: var(--world-ink-soft);
+}
+.lds-chamber-threshold__index > span,
+.lds-chamber-threshold__index > small {
+  writing-mode: vertical-rl;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.lds-chamber-threshold__index > i { flex: 1; width: 1px; min-height: 3rem; margin: 1rem 0; background: linear-gradient(var(--world-line), transparent); }
+.lds-chamber-threshold__statement {
+  position: relative;
+  z-index: 3;
+  grid-column: 2 / 7;
+  grid-row: 2 / 8;
+  align-self: center;
+  max-width: 44rem;
+  padding: clamp(1rem, 2.5vw, 2rem) clamp(1.5rem, 4vw, 4rem) clamp(1rem, 2.5vw, 2rem) clamp(1rem, 3vw, 3rem);
+}
+.lds-chamber-threshold__statement::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -2.5rem -5rem;
+  background: radial-gradient(ellipse, oklch(99% 0.006 78 / 0.9), transparent 70%);
+}
+.lds-chamber-threshold__statement .lds-eyebrow { margin-bottom: 1rem; }
+.lds-chamber-threshold__statement h1 {
+  max-width: 14ch;
+  margin: 0;
+  font: 300 clamp(2.8rem, 4.2vw, 4.75rem)/0.98 var(--lds-serif);
+  letter-spacing: 0.018em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.lds-chamber-threshold__statement > p:last-child {
+  max-width: 58ch;
+  margin: clamp(1.2rem, 2.5vw, 2rem) 0 0;
+  padding-left: clamp(1.2rem, 2.5vw, 2.5rem);
+  border-left: 1px solid var(--world-platinum-deep);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--world-ink-soft);
+}
+.lds-chamber-threshold__film {
+  position: relative;
+  z-index: 4;
+  grid-column: 7 / 13;
+  grid-row: 5 / 10;
+  align-self: end;
+  display: grid;
+  grid-template-columns: minmax(20rem, 1.45fr) minmax(11rem, 0.55fr);
+  align-items: stretch;
+  gap: 0;
+  border: 1px solid var(--world-line);
+  background: oklch(98.5% 0.008 78 / 0.88);
+}
+.lds-chamber-threshold__film .lds-film-frame { border: 0; box-shadow: none; }
+.lds-chamber-threshold__film .lds-film-frame::before { inset: 0.55rem; }
+.lds-chamber-threshold__film .lds-film-frame__caption { bottom: 1rem; }
+.lds-chamber-threshold__film .lds-film-frame__caption { font-size: 0.75rem; letter-spacing: 0.16em; }
+.lds-chamber-threshold__folio { padding: clamp(1.1rem, 2vw, 1.8rem); align-self: center; }
+.lds-chamber-threshold__folio h2 { margin: 0; font: 300 clamp(1.65rem, 2.2vw, 2.25rem)/1.08 var(--lds-serif); text-transform: uppercase; }
+.lds-chamber-threshold__folio p:not(.lds-eyebrow) { font-size: 1rem; line-height: 1.65; color: var(--world-ink-soft); }
+.lds-chamber-threshold__signals {
+  grid-column: 2 / 13;
+  grid-row: 10;
+  align-self: end;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border-top: 1px solid var(--world-line);
+}
+.lds-chamber-threshold__signals span {
+  position: relative;
+  padding-top: 0.75rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--world-ink-soft);
+}
+.lds-chamber-threshold__signals span::before { content: ""; position: absolute; width: 0.35rem; aspect-ratio: 1; top: -0.2rem; left: 50%; border: 1px solid var(--world-platinum-deep); border-radius: 50%; background: var(--world-pearl); transform: translateX(-50%); }
+
+.lds-chamber-atlas {
+  padding: clamp(6rem, 10vw, 9rem) clamp(1.5rem, 5vw, 5rem);
+  background:
+    linear-gradient(var(--world-line-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--world-line-soft) 1px, transparent 1px),
+    var(--world-pearl);
+  background-size: 5rem 5rem;
+}
+.lds-chamber-atlas__header { width: min(100%, 62rem); margin: 0 auto clamp(3rem, 6vw, 5rem); text-align: center; }
+.lds-chamber-atlas__header h2 { margin: 0; font: 300 clamp(2.5rem, 4vw, 4.25rem)/1.04 var(--lds-serif); letter-spacing: 0.035em; text-transform: uppercase; }
+.lds-chamber-atlas__header > p:last-child { max-width: 62ch; margin: 1.25rem auto 0; line-height: 1.8; color: var(--world-ink-soft); }
+.lds-chamber-atlas__grid {
+  width: min(100%, 86rem);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-flow: dense;
+  gap: clamp(1.2rem, 2.4vw, 2.2rem);
+}
+.lds-chamber-card {
+  align-self: start;
+  border: 1px solid var(--world-line);
+  background: oklch(98.5% 0.008 78 / 0.92);
+}
+.lds-chamber-card:nth-child(6n + 1),
+.lds-chamber-card:nth-child(6n + 6) { grid-column: span 2; }
+.lds-chamber-card figure {
+  position: relative;
+  height: clamp(14rem, 24vw, 22rem);
+  margin: 0;
+  overflow: hidden;
+  border-radius: 50% 50% 0 0;
+}
+.lds-chamber-card figure::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 58%, oklch(93% 0.014 78 / 0.68)); }
+.lds-chamber-card figure img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.28) saturate(0.52) brightness(1.22) contrast(0.78); transition: transform 900ms var(--world-ease); }
+.lds-chamber-card:hover figure img { transform: scale(1.025); }
+.lds-chamber-card__copy { padding: clamp(1.25rem, 2.5vw, 2rem); }
+.lds-chamber-card__copy > span { font: 300 1.1rem/1 var(--lds-serif); letter-spacing: 0.16em; color: var(--world-platinum-deep); }
+.lds-chamber-card .lds-eyebrow { margin: 0.8rem 0 0.5rem; font-size: 0.7rem; }
+.lds-chamber-card h3 { margin: 0.75rem 0 1rem; font: 300 clamp(1.6rem, 2.2vw, 2.35rem)/1.08 var(--lds-serif); letter-spacing: 0.03em; text-transform: uppercase; }
+.lds-chamber-card p { font-size: 1rem; line-height: 1.75; color: var(--world-ink-soft); }
+.lds-chamber-card details { border-top: 1px solid var(--world-line-soft); margin-top: 1.25rem; padding-top: 0.9rem; }
+.lds-chamber-card summary { cursor: pointer; list-style: none; font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; }
+.lds-chamber-card summary::-webkit-details-marker { display: none; }
+.lds-chamber-card summary::after { content: "+"; float: right; font-size: 1rem; }
+.lds-chamber-card details[open] summary::after { content: "−"; }
+.lds-chamber-card details p:first-of-type { margin-top: 1.25rem; }
+.lds-journey-exit { padding: clamp(4rem, 8vw, 7rem) 1.5rem; text-align: center; background: var(--world-ivory); border-top: 1px solid var(--world-line-soft); }
+.lds-journey-exit > div { width: min(100%, 44rem); margin: 0 auto; }
+.lds-journey-exit .lds-threshold { margin-inline: auto; }
+
+/* Visual Sanctuary Vault */
+.lds-vault-stage {
+  height: 100svh;
+  min-height: 46rem;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: clamp(0.9rem, 2vh, 1.5rem);
+  padding: clamp(5rem, 8vh, 6.5rem) clamp(1rem, 2.4vw, 2.5rem) clamp(1rem, 2vh, 1.5rem);
+  overflow: hidden;
+}
+.lds-vault-stage .lds-journey-heading .lds-ark-seal { width: clamp(4.8rem, 6.2vh, 6rem); }
+.lds-vault-stage .lds-journey-heading h1 { font-size: clamp(2.5rem, 5vh, 4.4rem); }
+.lds-vault-stage .lds-journey-heading > p:last-child { margin-top: 0.5rem; }
+.lds-vault-portals {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: clamp(0.45rem, 0.8vw, 0.85rem);
+  align-items: stretch;
+}
+.lds-vault-portal {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid oklch(64% 0.028 75 / 0.72);
+  border-radius: 9rem 9rem 0.25rem 0.25rem;
+  background: var(--world-stone);
+  box-shadow: 0 1rem 3rem oklch(31% 0.02 70 / 0.1);
+}
+.lds-vault-portal img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.2) saturate(0.62) brightness(1.12) contrast(0.8); transition: transform 900ms var(--world-ease), filter 500ms; }
+.lds-vault-portal::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 32%, oklch(22% 0.015 70 / 0.78) 100%); }
+.lds-vault-portal:hover img { transform: scale(1.035); filter: grayscale(0.06) saturate(0.76) brightness(1.08) contrast(0.84); }
+.lds-vault-portal > div { position: absolute; z-index: 2; left: 0.8rem; right: 0.8rem; bottom: 0.9rem; color: var(--world-pearl); }
+.lds-vault-portal span { font-size: 0.58rem; letter-spacing: 0.18em; }
+.lds-vault-portal h2 { margin: 0.45rem 0 0.55rem; font: 300 clamp(0.92rem, 1.35vw, 1.45rem)/1.05 var(--lds-serif); letter-spacing: 0.03em; text-transform: uppercase; }
+.lds-vault-portal p { display: -webkit-box; margin: 0; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 4; font-size: 0.63rem; line-height: 1.45; color: oklch(95% 0.012 78); }
+.lds-vault-stage__footer { display: flex; align-items: center; justify-content: center; gap: clamp(1rem, 4vw, 4rem); }
+.lds-vault-stage__footer > p { margin: 0; font-size: 0.62rem; letter-spacing: 0.24em; text-transform: uppercase; }
+.lds-vault-stage__footer .lds-threshold { margin: 0; min-width: min(100%, 24rem); }
+
+/* Lumina Platinum */
+.lds-lumina-stage {
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: clamp(1rem, 2vh, 1.6rem);
+  padding: clamp(5rem, 8vh, 6.5rem) clamp(1rem, 3vw, 3rem) clamp(1rem, 2.4vh, 2rem);
+}
+.lds-lumina-stage .lds-journey-heading .lds-ark-seal { width: clamp(4.8rem, 6.2vh, 6rem); }
+.lds-lumina-stage .lds-journey-heading h1 { font-size: clamp(2.5rem, 5vh, 4.5rem); }
+.lds-lumina-constellation {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: clamp(0.45rem, 0.7vw, 0.75rem);
+  align-items: start;
+}
+.lds-lumina-access { min-width: 0; }
+.lds-lumina-access > summary {
+  min-height: min(38vh, 22rem);
+  padding: 0 0.65rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  list-style: none;
+  border: 1px solid var(--world-line);
+  border-radius: 8rem 8rem 0.35rem 0.35rem;
+  background: oklch(98% 0.009 78 / 0.62);
+  text-align: center;
+  backdrop-filter: blur(8px);
+  transition: background 220ms, transform 220ms var(--world-ease);
+}
+.lds-lumina-access > summary::-webkit-details-marker { display: none; }
+.lds-lumina-access > summary:hover { transform: translateY(-3px); background: oklch(99% 0.006 78 / 0.84); }
+.lds-lumina-access summary > span { margin: 0.72rem 0 0.45rem; font-size: 0.55rem; letter-spacing: 0.2em; color: var(--world-platinum-deep); }
+.lds-lumina-access figure { width: calc(100% + 1.3rem); height: min(16vh, 9rem); margin: 0; overflow: hidden; border-top: 1px solid var(--world-line-soft); border-bottom: 1px solid var(--world-line-soft); border-radius: 50% 50% 0 0; }
+.lds-lumina-access figure img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.28) saturate(0.54) brightness(1.16) contrast(0.8); }
+.lds-lumina-access h2 { margin: 0.8rem 0 0.45rem; font: 300 clamp(0.85rem, 1.1vw, 1.2rem)/1.05 var(--lds-serif); text-transform: uppercase; }
+.lds-lumina-access summary > p { display: -webkit-box; margin: 0; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 3; font-size: 0.58rem; line-height: 1.4; color: var(--world-ink-soft); }
+.lds-lumina-access > div { padding: 1rem; border: 1px solid var(--world-line); border-top: 0; background: oklch(99% 0.006 78 / 0.94); }
+.lds-lumina-access > div p { font-size: 0.72rem; line-height: 1.6; color: var(--world-ink-soft); }
+.lds-lumina-stage__access {
+  width: min(100%, 72rem);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid var(--world-line);
+  background: oklch(98.5% 0.008 78 / 0.76);
+  backdrop-filter: blur(12px);
+}
+.lds-lumina-stage__access > div { padding: clamp(0.9rem, 1.7vw, 1.35rem) clamp(1rem, 2.2vw, 2rem); }
+.lds-lumina-stage__access > div + div { border-left: 1px solid var(--world-line); }
+.lds-lumina-stage__access .lds-eyebrow { margin-bottom: 0.35rem; font-size: 0.56rem; }
+.lds-lumina-stage__access h2 { margin: 0; font: 300 clamp(1.2rem, 2vw, 1.85rem)/1 var(--lds-serif); text-transform: uppercase; }
+.lds-lumina-stage__access p:not(.lds-eyebrow) { margin: 0.45rem 0 0; font-size: 0.7rem; line-height: 1.5; color: var(--world-ink-soft); }
+.lds-lumina-stage__access .lds-threshold { min-height: 2.5rem; margin-top: 0.65rem; padding-block: 0.6rem; }
+
+@media (max-width: 1080px) {
+  .lds-ark-overview { height: auto; min-height: 100svh; overflow: visible; }
+  .lds-ark-overview__composition { grid-template-columns: minmax(0, 1fr) minmax(22rem, 1.45fr); }
+  .lds-ark-overview__copy--left { text-align: left; }
+  .lds-ark-overview__copy--left::before { left: 0; right: auto; }
+  .lds-ark-overview__copy--right { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: end; padding-block: 0; }
+  .lds-ark-overview__copy--right::before { display: none; }
+  .lds-chamber-threshold { height: auto; min-height: 100svh; display: block; padding: 6.5rem clamp(1.25rem, 5vw, 3.5rem) 2rem; overflow: visible; }
+  .lds-chamber-threshold__index { display: none; }
+  .lds-chamber-threshold__statement { width: min(100%, 48rem); max-width: none; margin: 0; padding: 2rem 0; }
+  .lds-chamber-threshold__statement h1 { font-size: clamp(2.75rem, 6vw, 4.5rem); }
+  .lds-chamber-threshold__film { width: min(100%, 52rem); margin: 2rem 0 0 auto; }
+  .lds-chamber-threshold__signals { margin-top: 2rem; }
+  .lds-vault-portals,
+  .lds-lumina-constellation { overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 0.6rem; }
+  .lds-vault-portals { grid-template-columns: repeat(7, minmax(10.5rem, 1fr)); }
+  .lds-lumina-constellation { grid-template-columns: repeat(8, minmax(9.5rem, 1fr)); }
+  .lds-vault-portal,
+  .lds-lumina-access { scroll-snap-align: center; }
+}
+
+@media (max-width: 860px) {
+  .lds-spatial-index { top: 5rem; left: 1.25rem; }
+  .lds-spatial-index > small { max-width: 10rem; }
+  .lds-world-hero { padding-top: 9rem; }
+  .lds-ark-overview { padding-top: 6rem; }
+  .lds-ark-overview__composition { grid-template-columns: 1fr; width: min(100%, 42rem); }
+  .lds-ark-overview__copy--right { grid-column: auto; }
+  .lds-ark-principles { overflow-x: auto; grid-template-columns: repeat(5, minmax(9.5rem, 1fr)); padding-top: 0.25rem; }
+  .lds-chamber-threshold__film { grid-template-columns: 1fr; width: min(100%, 44rem); margin: 2rem auto 0; }
+  .lds-chamber-threshold__folio { border-top: 1px solid var(--world-line); }
+  .lds-chamber-atlas__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lds-chamber-card:nth-child(6n + 1),
+  .lds-chamber-card:nth-child(6n + 6) { grid-column: auto; }
+  .lds-vault-stage { height: auto; min-height: 100svh; overflow: visible; }
+  .lds-vault-portals { min-height: 30rem; }
+  .lds-lumina-stage__access { grid-template-columns: 1fr; }
+  .lds-lumina-stage__access > div + div { border-left: 0; border-top: 1px solid var(--world-line); }
+  .lds-system-stage { padding-inline: 1.25rem; }
+  .lds-system-stage__worlds {
+    grid-template-columns: minmax(0, 1fr) 3rem minmax(0, 1fr);
+    gap: 0.85rem;
+  }
+  .lds-system-world__disc { width: min(31vw, 31vh, 16rem); }
+  .lds-system-world__action { min-width: min(100%, 15rem); }
+  .lds-ark-access__inner {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    text-align: center;
+  }
+  .lds-ark-code { width: min(100%, 42rem); margin-inline: auto; }
+  .lds-ark-code > label { text-align: center; }
+  .lds-page-section__split,
+  .lds-narrative-chapter,
+  .lds-narrative-chapter:nth-child(even),
+  .lds-lumina-layer,
+  .lds-lumina-layer:nth-child(even),
+  .lds-bio-layer__grid { grid-template-columns: 1fr; }
+  .lds-narrative-chapter:nth-child(even) .lds-narrative-chapter__copy,
+  .lds-lumina-layer:nth-child(even) .lds-lumina-layer__visual { order: initial; }
+  .lds-narrative-chapter__figure,
+  .lds-lumina-layer__visual { min-height: min(120vw, 34rem); }
+  .lds-map { grid-template-columns: 1fr; }
+  .lds-map::before { left: 50%; top: 8%; bottom: 8%; right: auto; width: 1px; height: auto; }
+  .lds-form-grid { grid-template-columns: 1fr; }
+  .lds-form-grid__full { grid-column: auto; }
+}
+
+@media (max-width: 560px) {
+  .lds-world-title { font-size: clamp(2.35rem, 12vw, 4rem); }
+  .lds-world-statement { font-size: 0.78rem; line-height: 1.7; letter-spacing: 0.09em; }
+  .lds-journey-heading h1 { font-size: clamp(2.25rem, 11vw, 3.5rem); }
+  .lds-ark-overview__copy--right { display: block; }
+  .lds-ark-overview__composition { gap: 1.2rem; }
+  .lds-ark-principles { width: calc(100% + 1.5rem); margin-right: -1.5rem; }
+  .lds-chamber-threshold { padding-inline: 1.2rem; }
+  .lds-chamber-threshold__statement h1 { font-size: clamp(2.45rem, 10.5vw, 3.35rem); }
+  .lds-chamber-threshold__statement > p:last-child { padding-left: 1rem; }
+  .lds-chamber-threshold__signals { grid-template-columns: repeat(5, minmax(6.5rem, 1fr)); overflow-x: auto; }
+  .lds-chamber-atlas { padding-inline: 1rem; }
+  .lds-chamber-atlas__grid { grid-template-columns: 1fr; }
+  .lds-chamber-card figure { height: 16rem; }
+  .lds-vault-stage__footer { flex-direction: column; text-align: center; }
+  .lds-vault-stage__footer .lds-threshold { width: 100%; }
+  .lds-vault-portals { grid-template-columns: repeat(7, minmax(76vw, 1fr)); }
+  .lds-lumina-constellation { grid-template-columns: repeat(8, minmax(66vw, 1fr)); }
+  .lds-lumina-access > summary { min-height: 24rem; }
+  .lds-lumina-access figure { height: 11rem; }
+  .lds-system-stage {
+    height: auto;
+    min-height: 100svh;
+    overflow: visible;
+    padding-top: 6.25rem;
+    padding-bottom: 3rem;
+  }
+  .lds-system-stage__worlds {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    margin-top: 2.5rem;
+  }
+  .lds-system-stage__worlds::before,
+  .lds-system-junction { display: none; }
+  .lds-system-world__disc { width: min(66vw, 15rem); }
+  .lds-page-section h2 { font-size: clamp(2.1rem, 11vw, 3.5rem); }
+  .lds-passage { grid-auto-columns: 86vw; }
+  .lds-private-panel { padding-inline: 1.2rem; }
+}
+
+@media (pointer: coarse) {
+  .lds-threshold { min-height: 3.6rem; padding-block: 1rem; }
+  .lds-map-node { min-height: 3.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lds-world__media,
+  .lds-world__plan,
+  .lds-world__orbit,
+  .lds-world__water { transform: none !important; }
+  .lds-seal__halo { animation: none !important; }
+}
+
+/* Final system composition overrides. Kept after the legacy responsive study
+   so the GROUP hub remains the centre of the current approved direction. */
+.lds-system-stage__worlds {
+  width: min(100%, 88rem);
+  grid-template-columns: minmax(0, 1fr) minmax(17rem, .78fr) minmax(0, 1fr);
+  gap: clamp(1rem, 2.4vw, 2.4rem);
+}
+.lds-system-stage__worlds::before { left: 16%; right: 16%; top: 42%; }
+.lds-system-world__disc { width: min(25vw, 32vh, 18rem); }
+.lds-system-world__action {
+  min-width: 0;
+  width: min(100%, 18rem);
+  border: 0;
+  border-top: 1px solid oklch(56% 0.035 72 / .6);
+  border-bottom: 1px solid oklch(56% 0.035 72 / .38);
+  background: linear-gradient(90deg, transparent, oklch(100% 0 0 / .68), transparent);
+  clip-path: none;
+}
+@media (max-width: 900px) {
+  .lds-system-stage { height: auto; min-height: 100svh; overflow: visible; }
+  .lds-system-stage__worlds { grid-template-columns: 1fr 1fr; padding-top: 2rem; }
+  .lds-system-group { grid-column: 1 / -1; grid-row: 1; width: min(100%,30rem); margin: 0 auto; }
+  .lds-system-world__disc { width: min(36vw,16rem); }
+  .lds-system-stage__worlds::before { display: none; }
+}
+@media (max-width: 620px) {
+  .lds-system-stage { padding-inline: 1rem; }
+  .lds-system-stage__header h1 { font-size: clamp(2rem,11vw,3.3rem); }
+  .lds-system-stage__worlds { grid-template-columns: 1fr; }
+  .lds-system-group { grid-column: auto; }
+  .lds-system-world__disc { width: min(70vw,15rem); }
+}

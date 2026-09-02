@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>La Doña Santa — Client Design Key</title>
+<link rel="stylesheet" href="site.css" />
+<link rel="stylesheet" href="pages.css" />
+<link rel="stylesheet" href="lds-shared.css" />
+<style>
+  .scale{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem}
+  .scale label{display:flex;align-items:center;gap:.35rem;font-size:.82rem;color:var(--ink-2);border:1px solid var(--line);border-radius:100px;padding:.35rem .7rem;cursor:pointer}
+  .scale input{accent-color:var(--gold)}
+  .q{padding:1.4rem 0;border-bottom:1px solid var(--line)}
+  .q .stmt{font-size:1.02rem;color:var(--ink)}
+  .q .dim{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem}
+  .note{background:var(--paper-2);border:1px solid var(--line);border-radius:8px;padding:1rem 1.2rem;font-size:.9rem;color:var(--ink-2);margin-top:1.6rem}
+</style>
+</head>
+<body>
+  <div class="pchrome"><a href="index.html" aria-label="Return to the entrance" style="display:inline-flex;line-height:0"><img src="uploads/01 Logo - Group (Final Ver 2).png" alt="La Doña Santa" /></a><span class="tag">Lumina Platinum · Private Access</span></div>
+
+  <main class="container">
+    <p class="eyebrow">Development Screening</p>
+    <h1>Client Design Key</h1>
+    <p class="lead" style="margin-top:1rem">The first private step in shaping your La Doña Santa residence.</p>
+    <p style="margin-top:1.6rem">Every La Doña Santa residence begins with the person who will live within it. This guided profiling process allows the team to understand your rhythm, privacy, relationships, sensory preferences, wellness direction, way of living and the deeper qualities the residence must support. Your responses become part of the design intelligence from which the architecture is formed.</p>
+
+    <div class="note">This screening is completed once, together with an authorized La Doña Santa team member — inside the office or through an approved guided process. After completion it is locked; only an authorized administrator may reopen it.</div>
+
+    <form onsubmit="return finishScreening(event)">
+      <div class="q"><div class="dim">Sight · Identity &amp; expression</div><div class="stmt">I am drawn to spaces that visually feel like they are made for me.</div>
+        <div class="scale">1 <label><input type="radio" name="q1" />2</label><label><input type="radio" name="q1" />3</label><label><input type="radio" name="q1" />4</label><label><input type="radio" name="q1" />5</label> 6</div></div>
+      <div class="q"><div class="dim">Hearing · Foundation &amp; grounding</div><div class="stmt">I feel safer in spaces where external noise is reduced.</div>
+        <div class="scale">1 <label><input type="radio" name="q2" />2</label><label><input type="radio" name="q2" />3</label><label><input type="radio" name="q2" />4</label><label><input type="radio" name="q2" />5</label> 6</div></div>
+      <div class="q"><div class="dim">Touch · Meaning &amp; transcendence</div><div class="stmt">I feel meaning in spaces with natural and authentic materials.</div>
+        <div class="scale">1 <label><input type="radio" name="q3" />2</label><label><input type="radio" name="q3" />3</label><label><input type="radio" name="q3" />4</label><label><input type="radio" name="q3" />5</label> 6</div></div>
+
+      <div class="field full" style="margin-top:2rem"><label for="notes">Confidential client notes</label><textarea id="notes" placeholder="Any personal, family, biological, emotional, spiritual or operational context you would like the team to understand."></textarea></div>
+
+      <div style="margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap">
+        <button class="btn" type="submit">Complete &amp; enter your project →</button>
+        <a class="btn ghost" href="portal.html" style="text-decoration:none;display:inline-flex;align-items:center">Skip to project (demo)</a>
+      </div>
+      <p class="hint" style="margin-top:1rem">Preview of the guided screening — the full questionnaire spans sight, hearing, touch, taste, smell, body and spatial program.</p>
+    </form>
+  </main>
+
+<script>
+  function finishScreening(e){ e.preventDefault(); (window.ldsFadeTo||((u)=>location.href=u))('portal.html'); return false; }
+</script>
+<script src="lds-shared.js"></script>
+</body>
+</html>

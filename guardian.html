@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>La Doña Santa — Guardian · Private Client Access</title>
+<link rel="stylesheet" href="site.css" />
+<link rel="stylesheet" href="pages.css" />
+<link rel="stylesheet" href="lds-shared.css" />
+</head>
+<body>
+  <div class="pchrome"><a href="index.html" aria-label="Return to the entrance" style="display:inline-flex;line-height:0"><img src="uploads/01 Logo - Group (Final Ver 2).png" alt="La Doña Santa" /></a><span class="tag">La Doña Santa Guardian</span></div>
+
+  <main class="gate">
+    <img class="seal" src="uploads/logo-guardian-v7.png" alt="Guardian" />
+    <p class="eyebrow">La Doña Santa Guardian</p>
+    <h1>Private client access</h1>
+    <p class="lead" style="margin-top:1rem">This environment is reserved for accepted La Doña Santa clients with active private credentials.</p>
+    <form class="code" onsubmit="return openClient(event)">
+      <input class="codebox" id="gc" maxlength="8" placeholder="— — — — — —" aria-label="Enter Guardian private client code" autocapitalize="characters" autocomplete="one-time-code" />
+      <button class="btn" type="submit">Open private client system →</button>
+    </form>
+    <div class="invalid" id="err" role="alert"></div>
+    <p class="hint" style="margin-top:1.5rem">Access not recognized? Please contact your authorized La Doña Santa representative.</p>
+  </main>
+
+<script>
+  // Prototype: any non-empty code opens the private client system (first access → Client Design Key).
+  function openClient(e){
+    e.preventDefault();
+    const v=document.getElementById('gc').value.trim();
+    if(!v){ document.getElementById('err').textContent='Client access not recognized. Please verify your private client credentials.'; return false; }
+    (window.ldsFadeTo||((u)=>location.href=u))('design-key.html');
+    return false;
+  }
+</script>
+<script src="lds-shared.js"></script>
+</body>
+</html>
