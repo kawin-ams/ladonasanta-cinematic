@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La Doña Santa</title>
+<style>
+  /* design-system fonts (same @font-face as site.css) */
+  @font-face{font-family:'Ortica Linear';src:url('uploads/OrticaLinear-Light.otf') format('opentype');font-weight:300;font-display:swap}
+  @font-face{font-family:'Ortica Linear';src:url('uploads/OrticaLinear-Regular.otf') format('opentype');font-weight:400;font-display:swap}
+  @font-face{font-family:'Cormorant Brand';src:url('uploads/Cormorant-Light.ttf') format('truetype');font-weight:300;font-display:swap}
+  @font-face{font-family:'Cormorant Brand';src:url('uploads/Cormorant-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+  :root{
+    --serif:'Cormorant Brand','Cormorant',serif;
+    --sans:'Ortica Linear','Jost',sans-serif;
+    --ink:#14130E; --ink-soft:#4A4740; --muted:#6E6559; --platinum:#9BA0A3; --paper:#F6F1E9;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--paper);overflow:hidden}
+  body{font-family:var(--sans);font-weight:300;color:var(--ink-soft);-webkit-font-smoothing:antialiased;transition:opacity .8s ease}
+
+  #stage{position:fixed;inset:0;background:#F6F1E9;overflow:hidden}
+  #film{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#F6F1E9;z-index:1}
+
+  /* white first-frame preloader — never black */
+  #preload{position:absolute;inset:0;z-index:40;background:#F8F4EC;display:flex;align-items:center;justify-content:center;transition:opacity 1.2s ease}
+  #preload.gone{opacity:0;pointer-events:none}
+  #preload .mark{width:34px;height:34px;border-radius:50%;border:1px solid var(--platinum);border-top-color:transparent;animation:spin 1.4s linear infinite;opacity:.5}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* cover-mapped elements (aligned to the film's 16:9 frame in JS) */
+  .fmap{position:fixed;transform:translate(-50%,-50%);z-index:20}
+
+  /* interactive hit targets over the film's own logos/portals */
+  .hit{cursor:pointer;border-radius:50%;opacity:0;transition:opacity .9s ease;pointer-events:none}
+  .hit.show{opacity:1;pointer-events:auto}
+  .hit .ring{position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 1px rgba(201,195,182,0);transition:box-shadow .5s ease}
+  .hit.active .ring{animation:idle 3.4s ease-in-out infinite}
+  @keyframes idle{0%,100%{box-shadow:0 0 0 1px rgba(201,195,182,0)}50%{box-shadow:0 0 30px 4px rgba(255,252,244,.45)}}
+  .hit:hover .ring{box-shadow:0 0 44px 10px rgba(255,252,244,.66), 0 0 0 1px rgba(201,195,182,.6);animation:none}
+
+  /* text at each freeze point */
+  .copy{position:fixed;left:50%;transform:translateX(-50%);z-index:24;text-align:center;width:min(92vw,720px);
+    opacity:0;transition:opacity 1.2s ease;pointer-events:none;padding:32px 48px;
+    background:radial-gradient(58% 68% at 50% 50%, rgba(245,241,234,.88) 0%, rgba(245,241,234,.64) 46%, rgba(245,241,234,0) 80%)}
+  .copy.show{opacity:1}
+  .copy p,.copy h1{text-shadow:0 0 1px rgba(245,241,234,.55)}
+  .copy .eyebrow{font-family:var(--sans);font-weight:400;font-size:.78rem;letter-spacing:.32em;text-transform:uppercase;color:var(--ink-soft)}
+  .copy .title{font-family:var(--serif);font-weight:300;color:var(--ink);letter-spacing:.01em;line-height:1.05;margin:.5rem 0 0;text-wrap:balance}
+  #copyLogo .title{font-size:clamp(1.9rem,4vw,3.1rem)}
+  #copyPortals .title{font-size:clamp(1.5rem,3vw,2.3rem)}
+  .copy .statement{font-family:var(--serif);font-weight:400;color:var(--ink-soft);font-size:clamp(1rem,1.5vw,1.3rem);line-height:1.5;margin:1rem 0 0}
+  .copy .lead{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--ink);font-size:clamp(1.05rem,1.7vw,1.4rem);margin:.65rem 0 0}
+  .copy .note{font-family:var(--sans);font-weight:300;color:var(--muted);font-size:.82rem;line-height:1.6;max-width:56ch;margin:.9rem auto 0}
+  #copyLogo{bottom:13%}
+  #copyPortals{bottom:12%}
+  /* portal descriptors — placed under each portal, own faint cream backing */
+  .desc{text-align:center;opacity:0;transition:opacity .9s ease;pointer-events:none;padding:12px 28px;white-space:nowrap;
+    background:radial-gradient(64% 80% at 50% 50%, rgba(245,241,234,.82) 0%, rgba(245,241,234,.5) 52%, rgba(245,241,234,0) 82%)}
+  .desc.show{opacity:1}
+  .desc b{display:block;font-family:var(--sans);font-weight:400;font-size:.68rem;letter-spacing:.38em;text-transform:uppercase;color:var(--ink);margin-bottom:6px}
+  .desc span{font-family:var(--sans);font-weight:300;font-size:.86rem;letter-spacing:.02em;color:var(--ink-soft)}
+
+  /* discreet controls */
+  .ctl{position:fixed;z-index:30;bottom:24px;background:none;border:0;cursor:pointer;font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(74,68,56,.42);transition:color .4s ease;padding:10px}
+  .ctl:hover{color:rgba(74,68,56,.85)}
+  #sound{right:26px;display:flex;align-items:center;gap:8px}
+  #sound .dot{width:6px;height:6px;border-radius:50%;background:rgba(74,68,56,.35);transition:background .4s}
+  #sound.on .dot{background:var(--ink);box-shadow:0 0 0 3px rgba(74,68,56,.12)}
+  #skip{left:26px;opacity:0;transition:opacity .6s}
+  #skip.show{opacity:1}
+
+  #still{position:absolute;inset:0;z-index:10;background:center/cover no-repeat;display:none}
+  @media (prefers-reduced-motion: reduce){ #film{display:none} #still{display:block} #preload .mark{animation:none} }
+</style>
+</head>
+<body>
+<div id="stage">
+  <video id="film" playsinline preload="auto" muted poster="assets/poster-white.jpg">
+    <source src="assets/entrance-master-1080.mp4" type="video/mp4">
+  </video>
+  <div id="still"></div>
+
+  <!-- hit-targets, cover-mapped onto the film's own logo + portals -->
+  <div class="fmap hit" id="hitMain"      data-fx="0.500" data-fy="0.500" data-fs="0.15" aria-label="Enter — La Doña Santa Group"><span class="ring"></span></div>
+  <div class="fmap hit" id="hitArk"       data-fx="0.220" data-fy="0.795" data-fs="0.13" aria-label="La Doña Santa ARK"><span class="ring"></span></div>
+  <div class="fmap hit" id="hitGuardian"  data-fx="0.780" data-fy="0.795" data-fs="0.13" aria-label="La Doña Santa Guardian"><span class="ring"></span></div>
+
+  <!-- freeze 1 — WORLD ENTRANCE (verbatim from the client component) -->
+  <div class="copy" id="copyLogo">
+    <p class="eyebrow">La Doña Santa Group</p>
+    <h1 class="title">Welcome to La Doña Santa World</h1>
+    <p class="statement">The world&rsquo;s first fully integrated ultra-high-end private system for biophilic, holistic and spiritually aligned architecture, development, construction, wellness, residence preservation and lifelong care.</p>
+  </div>
+
+  <!-- freeze 2 — THE LA DOÑA SANTA SYSTEM (verbatim from the client component) -->
+  <div class="copy" id="copyPortals">
+    <p class="eyebrow">Private World Access</p>
+    <h1 class="title">The La Doña Santa System</h1>
+    <p class="lead">Two systems. One philosophy.</p>
+    <p class="note">The governing centre connects the living architecture of ARK with Guardian&rsquo;s lifelong stewardship. Private client access opens through the Guardian entry.</p>
+  </div>
+
+  <!-- portal descriptors, placed under each portal -->
+  <div class="fmap desc" id="descArk" data-fx="0.220" data-fy="0.915"><b>ARK</b><span>Sacred architecture &amp; development</span></div>
+  <div class="fmap desc" id="descGuardian" data-fx="0.780" data-fy="0.915"><b>Guardian</b><span>Nurturing &amp; lifelong stewardship</span></div>
+
+  <button class="ctl" id="skip">Skip</button>
+  <button class="ctl" id="sound"><span class="dot"></span><span>Sound</span></button>
+
+  <div id="preload"><div class="mark"></div></div>
+
+  <audio id="audio" preload="auto">
+    <source src="assets/entrance-audio.opus" type="audio/ogg; codecs=opus">
+    <source src="assets/entrance-audio.mp3" type="audio/mpeg">
+  </audio>
+</div>
+
+<script>
+(() => {
+  const HOLD_LOGO = 62.0;      // main logo manifested
+  const HOLD_PORTALS = 74.0;   // two subsidiary portals
+
+  const film = document.getElementById('film');
+  const audio = document.getElementById('audio');
+  const preload = document.getElementById('preload');
+  const hitMain = document.getElementById('hitMain');
+  const hitArk = document.getElementById('hitArk');
+  const hitGuardian = document.getElementById('hitGuardian');
+  const copyLogo = document.getElementById('copyLogo');
+  const copyPortals = document.getElementById('copyPortals');
+  const descArk = document.getElementById('descArk');
+  const descGuardian = document.getElementById('descGuardian');
+  const skipBtn = document.getElementById('skip');
+  const soundBtn = document.getElementById('sound');
+  const still = document.getElementById('still');
+  still.style.backgroundImage = "url('assets/poster-white.jpg')";
+
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let phase = 'opening';
+  let gate = 0;
+  let audioStarted = false;
+
+  const show = el => el.classList.add('show');
+  const hide = el => el.classList.remove('show');
+
+  // ---- align cover-mapped elements to the film's 16:9 content box ----
+  const FILM_AR = 16/9;
+  function layout(){
+    const W = innerWidth, H = innerHeight;
+    let rw, rh;
+    if (W/H > FILM_AR){ rw = W; rh = W/FILM_AR; } else { rh = H; rw = H*FILM_AR; }
+    const ox = (W-rw)/2, oy = (H-rh)/2;
+    document.querySelectorAll('.fmap').forEach(el => {
+      const fx=+el.dataset.fx, fy=+el.dataset.fy, fs=+el.dataset.fs;
+      el.style.left = (ox + fx*rw) + 'px';
+      el.style.top  = (oy + fy*rh) + 'px';
+      if (fs){ const s = fs*rw; el.style.width = s+'px'; el.style.height = s+'px'; }
+    });
+  }
+  addEventListener('resize', layout);
+  layout();
+
+  // ---- audio: one-shot, only when the main logo first appears (no loop) ----
+  function signature(){
+    if (audioStarted) return;
+    audioStarted = true;
+    audio.currentTime = 0;
+    audio.play().then(()=> soundBtn.classList.add('on')).catch(()=>{ audioStarted = false; });
+  }
+  soundBtn.addEventListener('click', () => {
+    if (!audioStarted){ signature(); return; }
+    audio.muted = !audio.muted;
+    soundBtn.classList.toggle('on', !audio.muted);
+  });
+
+  // ---- drive to a stop point, then pause (living hold) ----
+  function playTo(t, onArrive){ gate = t; film._onArrive = onArrive; film.play().catch(()=>{}); }
+  film.addEventListener('timeupdate', () => {
+    if (gate && film.currentTime >= gate){
+      const cb = film._onArrive; gate = 0; film._onArrive = null;
+      film.pause(); if (cb) cb();
+    }
+  });
+
+  function arriveLogo(){
+    phase = 'holdLogo';
+    hitMain.classList.add('active'); show(hitMain);
+    show(copyLogo);
+    signature();                 // play the logo's audio signature once (if allowed)
+  }
+  function arrivePortals(){
+    phase = 'holdPortals';
+    hitArk.classList.add('active'); hitGuardian.classList.add('active');
+    show(hitArk); show(hitGuardian); show(copyPortals); show(descArk); show(descGuardian);
+  }
+  const WORLD_ARRIVE = 97.0;    // film time of the Living System interior frame (living-frames start)
+  function enterWorld(which){
+    if (phase === 'entering' || phase === 'done') return;
+    phase = 'entering';
+    hide(hitArk); hide(hitGuardian); hide(hitMain); hide(copyPortals); hide(copyLogo); hide(descArk); hide(descGuardian);
+    if (which === 'guardian'){
+      document.body.style.opacity = '0';
+      setTimeout(()=>{ location.href = 'guardian.html'; }, 900);
+      return;
+    }
+    // ARK — no cut: keep the film playing through the portal into the world,
+    // then SNAP to the exact arrival frame (identical to the world page's first frame) and hand off.
+    playTo(WORLD_ARRIVE, ()=>{
+      const go = ()=>{ location.href = 'living-system.html'; };
+      film.addEventListener('seeked', go, { once:true });
+      film.currentTime = WORLD_ARRIVE;     // land on the precise frame living-frames/f_001 was cut from
+      setTimeout(go, 500);                 // fallback if 'seeked' is missed
+    });
+  }
+
+  hitMain.addEventListener('click', () => {
+    if (phase !== 'holdLogo') return;
+    signature();
+    hitMain.classList.remove('active'); hide(hitMain); hide(copyLogo);
+    phase = 'toPortals';
+    playTo(HOLD_PORTALS, arrivePortals);
+  });
+  hitArk.addEventListener('click', () => enterWorld('ark'));
+  hitGuardian.addEventListener('click', () => enterWorld('guardian'));
+
+  skipBtn.addEventListener('click', () => {
+    if (phase === 'opening' || phase === 'holdLogo' || phase === 'toPortals'){
+      hide(hitMain); hide(copyLogo);
+      film.currentTime = HOLD_PORTALS - 0.05;
+      phase = 'toPortals';
+      playTo(HOLD_PORTALS, arrivePortals);
+    }
+  });
+
+  function boot(){
+    preload.classList.add('gone');
+    setTimeout(()=>preload.remove(), 1300);
+    layout();
+    if (reduced){ phase='holdPortals'; show(hitArk); show(hitGuardian); show(copyPortals); show(descArk); show(descGuardian); return; }
+    show(skipBtn);
+    playTo(HOLD_LOGO, arriveLogo);
+  }
+  if (film.readyState >= 2) boot();
+  else film.addEventListener('canplay', boot, { once:true });
+  setTimeout(() => { if (preload.isConnected) boot(); }, 6000);
+})();
+</script>
+</body>
+</html>
