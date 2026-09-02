@@ -1,119 +1,416 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>La Doña Santa — Lumina Platinum Access (prototype)</title>
-<link rel="stylesheet" href="site.css" />
-<link rel="stylesheet" href="lds-shared.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La Doña Santa — Lumina Platinum Access</title>
 <style>
-  /* Page 05 — Lumina Platinum Access. Brief: "Do not use ordinary service cards.
-     Each access layer should emerge as a new environment." Locked mechanic: scroll-driven
-     frame sequence on canvas, white type, dark scrim. */
-  html{scroll-behavior:smooth}  body{margin:0;background:#EDE7DC;color:#FBFAF8;overflow-x:hidden}
-  #bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block;background:#EDE7DC}
-  .veil{position:fixed;inset:0;z-index:1;pointer-events:none;
-    background:radial-gradient(140% 110% at 50% 42%,rgba(9,8,6,.48),rgba(9,8,6,.36) 55%,rgba(9,8,6,.58) 100%)}
-  #loading{position:fixed;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;
-    font-family:'Ortica Linear',sans-serif;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:rgba(251,250,248,.6);pointer-events:none;transition:opacity .6s}
+  @font-face{font-family:'Ortica Linear';src:url('uploads/OrticaLinear-Light.otf') format('opentype');font-weight:300;font-display:swap}
+  @font-face{font-family:'Ortica Linear';src:url('uploads/OrticaLinear-Regular.otf') format('opentype');font-weight:400;font-display:swap}
+  @font-face{font-family:'Cormorant Brand';src:url('uploads/Cormorant-Light.ttf') format('truetype');font-weight:300;font-display:swap}
+  @font-face{font-family:'Cormorant Brand';src:url('uploads/Cormorant-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+  :root{
+    --serif:'Cormorant Brand','Cormorant',serif; --sans:'Ortica Linear','Jost',sans-serif;
+    --ink:#14130E; --ink-soft:#413D36; --muted:#6E6559; --champagne:#B08D57; --paper:#F6F1E9; --paper-2:#EFE8DC;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);font-family:var(--sans);font-weight:300;color:var(--ink-soft);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
-  .wrap{position:relative;z-index:2;max-width:70rem;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
-  .chrome{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:clamp(13px,1.5vw,16px) clamp(24px,5vw,64px)}
-  .chrome img{width:clamp(46px,4.4vw,58px);filter:brightness(0) invert(1)}
-  .chrome .idx{font-family:'Ortica Linear',sans-serif;font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;color:rgba(251,250,248,.65)}
+  /* fixed home wordmark — legible on photo or paper via blend */
+  .home{position:fixed;top:clamp(16px,2vw,26px);left:clamp(18px,4vw,44px);z-index:40;text-decoration:none;
+    font-family:var(--serif);font-weight:400;font-size:clamp(.95rem,1.3vw,1.15rem);letter-spacing:.16em;text-transform:uppercase;
+    color:#fff;mix-blend-mode:difference}
+  .idx{position:fixed;top:clamp(18px,2vw,28px);right:clamp(18px,4vw,44px);z-index:40;
+    font-family:var(--sans);font-weight:400;font-size:.66rem;letter-spacing:.34em;text-transform:uppercase;color:#fff;mix-blend-mode:difference}
 
-  .rv{opacity:0;transform:translateY(24px);transition:opacity 1.1s cubic-bezier(.22,1,.36,1),transform 1.1s cubic-bezier(.22,1,.36,1)}
+  .s{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:16vh clamp(1.4rem,6vw,4.5rem)}
+  .rv{opacity:0;transform:translateY(26px);transition:opacity 1.1s cubic-bezier(.22,1,.36,1),transform 1.1s cubic-bezier(.22,1,.36,1)}
   .rv.in{opacity:1;transform:none}
-  .eyebrow{font-family:'Ortica Linear',sans-serif;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:rgba(251,250,248,.72);margin:0}
 
-  .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:16vh 0 10vh}
-  .hero h1{font-family:'Cormorant Brand',Georgia,serif;font-weight:500;font-size:clamp(2.1rem,5.2vw,4.2rem);line-height:1.05;margin:1rem 0 0;max-width:20ch;color:#FBFAF8}
-  .hero .intro{font-family:'Ortica Linear',sans-serif;font-weight:300;font-size:clamp(1rem,1.5vw,1.18rem);line-height:1.85;max-width:54ch;color:rgba(251,250,248,.9);margin:1.8rem 0 0}
-  .scrollcue{margin-top:3rem;font-family:'Ortica Linear',sans-serif;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:rgba(251,250,248,.6);display:flex;align-items:center;gap:.8rem}
-  .scrollcue::after{content:"";width:1px;height:34px;background:linear-gradient(#FBFAF8,transparent);animation:cue 2.4s ease-in-out infinite}
+  /* full-bleed photo statement panel */
+  .s.img{justify-content:flex-end;overflow:hidden;color:#fff}
+  .s.img .bg{position:absolute;inset:0;z-index:0;background-size:cover;background-position:center;transform:scale(1.06);transition:transform 9s ease-out}
+  .s.img.in .bg{transform:scale(1.0)}
+  .s.img .scrim{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(12,10,7,.30),rgba(12,10,7,.10) 34%,rgba(12,10,7,.20) 66%,rgba(12,10,7,.64))}
+  .s.img .inner{position:relative;z-index:2;max-width:60rem}
+  .s.img.center{justify-content:center;text-align:center}
+  .s.img.center .inner{margin:0 auto}
+
+  /* ivory editorial panel */
+  .s.pearl{background:var(--paper)}
+  .s.pearl:nth-of-type(even){background:var(--paper-2)}
+  .s.pearl .inner{max-width:56rem;margin:0 auto;width:100%}
+
+  .num{font-family:var(--sans);font-weight:400;font-size:.72rem;letter-spacing:.4em;color:var(--champagne)}
+  .eyebrow{font-family:var(--sans);font-weight:400;font-size:.8rem;letter-spacing:.34em;text-transform:uppercase}
+  .img .eyebrow{color:rgba(255,255,255,.86)} .pearl .eyebrow{color:var(--ink-soft)}
+  h1{font-family:var(--serif);font-weight:300;font-size:clamp(2.4rem,6vw,4.8rem);line-height:1.02;letter-spacing:.01em;margin:.5rem 0 0;max-width:20ch;text-wrap:balance}
+  h2{font-family:var(--serif);font-weight:300;font-size:clamp(1.9rem,4vw,3rem);line-height:1.08;letter-spacing:.01em;margin:.4rem 0 0;max-width:24ch;text-wrap:balance}
+  .img h1,.img h2{color:#fff;text-shadow:0 1px 30px rgba(10,8,5,.5)}
+  .pearl h1,.pearl h2{color:var(--ink)}
+  .subtitle{font-family:var(--sans);font-weight:400;font-size:.74rem;letter-spacing:.3em;text-transform:uppercase;margin:.9rem 0 0}
+  .img .subtitle{color:rgba(255,255,255,.8)} .pearl .subtitle{color:var(--champagne)}
+  .lede{font-family:var(--serif);font-weight:400;font-style:italic;font-size:clamp(1.3rem,2.4vw,1.9rem);line-height:1.35;margin:1.1rem 0 0;max-width:32ch}
+  .img .lede{color:#fff;text-shadow:0 1px 24px rgba(10,8,5,.5)} .pearl .lede{color:var(--ink)}
+  .body{font-family:var(--sans);font-weight:300;font-size:clamp(1rem,1.4vw,1.16rem);line-height:1.78;margin:1.3rem 0 0;max-width:52ch}
+  .img .body{color:rgba(255,255,255,.95);text-shadow:0 1px 20px rgba(10,8,5,.55)} .pearl .body{color:var(--ink-soft)}
+  .body + .body{margin-top:1rem}
+  .sub{font-family:var(--sans);font-weight:400;font-size:.74rem;letter-spacing:.28em;text-transform:uppercase;margin:2rem 0 .5rem;color:var(--champagne)}
+  ul.list{list-style:none;margin:1.4rem 0 0;padding:0;columns:2;column-gap:2.6rem;max-width:56rem}
+  ul.list.one{columns:1;max-width:44rem}
+  ul.list li{font-family:var(--sans);font-weight:300;font-size:clamp(.95rem,1.25vw,1.05rem);line-height:1.5;margin:0 0 .7rem;padding-left:1.1rem;position:relative;break-inside:avoid}
+  ul.list li::before{content:"";position:absolute;left:0;top:.62em;width:5px;height:5px;border-radius:50%;background:var(--champagne)}
+  .pearl ul.list li{color:var(--ink-soft)} .img ul.list li{color:rgba(255,255,255,.95);text-shadow:0 1px 16px rgba(10,8,5,.6)}
+  @media (max-width:720px){ul.list{columns:1}}
+  .close{font-family:var(--serif);font-weight:400;font-size:clamp(1.15rem,2vw,1.6rem);line-height:1.3;letter-spacing:.02em;margin:2.2rem 0 0;max-width:40ch}
+  .img .close{color:#fff;text-shadow:0 1px 24px rgba(10,8,5,.55)} .pearl .close{color:var(--champagne)}
+  .partners{font-family:var(--serif);font-weight:400;font-size:clamp(1.2rem,2.2vw,1.7rem);line-height:1.7;margin:1.4rem 0 0;color:var(--ink)}
+  .note{font-family:var(--sans);font-weight:300;font-style:italic;font-size:.9rem;line-height:1.6;color:var(--muted);margin:1.6rem 0 0;max-width:46ch}
+
+  .scrollcue{margin-top:2.6rem;font-family:var(--sans);font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.82);display:flex;align-items:center;gap:.9rem}
+  .scrollcue::after{content:"";width:1px;height:34px;background:linear-gradient(#fff,transparent);animation:cue 2.4s ease-in-out infinite}
   @keyframes cue{0%,100%{opacity:.2;transform:scaleY(.7)}50%{opacity:.85;transform:scaleY(1)}}
-  @media (prefers-reduced-motion:reduce){.scrollcue::after{animation:none}.rv{transition:opacity .4s}}
 
-  .layers{max-width:52rem;margin:0 auto}
-  .layer{padding:9vh 0;display:grid;grid-template-columns:5rem 1fr;gap:clamp(1rem,3vw,2.4rem);align-items:start}
-  .layer .num{font-family:'Cormorant Brand',Georgia,serif;font-size:clamp(2rem,4vw,3rem);color:#C4A075;line-height:1}
-  .layer h2{font-family:'Cormorant Brand',Georgia,serif;font-weight:500;font-size:clamp(1.4rem,2.8vw,2.1rem);line-height:1.12;margin:0 0 1.1rem;color:#FBFAF8}
-  .layer p{font-family:'Ortica Linear',sans-serif;font-weight:300;font-size:clamp(.98rem,1.35vw,1.12rem);line-height:1.85;color:rgba(251,250,248,.9);margin:0;max-width:58ch}
-  @media (max-width:640px){.layer{grid-template-columns:1fr;gap:.4rem}.layer .num{font-size:1.6rem}}
-
-  .band{max-width:46rem;margin:0 auto;padding:9vh 0;text-align:center}
-  .band .k{font-family:'Ortica Linear',sans-serif;font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;color:#C4A075;display:block;margin-bottom:1rem}
-  .band h2{font-family:'Cormorant Brand',Georgia,serif;font-weight:500;font-size:clamp(1.5rem,3vw,2.3rem);margin:0 0 1.2rem;color:#FBFAF8}
-  .band p{font-family:'Ortica Linear',sans-serif;font-weight:300;font-size:clamp(1rem,1.4vw,1.15rem);line-height:1.9;color:rgba(251,250,248,.9);margin:0 auto;max-width:56ch}
-
-  .threshold{padding:12vh 0 20vh;text-align:center}
-  .threshold a{display:inline-flex;align-items:center;gap:1em;font-family:'Ortica Linear',sans-serif;font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:#FBFAF8;text-decoration:none;padding:20px 54px;background:rgba(20,19,14,.3);backdrop-filter:blur(16px);border:1px solid rgba(251,250,248,.5);border-radius:2px;transition:background .3s,color .3s,transform .3s}
-  .threshold a:hover{background:#FBFAF8;color:#14130E;transform:translateY(-2px)}
-  :focus-visible{outline:2px solid #C4A075;outline-offset:3px}
+  /* design-system threshold button (underline + arrow, NO box) */
+  .threshold{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--paper);padding:12vh 6vw}
+  .threshold .close{color:var(--ink);margin:0 auto 2.4rem}
+  .lds-threshold{display:inline-flex;align-items:center;gap:1.1rem;cursor:pointer;min-height:3.25rem;padding:.8rem .25rem;
+    border:0;border-bottom:1px solid rgba(20,19,14,.5);background:transparent;color:var(--ink);text-decoration:none;
+    font-family:var(--sans);font-weight:400;font-size:.8rem;letter-spacing:.32em;text-transform:uppercase;
+    transition:color .2s,border-color .2s,transform .2s}
+  .lds-threshold::after{content:"→";font-size:1rem;letter-spacing:0}
+  .lds-threshold:hover{color:var(--champagne);border-color:var(--champagne);transform:translateY(-2px)}
+  @media (prefers-reduced-motion:reduce){.rv{transition:opacity .4s;transform:none}.s.img .bg{transition:none;transform:none}.scrollcue::after{animation:none}}
 </style>
 </head>
-<body class="lds-immersive">
-  <canvas id="bg" aria-hidden="true"></canvas>
-  <div class="veil" aria-hidden="true"></div>
+<body>
+  <a class="home" href="index.html">La Doña Santa</a>
+  <span class="idx">Lumina · Platinum Access</span>
 
-  <div class="chrome">
-    <a href="index.html" aria-label="Return to the entrance" style="display:inline-flex;line-height:0"><img src="uploads/01 Logo - Group (Final Ver 2).png" alt="La Doña Santa" /></a>
-    <span class="idx">04 — 05</span>
-  </div>
-
-  <div class="wrap">
-    <section class="hero">
+  <!-- HERO -->
+  <section class="s img center">
+    <div class="bg" style="background-image:url('lumina-img/hero.jpg')"></div>
+    <div class="scrim"></div>
+    <div class="inner">
       <p class="eyebrow rv">Lumina Platinum Access</p>
-      <h1 class="rv" style="transition-delay:.1s">The residence is only one layer of the private world created around you.</h1>
-      <p class="intro rv" style="transition-delay:.25s">Lumina Platinum Access extends the La Doña Santa system beyond architecture into recovery, longevity, movement, nutrition, ritual, travel, residence operations and highly personalized private care. It is not a fixed package or a conventional concierge catalogue. Every access profile is configured around the client’s biology, schedule, location, privacy, family, residence and preferred way of living.</p>
-      <div class="scrollcue rv" style="transition-delay:.4s">Scroll to open the layers</div>
-    </section>
-
-    <div class="layers">
-      <section class="layer rv"><div class="num">01</div><div><h2>Private wellness and longevity</h2><p>A private wellness structure may be formed around the client through carefully selected therapies, recovery practices, movement systems, technologies and practitioners. Access may include massage, therapeutic bodywork, somatic and craniosacral sessions, breathwork, meditation, yoga, private training, mobility, recovery, hydrotherapy, thermal and cold experiences, light-based recovery, sleep support, nervous-system restoration and longevity-focused programs. Services may take place within the residence, through selected partner environments or through privately arranged international access.</p></div></section>
-
-      <section class="layer rv"><div class="num">02</div><div><h2>Masters, therapists and ceremonial access</h2><p>La Doña Santa may provide access to selected therapists, holistic masters, traditional healers, shamans, curanderos, spiritual teachers, gurus, ceremonial practitioners and retreat facilitators from an international private network. The objective is not entertainment or spiritual spectacle. It is access to serious practitioners whose work may support a meaningful private process.</p></div></section>
-
-      <section class="layer rv"><div class="num">03</div><div><h2>In-residence practitioners</h2><p>Selected practitioners may visit the residence on scheduled dates or remain within the property during an agreed period of treatment, retreat, training or recovery. The private team may include therapists, trainers, bodyworkers, movement specialists, wellness practitioners, recovery professionals, ceremonial guides and other approved specialists required by the client’s program.</p></div></section>
-
-      <section class="layer rv"><div class="num">04</div><div><h2>Private culinary life</h2><p>Private chefs, nutrition specialists and culinary teams may be integrated into the life of the residence. This may include daily chef service, therapeutic nutrition, performance nutrition, longevity-focused menu design, ingredient sourcing, private dining, event dining, dietary protocols, guest preparation and personal menu development. The culinary system is shaped around the client’s preferences, health direction, cultural requirements, travel schedule and use of the residence.</p></div></section>
-
-      <section class="layer rv"><div class="num">05</div><div><h2>Movement, performance and body design</h2><p>Movement is structured as part of the client’s living environment rather than separated from it. Private programs may include strength, mobility, body design, rehabilitation support, conditioning, yoga, breathwork, recovery integration, calisthenics, performance training and long-term physical development. Training may be delivered by resident or visiting professionals inside the client’s private gym and movement environment.</p></div></section>
-
-      <section class="layer rv"><div class="num">06</div><div><h2>Private mobility and aviation</h2><p>Where available, La Doña Santa may coordinate the movement surrounding the client and residence. This may include private drivers, secured transfers, helicopter charter, private aviation coordination, airport handling, yacht or marine transport, arrival management and location-specific mobility support. All arrangements remain subject to availability, operator approval, jurisdiction and separate commercial terms.</p></div></section>
-
-      <section class="layer rv"><div class="num">07</div><div><h2>Private journeys and experiences</h2><p>Private travel, cultural access, retreats, landscape journeys, wellness destinations, ceremonial visits and individually designed international experiences may be arranged through the client’s private access profile. The experience is structured around the client rather than sold as a public itinerary.</p></div></section>
-
-      <section class="layer rv"><div class="num">08</div><div><h2>Residence operations and Guardian care</h2><p>Guardian protects the operational life of the completed residence. Its role may include preventive maintenance, technical servicing, housekeeping, landscape care, pool and water-system management, staff coordination, security coordination, residence preparation, arrival readiness, guest requirements and long-term preservation of the property. The purpose is to preserve not only the physical building, but the standard, atmosphere and intelligence for which it was created.</p></div></section>
-
-      <section class="layer rv"><div class="num">09</div><div><h2>Personal program architecture</h2><p>No two Lumina Platinum profiles are identical. The client’s private profile determines which therapies, practitioners, rituals, travel arrangements, culinary systems, movement programs, operational services and care layers are activated. The profile may evolve as the client’s biology, schedule, residence, family and priorities change.</p></div></section>
+      <h1 class="rv" style="transition-delay:.08s">The residence is only one layer of the private world created around you.</h1>
+      <p class="subtitle rv" style="transition-delay:.2s">Private Residence · Wellness · Medical Longevity · Lifestyle</p>
+      <div class="scrollcue rv" style="transition-delay:.34s">Scroll to open the system</div>
     </div>
+  </section>
 
-    <section class="band rv"><span class="k">Membership logic</span><h2>A private layer, not a public membership</h2><p>Lumina Platinum Access is a private, client-specific layer connected to the individual and the residence. It is not publicly purchasable, publicly priced or transferable as a conventional membership. Services are activated according to the approved profile, location, professional availability and the individual commercial terms of each arrangement.</p></section>
+  <!-- INTRO -->
+  <section class="s pearl"><div class="inner">
+    <p class="body rv">Lumina Platinum Access and La Doña Santa Guardian extend the residence into a complete private living system — uniting personalised care, residence operations, maintenance, wellness, holistic practice, movement, nutrition, clinical longevity, medicine, private mobility, aviation, travel and long-term support around a single client profile.</p>
+    <p class="body rv">Through one protected LDS digital environment and mobile application, the client can coordinate the residence, staff, practitioners, chefs, doctors, medical personnel, longevity programmes, therapies, transport, travel and approved private services through one continuously managed system.</p>
+    <p class="body rv">Selected wellness, movement, recovery, medical and longevity environments can be integrated during the architectural and interior-design process. Wherever clinically appropriate and legally permitted, approved professionals come to the private residence; any intervention requiring hospital or specialist-facility infrastructure is coordinated through the relevant medical partner without breaking continuity of care.</p>
+    <p class="close rv">One residence. One protected system. One continuously coordinated private life.</p>
+  </div></section>
 
-    <section class="band rv"><span class="k">How private client access begins</span><h2>From the first meeting to a living project</h2><p>Following the first official meeting, formal acceptance, execution of the required agreements and receipt of the initial payment, the client receives secured access credentials to a private La Doña Santa portal. The first stage is a guided Development Screening completed together with the La Doña Santa team. Once completed, the portal becomes the client’s live project environment — providing construction progress, weekly reports, project communication, approvals, uploaded documents, site intelligence and, where available, secured live camera access.</p></section>
+  <!-- 01 -->
+  <section class="s img">
+    <div class="bg" style="background-image:url('lumina-img/s01-guardian.jpg')"></div><div class="scrim"></div>
+    <div class="inner"><p class="num rv">01</p><h2 class="rv">Residence Operations, Maintenance and Guardian Care</h2>
+      <p class="body rv">Guardian protects the operational life of the residence from the moment it enters service.</p>
+      <p class="body rv">This is not conventional property management. It is a long-term preservation structure created to protect the architecture, technical systems, landscape, privacy, atmosphere and daily readiness of a residence whose standard cannot be maintained through fragmented external servicing.</p>
+    </div>
+  </section>
+  <section class="s pearl"><div class="inner">
+    <p class="sub rv">Guardian may coordinate</p>
+    <ul class="list rv">
+      <li>Preventive and planned maintenance</li><li>Technical servicing and specialist contractor coordination</li>
+      <li>Mechanical, electrical and building-system oversight</li><li>Water, pool and hydrotherapy-system care</li>
+      <li>Wellness and specialist equipment servicing</li><li>Climate, ventilation and environmental-system coordination</li>
+      <li>Housekeeping and residence staff coordination</li><li>Landscape and garden care</li>
+      <li>Security coordination and access management</li><li>Residence preparation before the owner’s arrival</li>
+      <li>Guest preparation and household readiness</li><li>Technical inspections, maintenance reporting and long-term preservation planning</li>
+    </ul>
+    <p class="sub rv">Digital residence oversight</p>
+    <p class="body rv">Through the LDS environment, the owner receives one coordinated point of visibility into scheduled servicing, active issues, residence readiness and ongoing Guardian support.</p>
+    <p class="close rv">The objective is not simply to maintain the property. It is to preserve the standard for which it was created.</p>
+  </div></section>
 
-    <section class="threshold">
-      <a class="rv" href="contact.html">Enter Contact Group Scale →</a>
-    </section>
-  </div>
+  <!-- 02 -->
+  <section class="s img">
+    <div class="bg" style="background-image:url('lumina-img/s02-wellness.jpg')"></div><div class="scrim"></div>
+    <div class="inner"><p class="num rv">02</p><h2 class="rv">Private Wellness, Recovery and Residential Technology</h2>
+      <p class="body rv">Wellness is treated as part of the residence itself rather than as an external destination the client must repeatedly travel to access.</p>
+      <p class="body rv">La Doña Santa may design and coordinate dedicated private environments for recovery, restoration and long-term wellbeing according to the client’s individual programme.</p>
+    </div>
+  </section>
+  <section class="s pearl"><div class="inner">
+    <p class="sub rv">The private wellness environment may include</p>
+    <ul class="list rv">
+      <li>Massage and therapeutic bodywork</li><li>Somatic and craniosacral practice</li><li>Breathwork and meditation</li>
+      <li>Yoga and mobility</li><li>Hydrotherapy</li><li>Thermal and sauna environments</li>
+      <li>Steam and hammam environments</li><li>Cold and contrast therapy</li><li>Light-based recovery and photobiomodulation</li>
+      <li>Sleep and nervous-system restoration</li><li>Compression and recovery systems</li><li>Private treatment rooms</li>
+      <li>Other selected wellness and recovery technologies</li>
+    </ul>
+    <p class="sub rv">Equipment designed into the residence</p>
+    <p class="body rv">Where requested, selected wellness and recovery equipment is specified during the architecture and interior-design process so that power, ventilation, water, drainage, acoustics, servicing access, privacy and spatial requirements are resolved before completion.</p>
+    <p class="body rv">La Doña Santa may coordinate the selection, sourcing, procurement, architectural integration, installation, commissioning and continuing maintenance coordination of selected equipment.</p>
+    <p class="close rv">The equipment is not added to the residence. Where appropriate, the residence is designed around the system from the beginning.</p>
+  </div></section>
+
+  <!-- 03 -->
+  <section class="s img">
+    <div class="bg" style="background-image:url('lumina-img/s03-ceremony.jpg')"></div><div class="scrim"></div>
+    <div class="inner"><p class="num rv">03</p><h2 class="rv">Masters, Therapists and Holistic Practitioners</h2>
+      <p class="body rv">La Doña Santa provides private access to a selected international network of practitioners whose work may form part of the client’s personal wellness, recovery or spiritual direction.</p>
+    </div>
+  </section>
+  <section class="s pearl"><div class="inner">
+    <p class="sub rv">The network may include</p>
+    <ul class="list rv">
+      <li>Therapists and therapeutic bodyworkers</li><li>Holistic practitioners</li><li>Meditation and breathwork specialists</li>
+      <li>Yoga specialists</li><li>Traditional healers</li><li>Shamans and curanderos</li>
+      <li>Spiritual teachers and gurus</li><li>Ceremonial practitioners</li><li>Retreat facilitators</li>
+      <li>Other selected private practitioners</li>
+    </ul>
+    <p class="sub rv">Private in-residence practice</p>
+    <p class="body rv">Approved practitioners may attend the residence for individual sessions or, where specifically arranged, remain within the property for a defined period of treatment, retreat, practice or personal work.</p>
+    <p class="body rv">The client is therefore not required to enter a public wellness environment to receive many of these services. The private residence becomes the environment in which the selected practitioner comes to the client.</p>
+    <p class="close rv">Private practice, brought into the client’s own world.</p>
+  </div></section>
+
+  <!-- 04 -->
+  <section class="s img">
+    <div class="bg" style="background-image:url('lumina-img/s04-movement.jpg')"></div><div class="scrim"></div>
+    <div class="inner"><p class="num rv">04</p><h2 class="rv">Movement, Performance and Body Design</h2>
+      <p class="body rv">Movement and physical performance are integrated into the private living system rather than separated from it.</p>
+    </div>
+  </section>
+  <section class="s pearl"><div class="inner">
+    <p class="sub rv">Programmes may include</p>
+    <ul class="list rv">
+      <li>Private strength training</li><li>Mobility and functional movement</li><li>Body design and conditioning</li>
+      <li>Calisthenics</li><li>Yoga and breathwork</li><li>Performance development</li>
+      <li>Recovery integration</li><li>Physiotherapy</li><li>Rehabilitation support</li>
+      <li>Medically coordinated movement where required</li>
+    </ul>
+    <p class="sub rv">Designed for private delivery</p>
+    <p class="body rv">Private trainers, movement specialists, physiotherapists and approved professionals may work directly within the residence. Where requested, the private gym, movement studio and recovery spaces can be designed together with the architecture and equipped according to the client’s selected training and performance system.</p>
+    <p class="close rv">The body, the space and the programme are designed to work as one.</p>
+  </div></section>
+
+  <!-- 05 -->
+  <section class="s pearl"><div class="inner">
+    <p class="num rv">05</p><h2 class="rv">Clinical Longevity and Medical Partnership</h2>
+    <p class="body rv">The La Doña Santa medical and clinical longevity system is structured in partnership with Live More Lifestyle Clinic, together with its cooperating hospital partners, Bumrungrad Hospital and BDMS / the relevant BDMS medical entity.</p>
+    <p class="body rv">This structure connects the privacy of the La Doña Santa residence with professional medical, diagnostic, specialist, hospital and longevity capabilities — creating a coordinated health environment that can follow the client from prevention and optimisation through treatment, recovery and escalation when required.</p>
+    <p class="sub rv">Medical and clinical network</p>
+    <p class="partners rv">Live More Lifestyle Clinic<br>Bumrungrad Hospital<br>BDMS / the relevant BDMS medical entity</p>
+    <p class="note rv">Partner bios, photographs and logos to be added on receipt from the client.</p>
+    <p class="sub rv">The medical pathway may include</p>
+    <ul class="list rv">
+      <li>Physician consultations and continuing medical review</li><li>Specialist medical consultations</li>
+      <li>Preventive and lifestyle medicine</li><li>Clinical longevity programmes</li>
+      <li>Laboratory diagnostics and biomarker assessment</li><li>Advanced diagnostic pathways and health screening</li>
+      <li>Metabolic, cardiovascular and body-composition assessment</li><li>Hormonal and micronutrient assessment where clinically indicated</li>
+      <li>Sleep, stress and recovery assessment</li><li>Clinical nutrition</li>
+      <li>Physiotherapy and rehabilitation</li><li>Imaging, hospital treatment and specialist escalation</li>
+      <li>Inpatient or surgical pathways where medically required</li>
+    </ul>
+    <p class="sub rv">Clinical governance</p>
+    <p class="body rv">The appropriate pathway is determined by the qualified medical professionals responsible for the client’s care. La Doña Santa provides the private coordination architecture around that care.</p>
+  </div></section>
+
+  <!-- 06 -->
+  <section class="s pearl"><div class="inner">
+    <p class="num rv">06</p><h2 class="rv">Medical Care Within the Private Residence</h2>
+    <p class="body rv">A central principle of the La Doña Santa medical system is that appropriate care comes to the client wherever clinically appropriate and legally permitted.</p>
+    <p class="body rv">Doctors, nurses, physiotherapists, clinical specialists and other approved medical personnel may attend the private residence to provide consultations, assessment, monitoring, treatment, recovery support and follow-up.</p>
+    <p class="sub rv">In-residence medical access may include</p>
+    <ul class="list rv">
+      <li>Physician home visits</li><li>Nursing care</li><li>Medical monitoring and follow-up</li>
+      <li>Clinical consultations</li><li>Sample collection and mobile diagnostics where available</li>
+      <li>Physiotherapy and rehabilitation</li><li>Post-treatment and recovery support</li>
+      <li>Selected medically supervised therapies</li><li>Other approved services suitable for residential delivery</li>
+    </ul>
+    <p class="sub rv">The residence as a private care environment</p>
+    <p class="body rv">The residence can be designed from the beginning to receive this level of private care discreetly and professionally, including dedicated consultation, treatment and recovery environments where required.</p>
+    <p class="body rv">The operating principle is to minimise unnecessary movement outside the residence. Diagnostics, interventions or acute-care services that require hospital-level infrastructure are transferred into the appropriate partner medical facility while continuity of coordination remains within the LDS system.</p>
+    <p class="close rv">The private residence becomes the primary environment around which care is coordinated.</p>
+  </div></section>
+
+  <!-- 07 -->
+  <section class="s pearl"><div class="inner">
+    <p class="num rv">07</p><h2 class="rv">Longevity, Diagnostics and In-Residence Advanced Therapies</h2>
+    <p class="body rv">Clinical longevity is treated as a continuously managed health direction, not as a menu of isolated treatments.</p>
+    <p class="body rv">The programme may begin with medical history, physician consultation and diagnostics, then evolve through personalised prevention, treatment, regenerative medicine, recovery, nutrition, movement, sleep and follow-up according to the client’s biology and medical suitability.</p>
+    <p class="sub rv">Consultation, diagnostics and precision assessment</p>
+    <ul class="list rv">
+      <li>Doctor consultation within the residence or by secure remote consultation</li><li>Laboratory check-up packages and mobile sample collection where available</li>
+      <li>Advanced blood and biomarker panels</li><li>Micronutrient assessment</li>
+      <li>Food-intolerance testing where clinically appropriate</li><li>Urine organic-acid and other advanced laboratory testing where indicated</li>
+      <li>Hormone panels</li><li>Metabolic, inflammatory and cardiovascular assessment</li>
+      <li>Body-composition, hydration and metabolic-age assessment</li><li>Sleep, stress, recovery and performance evaluation</li>
+    </ul>
+    <p class="sub rv">IV, injection and restorative protocols</p>
+    <ul class="list rv">
+      <li>IV vitamin and nutrient drips</li><li>Vitamin injections and selected IV pushes</li><li>NAD+ IV protocols</li>
+      <li>High-dose vitamin C protocols where medically indicated and screened</li><li>Chelation therapy where medically indicated</li>
+      <li>Blood ozone therapy where medically indicated and provider-approved</li><li>Rehydration and recovery IV protocols</li>
+      <li>Physician-directed and personalised compounded supplementation</li>
+    </ul>
+    <p class="sub rv">Regenerative medicine and cellular therapies</p>
+    <ul class="list rv">
+      <li>Stem cell therapy for selected rejuvenation or joint-related indications</li><li>Exosome therapy</li>
+      <li>PRP for joints and musculoskeletal recovery</li><li>Prescription peptide therapy</li>
+      <li>Facial PRP and selected regenerative aesthetic protocols</li><li>Hair PRP</li><li>Other approved regenerative interventions</li>
+    </ul>
+    <p class="sub rv">Hormonal, metabolic and weight-management medicine</p>
+    <ul class="list rv">
+      <li>Bio-identical hormone therapy</li><li>Testosterone therapy where clinically indicated</li>
+      <li>Medical weight-management programmes</li><li>Structured multi-week metabolic programmes</li>
+      <li>Personalised supplementation</li><li>Continuing laboratory and physician follow-up</li>
+    </ul>
+    <p class="sub rv">Advanced oxygen, light and recovery systems</p>
+    <ul class="list rv">
+      <li>Mild hyperbaric oxygen therapy</li><li>LED and red-light therapy</li><li>Photobiomodulation</li>
+      <li>Pain-management programmes</li><li>Stress and relaxation therapy</li>
+      <li>Compression and lymphatic-recovery systems</li><li>Rehabilitation and movement recovery</li>
+      <li>Other approved medical-grade wellness technologies</li>
+    </ul>
+    <p class="body rv">Where requested by the client and clinically appropriate, selected physician-led aesthetic and body treatments — Botox and dermal fillers, HIFU and thread-lifting, facial PRP, stem-cell or exosome-based procedures where legally and medically appropriate, hair PRP, body-shaping and pelvic-floor treatment programmes — may also be incorporated within the wider longevity profile or coordinated through the approved medical network.</p>
+    <p class="close rv">Longevity becomes a continuously adaptive programme built around the individual, not a standardised protocol.</p>
+  </div></section>
+
+  <!-- 08 -->
+  <section class="s pearl"><div class="inner">
+    <p class="num rv">08</p><h2 class="rv">Emergency and Urgent Medical Coordination</h2>
+    <p class="body rv">The LDS private system provides a continuous point of coordination for urgent and emergency medical situations.</p>
+    <p class="body rv">Through the application and Guardian support structure, the client can activate the appropriate medical pathway, connecting the residence with the relevant medical professional, Live More Lifestyle Clinic, cooperating hospital partners, emergency transport and specialist or hospital escalation where required.</p>
+    <p class="body rv">The system is designed so that the client and family are not left to independently locate providers, repeat information across disconnected channels or coordinate escalation during an urgent situation. Where hospital-level intervention is required, the client is directed into the appropriate partner pathway and the transition from residence to medical facility is coordinated as efficiently and discreetly as circumstances allow.</p>
+    <p class="close rv">When the situation changes, the system already knows where to move next.</p>
+  </div></section>
+
+  <!-- 09 -->
+  <section class="s pearl"><div class="inner">
+    <p class="num rv">09</p><h2 class="rv">Medical, Longevity and Wellness Technology Within the Residence</h2>
+    <p class="body rv">La Doña Santa allows selected medical, longevity, recovery and wellness technologies to be considered at the architectural stage rather than introduced after completion. According to the client profile, professional recommendations and the selected residence programme, dedicated environments can be designed for selected technologies and treatment systems.</p>
+    <p class="sub rv">These may include, where appropriate</p>
+    <ul class="list rv">
+      <li>Hydrotherapy and advanced water-based recovery</li><li>Thermal, steam and sauna systems</li><li>Cold and contrast therapy</li>
+      <li>Hyperbaric oxygen environments</li><li>Photobiomodulation, LED and red-light recovery</li>
+      <li>Compression and lymphatic-recovery systems</li><li>Rehabilitation and movement technology</li>
+      <li>Sleep and nervous-system recovery systems</li><li>Medical-grade monitoring or diagnostic functions where appropriate</li>
+      <li>Dedicated treatment infrastructure for approved IV, injection or physician-led protocols where permitted</li>
+      <li>Other approved clinical, longevity or wellness technologies</li>
+    </ul>
+    <p class="sub rv">Integrated from the beginning</p>
+    <p class="body rv">La Doña Santa may coordinate the complete integration pathway: selection · technical requirements · architectural integration · procurement · installation · commissioning · maintenance coordination. The intention is not to fill a finished residence with equipment, but to create the infrastructure, privacy, servicing logic and spatial quality required for the technology to belong naturally within the home.</p>
+    <p class="close rv">The residence is prepared for the care model from the beginning.</p>
+  </div></section>
+
+  <!-- 10 -->
+  <section class="s img">
+    <div class="bg" style="background-image:url('lumina-img/s10-culinary.jpg')"></div><div class="scrim"></div>
+    <div class="inner"><p class="num rv">10</p><h2 class="rv">Private Culinary and Nutrition System</h2>
+      <p class="body rv">Nutrition becomes part of the client’s private operating environment rather than a separate lifestyle service. Private chefs, nutrition professionals and culinary teams may be integrated into the daily life of the residence, with programmes shaped around personal preference, performance, longevity direction, cultural requirements, travel patterns and clinical recommendations where relevant.</p>
+    </div>
+  </section>
+  <section class="s pearl"><div class="inner">
+    <p class="sub rv">Services may include</p>
+    <ul class="list rv">
+      <li>Daily private chef service</li><li>Personalised menu architecture</li><li>Ingredient sourcing and residence provisioning</li>
+      <li>Therapeutic nutrition</li><li>Performance nutrition</li><li>Longevity-focused nutrition</li>
+      <li>Dietary protocols</li><li>Private dining and guest dining</li><li>Event dining</li>
+      <li>Coordination with physicians, longevity specialists or clinical nutrition professionals where appropriate</li>
+    </ul>
+    <p class="sub rv">Private hospitality, clinically informed where required</p>
+    <p class="body rv">The culinary environment can evolve with the client’s programme without removing pleasure, hospitality or individuality from daily life.</p>
+    <p class="close rv">Clinical intelligence where required. Private hospitality at all times.</p>
+  </div></section>
+
+  <!-- 11 -->
+  <section class="s img">
+    <div class="bg" style="background-image:url('lumina-img/s11-mobility.jpg')"></div><div class="scrim"></div>
+    <div class="inner"><p class="num rv">11</p><h2 class="rv">Private Mobility, Aviation and Transport</h2>
+      <p class="body rv">The private system extends beyond the property boundary. La Doña Santa may coordinate the movement surrounding the client, family, guests and residence so that arrivals, departures and travel requirements form part of the same protected service environment.</p>
+    </div>
+  </section>
+  <section class="s pearl"><div class="inner">
+    <p class="sub rv">Services may include</p>
+    <ul class="list rv">
+      <li>Private drivers and chauffeur services</li><li>Secured transfers</li><li>Airport transfers and handling</li>
+      <li>Helicopter charter</li><li>Private aviation coordination</li><li>Yacht and marine transport where available</li>
+      <li>Guest transfers</li><li>Medical transport where required</li><li>International travel logistics</li>
+      <li>Arrival and departure coordination</li>
+    </ul>
+    <p class="close rv">From the residence to the aircraft, the journey remains part of the same private system.</p>
+  </div></section>
+
+  <!-- 12 -->
+  <section class="s img">
+    <div class="bg" style="background-image:url('lumina-img/s12-journeys.jpg')"></div><div class="scrim"></div>
+    <div class="inner"><p class="num rv">12</p><h2 class="rv">Private Journeys, Retreats and International Access</h2>
+      <p class="body rv">La Doña Santa may extend the private programme internationally, creating journeys around the client rather than offering public itineraries.</p>
+    </div>
+  </section>
+  <section class="s pearl"><div class="inner">
+    <p class="sub rv">Access may include</p>
+    <ul class="list rv">
+      <li>Private international travel</li><li>Wellness and longevity destinations</li><li>Medical destinations and specialist consultations</li>
+      <li>Private retreats</li><li>Ceremonial journeys</li><li>Cultural and landscape access</li>
+      <li>Private tours</li><li>International clinics and specialist institutions</li>
+      <li>Visiting practitioners and masters</li><li>Other individually designed experiences</li>
+    </ul>
+    <p class="sub rv">The system travels with the client</p>
+    <p class="body rv">Every journey can be coordinated with the client’s health direction, personal interests, privacy requirements, family structure, mobility needs and residence schedule. The same client profile that informs life inside the residence continues to inform the world beyond it.</p>
+    <p class="close rv">The private system does not end at the door of the residence. It travels with the client.</p>
+  </div></section>
+
+  <!-- 13 -->
+  <section class="s pearl"><div class="inner">
+    <p class="num rv">13</p><h2 class="rv">One Private Digital System</h2>
+    <p class="body rv">The LDS application becomes the operational interface through which the different layers of private life are brought together. From one protected environment, the client can progressively access and coordinate:</p>
+    <ul class="list rv">
+      <li>Guardian residence operations and maintenance</li><li>Residence staff and service requests</li>
+      <li>Wellness, recovery and holistic practitioners</li><li>Trainers, physiotherapists and movement professionals</li>
+      <li>Private chefs and nutritional requirements</li><li>Doctors, nurses and approved medical personnel</li>
+      <li>Medical and clinical longevity partners</li><li>Diagnostics, treatment and therapy scheduling</li>
+      <li>In-residence longevity and regenerative-service coordination</li><li>Urgent and emergency medical coordination</li>
+      <li>Private drivers, secure transfers and aviation</li><li>International travel, retreats and specialist access</li>
+      <li>Residence preparation, guest requirements and long-term care</li><li>Project information, protected documents and private communication</li>
+    </ul>
+    <p class="sub rv">One point of control</p>
+    <p class="body rv">The system is not designed as a conventional concierge menu. It is a private operating layer connected to the client and the residence, allowing complex requirements to be coordinated discreetly through one point of control.</p>
+    <p class="close rv">The technology disappears into the experience. The client sees one system.</p>
+  </div></section>
+
+  <!-- 14 -->
+  <section class="s img">
+    <div class="bg" style="background-image:url('lumina-img/s14-program.jpg')"></div><div class="scrim"></div>
+    <div class="inner"><p class="num rv">14</p><h2 class="rv">Personal Program Architecture</h2>
+      <p class="body rv">No two La Doña Santa client systems are identical. The private profile becomes the operating intelligence behind the residence and the services surrounding it — determining which care layers, wellness environments, practitioners, movement programmes, medical pathways, longevity protocols, culinary systems, transport arrangements, staffing requirements and residence services are activated, and how they work together.</p>
+      <p class="body rv">The system is designed to evolve. As the client’s biology, health direction, family, schedule, location, residence or priorities change, the private programme can be recalibrated without dismantling the wider structure around it.</p>
+      <p class="close rv">Designed from one life. Created for no other.</p>
+    </div>
+  </section>
+
+  <!-- CLOSING / membership + threshold -->
+  <section class="s img center">
+    <div class="bg" style="background-image:url('lumina-img/portal.jpg')"></div><div class="scrim"></div>
+    <div class="inner">
+      <p class="eyebrow rv">A private client system, not a public membership</p>
+      <p class="body rv" style="margin-left:auto;margin-right:auto">Lumina Platinum Access is connected to the individual and the La Doña Santa private living environment. It is not a conventional publicly purchasable membership or public concierge catalogue. Its medical, longevity, wellness, operational and lifestyle layers are activated according to the client profile, residence, location, professional requirements and applicable commercial arrangements.</p>
+      <p class="close rv" style="margin-left:auto;margin-right:auto">The value is not the number of services available. It is the ability to make them operate as one private system around one life.</p>
+    </div>
+  </section>
+
+  <section class="threshold">
+    <p class="close rv">The private world continues.</p>
+    <a class="lds-threshold rv" href="contact.html">Enter Contact Group Scale</a>
+  </section>
 
 <script>
-  const io = new IntersectionObserver((es)=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);}}),{threshold:.14});
+  const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); }}),{threshold:.16});
   document.querySelectorAll('.rv').forEach(el=>io.observe(el));
-  const COUNT = 80;
-  const cv = document.getElementById('bg'); const ctx = cv.getContext('2d', { alpha:false });
-  const imgs = new Array(COUNT); let loaded=0, W=0, H=0, dpr=1, target=0, cur=0, primed=false;
-  const url = (i)=> 'lumina-frames/f_' + String(i+1).padStart(3,'0') + '.jpg';
-  function resize(){ dpr=Math.min(devicePixelRatio||1,2); W=innerWidth; H=innerHeight; cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr); cv.style.width=W+'px'; cv.style.height=H+'px'; ctx.setTransform(dpr,0,0,dpr,0,0); paint(cur); }
-  function nearestLoaded(i){ i=Math.max(0,Math.min(COUNT-1,i)); if(imgs[i]&&imgs[i].__ok) return imgs[i]; for(let d=1;d<COUNT;d++){ const a=imgs[i-d],b=imgs[i+d]; if(a&&a.__ok)return a; if(b&&b.__ok)return b; } return null; }
-  function paint(idx){ const im=nearestLoaded(Math.round(idx)); if(!im) return; const iw=im.naturalWidth,ih=im.naturalHeight,s=Math.max(W/iw,H/ih),w=iw*s,h=ih*s; ctx.drawImage(im,(W-w)/2,(H-h)/2,w,h); }
-  for(let i=0;i<COUNT;i++){ const im=new Image(); im.decoding='async'; im.onload=()=>{ im.__ok=true; loaded++; if(!primed){ primed=true; resize(); paint(0);} if(loaded===COUNT){ const l=document.getElementById('loading'); if(l){ l.style.opacity=0; setTimeout(()=>l.remove(),600);} } }; im.src=url(i); imgs[i]=im; }
-  function maxScroll(){ return Math.max(1,(document.documentElement.scrollHeight||document.body.scrollHeight)-innerHeight); }
-  function onScroll(){ target=(scrollY/maxScroll())*(COUNT-1); }
-  addEventListener('scroll', onScroll, {passive:true}); addEventListener('resize', ()=>{ resize(); onScroll(); }); onScroll();
-  (function loop(){ cur += (target-cur)*0.16; if(Math.abs(target-cur)>0.02) paint(cur); requestAnimationFrame(loop); })();
+  const io2=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); }),{threshold:.25});
+  document.querySelectorAll('.s.img').forEach(el=>io2.observe(el));
 </script>
-<script src="lds-shared.js"></script>
 </body>
 </html>
