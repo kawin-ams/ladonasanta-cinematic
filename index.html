@@ -93,6 +93,24 @@
   .filmnote{font-family:var(--sans);font-weight:300;font-size:1.02rem;letter-spacing:.06em;margin:.9rem auto 0}
   /* Source Chamber chapter photographs (web.pdf p4) */
   .scphoto{display:block;width:min(86vw,620px);margin:0 auto 1.8rem;border:1px solid rgba(255,255,255,.32);box-shadow:0 24px 70px -26px rgba(0,0,0,.7)}
+  /* Five-discipline blueprint composition (web.pdf p3) */
+  .bp-beat{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:6vh 3vw}
+  .bp{position:relative;width:min(84vh,94vw);aspect-ratio:1/1}
+  .bp-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+  .bp-film{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:34%;aspect-ratio:1/1;border-radius:50%;overflow:hidden;
+    border:0;padding:0;cursor:pointer;background:#0d0b08;box-shadow:0 0 0 1px rgba(255,255,255,.55),0 0 70px rgba(255,246,230,.25);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem}
+  .bp-film img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.6}
+  .bp-film .pl{position:relative;width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.8rem;padding-left:3px;transition:background .3s}
+  .bp-film:hover .pl{background:rgba(255,255,255,.16)}
+  .bp-film .ft{position:relative;font-family:var(--serif);font-weight:300;font-size:clamp(.78rem,1.5vw,1.15rem);line-height:1.14;color:#fff;text-align:center;max-width:82%;text-shadow:0 1px 12px rgba(0,0,0,.75)}
+  .bp-film .fs{position:relative;font-family:var(--sans);font-size:.54rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.82)}
+  .disc{position:absolute;width:33%;text-align:center;color:#fff}
+  .disc b{display:block;font-family:var(--serif);font-weight:400;font-size:clamp(1rem,1.9vw,1.5rem);letter-spacing:.02em;text-shadow:0 1px 18px rgba(10,8,5,.65)}
+  .disc span{display:block;font-family:var(--sans);font-weight:300;font-size:clamp(.7rem,1.05vw,.84rem);line-height:1.45;color:rgba(255,255,255,.92);margin-top:.35rem;text-shadow:0 1px 14px rgba(10,8,5,.65)}
+  .bp-note{position:absolute;left:50%;bottom:-5%;transform:translateX(-50%);white-space:nowrap;font-family:var(--sans);font-style:italic;font-size:.72rem;color:rgba(255,255,255,.72);opacity:0;transition:opacity .3s}
+  .bp-note.show{opacity:1}
+  @media (max-width:640px){.disc{width:40%}.disc b{font-size:.95rem}.disc span{font-size:.64rem}}
 
   /* button = design-system .lds-threshold (underline + arrow, no box) */
   .continue{display:inline-flex;align-items:center;justify-content:center;gap:1.25rem;cursor:pointer;
@@ -197,12 +215,30 @@
     <section class="beat"><div class="ondark rv"><p class="lede">A residence drawn, calculated, structured and awakened around one life.</p></div></section>
     <section class="beat"><div class="ondark rv"><p class="body">La Doña Santa ARK unites architecture, development, engineering, construction, wellness and long-term residential intelligence within one uninterrupted process.</p></div></section>
     <section class="beat"><div class="ondark rv"><p class="body">A single vision governs every discipline, preserving the integrity of the residence from its earliest conception through the way it is inhabited, protected and evolved across generations.</p></div></section>
-    <section class="beat"><div class="ondark rv"><p class="num">The Six-Minute Film</p><p class="principle">The Private Origin of Architecture</p></div></section>
-    <section class="beat"><div class="ondark rv"><p class="num">Architecture</p><p class="principle">Sacred geometry, function and beauty in unity.</p></div></section>
-    <section class="beat"><div class="ondark rv"><p class="num">Engineering</p><p class="principle">Structural intelligence, precision and performance.</p></div></section>
-    <section class="beat"><div class="ondark rv"><p class="num">Wellness</p><p class="principle">Spaces that restore balance, clarity and longevity.</p></div></section>
-    <section class="beat"><div class="ondark rv"><p class="num">Environment</p><p class="principle">Land, water, air and living systems in harmony.</p></div></section>
-    <section class="beat"><div class="ondark rv"><p class="num">Legacy</p><p class="principle">Timeless value designed to evolve across generations.</p></div></section>
+    <!-- web.pdf p3: the six-minute film inside the circular frame with the five disciplines around it, blueprint-connected -->
+    <section class="beat bp-beat"><div class="bp rv">
+      <svg class="bp-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <g stroke="rgba(255,255,255,.08)" stroke-width=".2" fill="none"><line x1="0" y1="50" x2="100" y2="50"/><line x1="50" y1="0" x2="50" y2="100"/><circle cx="50" cy="50" r="34"/></g>
+        <g stroke="rgba(255,246,230,.5)" stroke-width=".3" fill="none" stroke-dasharray="1.4 1.2">
+          <line x1="50" y1="29" x2="50" y2="13"/><line x1="69.2" y1="41.4" x2="82" y2="33"/><line x1="61.4" y1="67.6" x2="71" y2="84"/><line x1="38.6" y1="67.6" x2="29" y2="84"/><line x1="30.8" y1="41.4" x2="18" y2="33"/>
+        </g>
+        <g fill="rgba(255,246,230,.85)"><circle cx="50" cy="12.5" r=".7"/><circle cx="82.5" cy="32.5" r=".7"/><circle cx="71" cy="84" r=".7"/><circle cx="29" cy="84" r=".7"/><circle cx="17.5" cy="32.5" r=".7"/></g>
+        <circle cx="50" cy="50" r="21" fill="none" stroke="rgba(255,255,255,.5)" stroke-width=".4"/>
+        <circle cx="50" cy="50" r="23.5" fill="none" stroke="rgba(255,246,230,.3)" stroke-width=".25" stroke-dasharray="1 1.6"/>
+      </svg>
+      <button class="bp-film" id="bpFilm" type="button" aria-label="The Private Origin of Architecture — six-minute film">
+        <img src="living-frames/f_070.jpg" alt="">
+        <span class="pl">&#9654;</span>
+        <span class="ft">The Private Origin of Architecture</span>
+        <span class="fs">The Six-Minute Film</span>
+      </button>
+      <div class="disc" style="left:50%;top:1%;transform:translateX(-50%)"><b>Architecture</b><span>Sacred geometry, function and beauty in unity.</span></div>
+      <div class="disc" style="left:83%;top:26%;transform:translate(-50%,-50%)"><b>Engineering</b><span>Structural intelligence, precision and performance.</span></div>
+      <div class="disc" style="left:71%;top:99%;transform:translate(-50%,-100%)"><b>Wellness</b><span>Spaces that restore balance, clarity and longevity.</span></div>
+      <div class="disc" style="left:29%;top:99%;transform:translate(-50%,-100%)"><b>Environment</b><span>Land, water, air and living systems in harmony.</span></div>
+      <div class="disc" style="left:17%;top:26%;transform:translate(-50%,-50%)"><b>Legacy</b><span>Timeless value designed to evolve across generations.</span></div>
+      <div class="bp-note" id="bpNote">The six-minute film will play here — to be provided by La Doña Santa.</div>
+    </div></section>
     <section class="beat"><div class="ondark rv"><p class="closing">The floor plan slows. The frame becomes a threshold.</p><button class="continue" id="toChamber" type="button">Enter the Source Chamber</button></div></section>
 
     <!-- THE SOURCE CHAMBER -->
@@ -360,6 +396,8 @@
     document.body.style.transition='opacity .8s ease'; document.body.style.opacity='0';
     setTimeout(()=>{ location.href='vault.html'; }, 800);
   });
+  const bpFilm=document.getElementById('bpFilm'), bpNote=document.getElementById('bpNote');
+  if(bpFilm) bpFilm.addEventListener('click',()=>{ bpNote.classList.add('show'); clearTimeout(bpFilm._t); bpFilm._t=setTimeout(()=>bpNote.classList.remove('show'),3400); });
 
   /* ---- boot ---- */
   function boot(){
