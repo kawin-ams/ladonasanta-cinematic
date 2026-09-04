@@ -108,6 +108,33 @@
   #brand{position:fixed;right:26px;bottom:24px;z-index:20;height:26px;opacity:.72;display:none;filter:brightness(0) invert(1)}
   body.scrolling #brand{display:block}
 
+  /* ARK registration code gate (web.pdf p1) */
+  #arkGate{position:fixed;inset:0;z-index:34;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6vw;
+    background:radial-gradient(62% 62% at 50% 45%, rgba(245,241,234,.95), rgba(245,241,234,.85) 55%, rgba(245,241,234,.7));opacity:0;transition:opacity .8s ease}
+  #arkGate.show{display:flex;opacity:1}
+  #arkGate .eb{font-family:var(--sans);font-weight:400;font-size:.74rem;letter-spacing:.36em;text-transform:uppercase;color:var(--ink-soft)}
+  #arkGate h2{font-family:var(--serif);font-weight:300;color:var(--ink);font-size:clamp(1.8rem,4vw,3rem);line-height:1.05;margin:.6rem 0 0}
+  #arkGate .sub{font-family:var(--sans);font-weight:300;color:var(--muted);font-size:.92rem;line-height:1.6;max-width:44ch;margin:1rem auto 0}
+  #arkGate form{margin:2.4rem 0 0;display:flex;flex-direction:column;align-items:center;gap:1.4rem}
+  #arkGate input{width:min(80vw,360px);text-align:center;font-family:var(--sans);font-weight:400;font-size:1rem;letter-spacing:.34em;text-transform:uppercase;color:var(--ink);
+    background:transparent;border:0;border-bottom:1px solid rgba(20,19,14,.4);padding:.8rem .5rem;outline:none;transition:border-color .3s}
+  #arkGate input::placeholder{letter-spacing:.2em;color:rgba(110,101,89,.7)}
+  #arkGate input:focus{border-color:var(--ink)}
+  #arkGate button{display:inline-flex;align-items:center;gap:1rem;cursor:pointer;border:0;border-bottom:1px solid rgba(20,19,14,.5);background:transparent;color:var(--ink);
+    font-family:var(--sans);font-weight:400;font-size:.78rem;letter-spacing:.32em;text-transform:uppercase;padding:.7rem .3rem;transition:.2s}
+  #arkGate button::after{content:"→"}
+  #arkGate button:hover{color:var(--muted);border-color:var(--muted)}
+  #arkGate .err{font-family:var(--sans);font-size:.72rem;letter-spacing:.08em;color:#9A5B3B;min-height:1em;opacity:0;transition:opacity .3s}
+  #arkGate .err.show{opacity:1}
+  #arkGate .foot{font-family:var(--sans);font-style:italic;font-size:.74rem;color:var(--muted);margin-top:2.4rem;max-width:40ch}
+  #arkGate .back{position:absolute;top:24px;left:26px;background:none;border:0;cursor:pointer;font-family:var(--sans);font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(74,68,56,.5)}
+  #arkGate .back:hover{color:var(--ink)}
+
+  /* Living System title, synced to the ARK hallway → terrace travel (web.pdf p1) */
+  #lsTitle{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:22;text-align:center;opacity:0;transition:opacity .35s linear;pointer-events:none;width:min(92vw,720px)}
+  #lsTitle .eb{font-family:var(--sans);font-weight:400;font-size:.8rem;letter-spacing:.4em;text-transform:uppercase;color:#fff;text-shadow:0 1px 24px rgba(10,8,5,.6)}
+  #lsTitle h2{font-family:var(--serif);font-weight:300;font-size:clamp(2.2rem,5vw,3.6rem);color:#fff;margin:.5rem 0 0;text-shadow:0 1px 30px rgba(10,8,5,.55)}
+
   @media (prefers-reduced-motion:reduce){ .rv{opacity:1;transform:none;transition:none} }
 </style>
 </head>
@@ -145,10 +172,26 @@
     <source src="assets/entrance-audio.mp3" type="audio/mpeg">
   </audio>
 
+  <!-- ARK registration code gate (web.pdf p1) -->
+  <div id="arkGate">
+    <button class="back" id="arkBack" type="button">← Back</button>
+    <p class="eb">La Doña Santa Ark — Registration</p>
+    <h2>Enter your ARK access code</h2>
+    <p class="sub">Entry into the ARK world is opened with a private registration code issued by La Doña Santa.</p>
+    <form id="arkForm" autocomplete="off">
+      <input id="arkCode" placeholder="Access code" spellcheck="false" aria-label="ARK access code">
+      <span class="err" id="arkErr">Please enter your registration code</span>
+      <button type="submit">Enter the ARK</button>
+    </form>
+    <p class="foot">Codes are issued privately. Live code validation to be connected once La Doña Santa provides the registration codes.</p>
+  </div>
+
+  <!-- Living System title, synced to the hallway → terrace travel (web.pdf p1) -->
+  <div id="lsTitle"><p class="eb">La Doña Santa Ark</p><h2>The Living System</h2></div>
+
   <!-- ===== scroll content ===== -->
   <main id="scroll">
-    <!-- THE LIVING SYSTEM -->
-    <section class="beat"><div class="wash rv"><p class="eyebrow">La Doña Santa Ark</p><h1>The Living System</h1></div></section>
+    <!-- THE LIVING SYSTEM — title already shown synced to the video; scroll opens on the clean villa then the text -->
     <section class="beat"><div class="ondark rv"><p class="lede">A residence drawn, calculated, structured and awakened around one life.</p></div></section>
     <section class="beat"><div class="ondark rv"><p class="body">La Doña Santa ARK unites architecture, development, engineering, construction, wellness and long-term residential intelligence within one uninterrupted process.</p></div></section>
     <section class="beat"><div class="ondark rv"><p class="body">A single vision governs every discipline, preserving the integrity of the residence from its earliest conception through the way it is inhabited, protected and evolved across generations.</p></div></section>
@@ -198,9 +241,12 @@
   const skipBtn = document.getElementById('skip'), soundBtn = document.getElementById('sound');
   const cv = document.getElementById('bg'), ctx = cv.getContext('2d', { alpha:false });
   const progLabel = document.getElementById('progLabel'), bar = document.querySelector('#progress .bar i');
+  const arkGate = document.getElementById('arkGate'), arkForm = document.getElementById('arkForm'),
+        arkCode = document.getElementById('arkCode'), arkErr = document.getElementById('arkErr'),
+        arkBack = document.getElementById('arkBack'), lsTitle = document.getElementById('lsTitle');
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let phase = 'opening', gate = 0, audioStarted = false;
+  let phase = 'opening', gate = 0, audioStarted = false, arkTravel = false;
   const show = el => el.classList.add('show'), hide = el => el.classList.remove('show');
 
   /* ---- cover-map entrance overlays to the film's 16:9 frame ---- */
@@ -221,7 +267,14 @@
 
   /* ---- entrance playback holds ---- */
   function playTo(t,onArrive){ gate=t; film._onArrive=onArrive; film.play().catch(()=>{}); }
-  film.addEventListener('timeupdate',()=>{ if(gate&&film.currentTime>=gate){ const cb=film._onArrive; gate=0; film._onArrive=null; film.pause(); if(cb)cb(); } });
+  film.addEventListener('timeupdate',()=>{
+    // Living System title synced to the ARK travel: appear as the camera enters the hallway,
+    // fade out as it reaches the terrace so the villa view stays clean (web.pdf p1)
+    if(arkTravel){ const t=film.currentTime; let op=0;
+      if(t>=87&&t<91) op=(t-87)/4; else if(t>=91&&t<95) op=1; else if(t>=95&&t<96.8) op=1-(t-95)/1.8;
+      lsTitle.style.opacity=op; }
+    if(gate&&film.currentTime>=gate){ const cb=film._onArrive; gate=0; film._onArrive=null; film.pause(); if(cb)cb(); }
+  });
 
   function arriveLogo(){ phase='holdLogo'; hitMain.classList.add('active'); show(hitMain); show(copyLogo); signature(); }
   function arrivePortals(){ phase='holdPortals'; hitArk.classList.add('active'); hitGuardian.classList.add('active');
@@ -232,13 +285,35 @@
     phase='entering';
     hide(hitArk); hide(hitGuardian); hide(hitMain); hide(copyPortals); hide(copyLogo); hide(descArk); hide(descGuardian);
     if(which==='guardian'){ document.body.style.opacity='0'; setTimeout(()=>{location.href='guardian.html';},900); return; }
-    // ARK — keep the film playing through the portal to the arrival frame, then hand to scroll IN-PAGE (no navigation)
-    playTo(WORLD_ARRIVE, ()=>{ film.currentTime=WORLD_ARRIVE; enterScroll(); });
+    // ARK — keep the film playing through the portal to the arrival frame, then hand to scroll IN-PAGE (no navigation).
+    // During the travel, the Living System title is shown then fades before the terrace (see timeupdate).
+    arkTravel = true;
+    playTo(WORLD_ARRIVE, ()=>{ arkTravel=false; lsTitle.style.opacity=0; film.currentTime=WORLD_ARRIVE; enterScroll(); });
   }
+
+  /* ARK registration gate (web.pdf p1): the ARK portal opens a code section before travel */
+  function openArkGate(){
+    if(phase!=='holdPortals') return;
+    signature();                                   // the entry voice plays on entering
+    hide(hitArk); hide(hitGuardian); hide(copyPortals); hide(descArk); hide(descGuardian);
+    arkGate.classList.add('show'); setTimeout(()=>arkCode.focus(),300);
+  }
+  function closeArkGate(){
+    arkGate.classList.remove('show');
+    show(hitArk); show(hitGuardian); show(copyPortals); show(descArk); show(descGuardian);
+  }
+  arkForm.addEventListener('submit',e=>{ e.preventDefault();
+    const code=arkCode.value.trim();
+    if(!code){ arkErr.classList.add('show'); return; }
+    arkErr.classList.remove('show');
+    arkGate.classList.remove('show');
+    enterWorld('ark');                             // TODO: validate against La Doña Santa registration codes when provided
+  });
+  arkBack.addEventListener('click',closeArkGate);
 
   hitMain.addEventListener('click',()=>{ if(phase!=='holdLogo')return; signature();
     hitMain.classList.remove('active'); hide(hitMain); hide(copyLogo); phase='toPortals'; playTo(HOLD_PORTALS,arrivePortals); });
-  hitArk.addEventListener('click',()=>enterWorld('ark'));
+  hitArk.addEventListener('click',openArkGate);
   hitGuardian.addEventListener('click',()=>enterWorld('guardian'));
   skipBtn.addEventListener('click',()=>{ if(phase==='opening'||phase==='holdLogo'||phase==='toPortals'){
     hide(hitMain); hide(copyLogo); film.currentTime=HOLD_PORTALS-0.05; phase='toPortals'; playTo(HOLD_PORTALS,arrivePortals); } });
