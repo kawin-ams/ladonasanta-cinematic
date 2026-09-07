@@ -113,17 +113,17 @@
   .freeze{position:fixed;inset:0;z-index:26;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10vh 6vw;opacity:0;transition:opacity 1s ease}
   .freeze.show{display:flex;opacity:1}
   .freeze.dark{background:radial-gradient(72% 72% at 50% 50%, rgba(12,10,7,.52), rgba(12,10,7,.22) 68%, rgba(12,10,7,0))}
+  /* full-screen even scrim (no localized "cut-off" edge) so white type reads over the bright aerial/chamber */
+  .freeze.scrim{background:linear-gradient(180deg, rgba(12,10,7,.5), rgba(12,10,7,.3) 28%, rgba(12,10,7,.3) 72%, rgba(12,10,7,.54))}
   .fbox{width:min(92vw,760px)}
-  .fbox.wash{padding:40px 56px;background:radial-gradient(64% 72% at 50% 50%, rgba(245,241,234,.92) 0%, rgba(245,241,234,.68) 48%, rgba(245,241,234,0) 84%)}
-  .fbox .eyebrow{color:var(--ink-soft)}
-  .fbox h1{margin:.2em 0 0}
-  .fbox .lede{color:var(--ink)} .fbox .body{color:var(--ink-soft)}
-  .continue.ink{border-bottom-color:rgba(20,19,14,.5);color:var(--ink)}
-  .continue.ink:hover{color:var(--muted);border-color:var(--muted)}
+  .fbox .eyebrow{color:rgba(255,255,255,.85);text-shadow:0 1px 20px rgba(10,8,5,.6)}
+  .fbox h1{margin:.2em 0 0;color:#fff;text-shadow:0 1px 30px rgba(10,8,5,.55)}
+  .fbox .lede{color:#fff;text-shadow:0 1px 24px rgba(10,8,5,.55)}
+  .fbox .body{color:rgba(255,255,255,.94);text-shadow:0 1px 18px rgba(10,8,5,.6)}
   .filmframe{margin:2.2rem auto .4rem;display:flex;flex-direction:column;align-items:center;gap:.55rem}
-  .filmframe .fp{width:52px;height:52px;border-radius:50%;border:1px solid rgba(20,19,14,.5);display:flex;align-items:center;justify-content:center;color:var(--ink);font-size:.8rem;padding-left:3px}
-  .filmframe .fl{font-family:var(--serif);font-weight:400;font-size:1.35rem;color:var(--ink);line-height:1.1}
-  .filmframe .fs2{font-family:var(--sans);font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+  .filmframe .fp{width:52px;height:52px;border-radius:50%;border:1px solid rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.8rem;padding-left:3px}
+  .filmframe .fl{font-family:var(--serif);font-weight:400;font-size:1.35rem;color:#fff;line-height:1.1;text-shadow:0 1px 18px rgba(10,8,5,.6)}
+  .filmframe .fs2{font-family:var(--sans);font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.8)}
   #bpFreeze .bp{margin:0 auto}
   #bpFreeze .continue{position:absolute;left:50%;bottom:5%;transform:translateX(-50%)}
 
@@ -224,12 +224,12 @@
   <div id="lsTitle"><p class="eb">La Doña Santa Ark</p><h2>The Living System</h2></div>
 
   <!-- ===== play-through freeze overlays: the film keeps playing, freezes on a frame while text appears, click to continue (web.pdf p2–p4) ===== -->
-  <div class="freeze" id="lsFreeze"><div class="fbox wash">
+  <div class="freeze scrim" id="lsFreeze"><div class="fbox">
     <p class="eyebrow">La Doña Santa Ark</p>
     <p class="lede">A residence drawn, calculated, structured and awakened around one life.</p>
     <p class="body">La Doña Santa ARK unites architecture, development, engineering, construction, wellness and long-term residential intelligence within one uninterrupted process.</p>
     <p class="body">A single vision governs every discipline, preserving the integrity of the residence from its earliest conception through the way it is inhabited, protected and evolved across generations.</p>
-    <button class="continue ink" data-next="bp" type="button">Continue</button>
+    <button class="continue" data-next="bp" type="button">Continue</button>
   </div></div>
 
   <div class="freeze dark" id="bpFreeze">
@@ -259,12 +259,12 @@
     <button class="continue" data-next="sc" type="button">Continue</button>
   </div>
 
-  <div class="freeze" id="scFreeze"><div class="fbox wash">
+  <div class="freeze scrim" id="scFreeze"><div class="fbox">
     <p class="eyebrow">02 — 05</p>
     <h1>The Source Chamber</h1>
     <p class="body">Before La Doña Santa became architecture, it became a responsibility. A responsibility to create environments whose purpose extends far beyond the visible — conceived to support the body, quiet the nervous system, preserve absolute privacy, and bring human life, architecture and nature into a more coherent whole.</p>
     <div class="filmframe"><span class="fp">&#9654;</span><span class="fl">Inside La Doña Santa</span><span class="fs2">The Complete Interview Film — 40:00</span></div>
-    <button class="continue ink" data-next="chapters" type="button">Enter the chambers</button>
+    <button class="continue" data-next="chapters" type="button">Enter the chambers</button>
   </div></div>
 
   <!-- Source Chamber chapters — revealed by scroll while the film keeps playing behind them (web.pdf p4) -->
@@ -290,7 +290,8 @@
 (() => {
   const HOLD_LOGO = 62.0, HOLD_PORTALS = 74.0, WORLD_ARRIVE = 97.0;
   // freeze points in the film where it pauses and text appears (click to continue)
-  const FREEZE_LS = 102.0, FREEZE_BP = 109.0, FREEZE_SC = 118.0, FILM_END = 143.5, SC_LOOP = 112.0;
+  // LS waits until the pull-back has settled on the established aerial so the property reveal stays clean (web.pdf p1)
+  const FREEZE_LS = 107.0, FREEZE_BP = 111.0, FREEZE_SC = 118.0, FILM_END = 143.5, SC_LOOP = 112.0;
 
   const film = document.getElementById('film');
   const audio = document.getElementById('audio');
