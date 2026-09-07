@@ -38,42 +38,47 @@
   .standard{font-family:var(--sans);font-size:clamp(.64rem,1.05vw,.78rem);letter-spacing:.28em;text-transform:uppercase;color:var(--ink-soft);margin:1rem 0 0}
   .intro{font-family:var(--sans);font-weight:300;font-size:clamp(.98rem,1.3vw,1.1rem);line-height:1.8;max-width:64ch;margin:1.6rem auto 0;color:var(--ink-soft)}
 
-  .tree{position:relative;margin:7vh auto 0;max-width:76rem}
-  .connectors{position:absolute;inset:0;z-index:0;width:100%;height:100%;pointer-events:none}
-  .divisions{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:clamp(1rem,3vw,3rem);align-items:start}
-  .division{display:flex;flex-direction:column;align-items:center}
+  .tree{position:relative;margin:8vh auto 0;max-width:74rem}
 
-  .orb{position:relative;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;border:0;padding:0;background:transparent;
-    transition:transform .5s cubic-bezier(.22,1,.36,1)}
+  /* people flank their divisions above the orbs (Isabella ~ ARK left · Mateo ~ Guardian right) */
+  .people{display:flex;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;max-width:60rem;margin:0 auto clamp(3.5rem,7vh,6rem)}
+  .person{cursor:pointer;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(6px);border-radius:2px;
+    display:flex;gap:1.15rem;align-items:center;padding:1.05rem 1.5rem;width:min(100%,21.5rem);text-align:left;transition:transform .3s,border-color .3s,box-shadow .3s}
+  .person:hover{transform:translateY(-3px);border-color:var(--champagne);box-shadow:0 22px 54px -30px rgba(150,120,60,.6)}
+  .avatar{width:58px;height:58px;border-radius:50%;flex:0 0 auto;background:radial-gradient(circle at 40% 34%,#F3ECDD,#DBCFB8);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:1.2rem;color:var(--champagne);box-shadow:inset 0 0 0 1px rgba(255,255,255,.75)}
+  .person .txt{display:flex;flex-direction:column;gap:.4rem;min-width:0}
+  .person .pn{font-family:var(--serif);font-size:1.22rem;color:var(--ink);line-height:1.15}
+  .person .pr{font-family:var(--sans);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);line-height:1.5}
+  .person .vb{font-family:var(--sans);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--champagne)}
+
+  /* three divisions connected by a hairline that runs behind the orb centres (never through text) */
+  .divisions{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:clamp(1.5rem,4vw,3.5rem);align-items:start}
+  .divisions::before{content:"";position:absolute;left:15%;right:15%;top:calc(clamp(150px,19vw,224px) / 2);height:1px;
+    background:linear-gradient(90deg,transparent,rgba(176,141,87,.42) 22%,rgba(176,141,87,.42) 78%,transparent);z-index:-1}
+  .division{display:flex;flex-direction:column;align-items:center;gap:1.7rem}
+  .orbwrap{height:clamp(150px,19vw,224px);display:flex;align-items:center;justify-content:center}
+  .orb{position:relative;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;border:0;padding:0;background:transparent;transition:transform .5s cubic-bezier(.22,1,.36,1)}
   .orb .sphere{position:absolute;inset:0;border-radius:50%;
-    background:radial-gradient(circle at 40% 34%, rgba(255,253,248,.95), rgba(249,242,229,.55) 52%, rgba(232,220,198,.32) 74%, rgba(232,220,198,0) 86%);
+    background:radial-gradient(circle at 40% 34%, rgba(255,253,248,.96), rgba(249,242,229,.6) 52%, rgba(232,220,198,.36) 74%, rgba(232,220,198,0) 88%);
     box-shadow:0 22px 70px -26px rgba(150,120,60,.6), inset 0 0 46px rgba(255,255,255,.7), inset 0 0 0 1px rgba(255,255,255,.55);
     animation:pulse 6s ease-in-out infinite}
   @keyframes pulse{0%,100%{box-shadow:0 22px 70px -26px rgba(150,120,60,.55), inset 0 0 46px rgba(255,255,255,.7), inset 0 0 0 1px rgba(255,255,255,.5)}50%{box-shadow:0 22px 84px -22px rgba(180,141,87,.7), inset 0 0 60px rgba(255,252,244,.85), inset 0 0 0 1px rgba(255,255,255,.7)}}
-  .orb .em{position:relative;z-index:1;width:58%;height:58%;object-fit:contain;filter:drop-shadow(0 3px 12px rgba(90,70,35,.55)) brightness(.8) contrast(1.18)}
   .orb .sphere::after{content:"";position:absolute;inset:14%;border-radius:50%;background:radial-gradient(circle at 50% 46%, rgba(216,201,172,.35), rgba(216,201,172,0) 70%)}
-  .division > .orb{width:clamp(128px,15vw,176px);height:clamp(128px,15vw,176px)}
-  .division.group > .orb{width:clamp(164px,19vw,232px);height:clamp(164px,19vw,232px)}
+  .orb .em{position:relative;z-index:1;width:58%;height:58%;object-fit:contain;filter:drop-shadow(0 3px 12px rgba(90,70,35,.55)) brightness(.8) contrast(1.18)}
+  .orbwrap .orb{width:clamp(128px,15vw,176px);height:clamp(128px,15vw,176px)}
+  .division.group .orbwrap .orb{width:clamp(160px,18.5vw,224px);height:clamp(160px,18.5vw,224px)}
   .orb:hover{transform:translateY(-4px) scale(1.03)}
-  .divname{font-family:var(--serif);font-weight:400;font-size:clamp(1rem,1.6vw,1.4rem);letter-spacing:.05em;line-height:1.1;color:var(--ink);margin-top:1.1rem}
-  .divname b{display:block;font-family:var(--sans);font-weight:400;font-size:.58rem;letter-spacing:.34em;color:var(--muted);margin-bottom:.35rem}
+  .divname{font-family:var(--serif);font-weight:400;font-size:clamp(1.05rem,1.6vw,1.45rem);letter-spacing:.05em;line-height:1.1;color:var(--ink);text-align:center}
+  .divname b{display:block;font-family:var(--sans);font-weight:400;font-size:.58rem;letter-spacing:.34em;color:var(--muted);margin-bottom:.4rem}
 
-  .subs{display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem 1.1rem;max-width:22rem;margin-top:1.6rem}
-  .sub{cursor:pointer;background:none;border:0;font-family:var(--sans);font-weight:300;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);
-    display:flex;flex-direction:column;align-items:center;gap:.45rem;padding:.3rem;transition:color .3s}
+  .subs{display:flex;flex-wrap:wrap;justify-content:center;gap:1.1rem 1.5rem;max-width:23rem}
+  .sub{cursor:pointer;background:none;border:0;font-family:var(--sans);font-weight:300;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);
+    display:flex;flex-direction:column;align-items:center;gap:.55rem;padding:.2rem;width:6.2rem;transition:color .3s}
   .sub:hover{color:var(--champagne)}
+  .sub span.lbl{line-height:1.35;text-wrap:balance}
   .sub .dot{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 40% 34%,rgba(255,253,248,.95),rgba(233,224,206,.7));box-shadow:inset 0 0 0 1px rgba(255,255,255,.7),0 6px 16px -8px rgba(150,120,60,.5);display:flex;align-items:center;justify-content:center}
   .sub .dot::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--champagne);opacity:.75}
-
-  /* people medallions */
-  .people{display:flex;justify-content:center;gap:clamp(1rem,4vw,3.5rem);flex-wrap:wrap;margin:6vh auto 0}
-  .person{cursor:pointer;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(6px);display:flex;gap:1rem;align-items:center;padding:.9rem 1.2rem;max-width:23rem;text-align:left;transition:transform .3s,border-color .3s,box-shadow .3s}
-  .person:hover{transform:translateY(-2px);border-color:var(--champagne);box-shadow:0 18px 50px -28px rgba(150,120,60,.6)}
-  .avatar{width:60px;height:60px;border-radius:50%;flex:0 0 auto;background:radial-gradient(circle at 40% 34%,#F3ECDD,#DBCFB8);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:1.25rem;color:var(--champagne);box-shadow:inset 0 0 0 1px rgba(255,255,255,.75),0 0 0 3px rgba(255,255,255,.4)}
-  .person .pn{font-family:var(--serif);font-size:1.18rem;color:var(--ink);line-height:1.1}
-  .person .pr{font-family:var(--sans);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:.3rem 0 .5rem}
-  .person .vb{font-family:var(--sans);font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:var(--champagne)}
-  .maphint{font-family:var(--sans);font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:4vh 0 0}
+  .maphint{font-family:var(--sans);font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:clamp(3.5rem,7vh,5.5rem) 0 0;text-align:center}
 
   /* ===== private entry review ===== */
   .entry{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:12vh 0;text-align:center}
@@ -133,59 +138,52 @@
       <p class="intro rv">La Doña Santa operates as a living company ecosystem. Each division and professional discipline holds one part of the residence life cycle — vision, land, architecture, engineering, construction, wellness, operation, preservation and long-term private client care. Together, these structures allow a project to move from the first reading of the client and the land to architecture, construction, operational handover and the continuing life of the completed residence.</p>
 
       <div class="tree rv">
-        <svg class="connectors" viewBox="0 0 100 40" preserveAspectRatio="none">
-          <g stroke="rgba(176,141,87,.5)" stroke-width=".18" fill="none">
-            <path d="M28 12 C 40 4, 60 4, 72 12"/>
-            <line x1="28" y1="12" x2="28" y2="30"/><line x1="50" y1="14" x2="50" y2="30"/><line x1="72" y1="12" x2="72" y2="30"/>
-          </g>
-          <g fill="rgba(176,141,87,.65)"><circle cx="28" cy="12" r=".5"/><circle cx="50" cy="14" r=".5"/><circle cx="72" cy="12" r=".5"/></g>
-        </svg>
+        <!-- people flank their divisions, above the orbs -->
+        <div class="people">
+          <button class="person" data-person="isabella">
+            <span class="avatar">IM</span>
+            <span class="txt"><span class="pn">Isabella Montearos</span><span class="pr">Chief Architect · La Doña Santa Ark</span><span class="vb">View bio →</span></span>
+          </button>
+          <button class="person" data-person="mateo">
+            <span class="avatar">MV</span>
+            <span class="txt"><span class="pn">Mateo Valderrama</span><span class="pr">Chief Protector · La Doña Santa Guardian</span><span class="vb">View bio →</span></span>
+          </button>
+        </div>
 
         <div class="divisions">
           <!-- ARK -->
           <div class="division">
-            <button class="orb" data-person="isabella"><span class="sphere"></span><img class="em" src="contact-img/emb-ark.png" alt="La Doña Santa Ark"></button>
+            <div class="orbwrap"><button class="orb" data-person="isabella"><span class="sphere"></span><img class="em" src="contact-img/emb-ark.png" alt="La Doña Santa Ark"></button></div>
             <span class="divname"><b>La Doña Santa</b>Ark</span>
             <div class="subs">
-              <button class="sub" data-node="Architecture — sacred geometry, function and beauty in unity."><span class="dot"></span>Architecture</button>
-              <button class="sub" data-node="Development — land, feasibility and the shaping of the private project."><span class="dot"></span>Development</button>
-              <button class="sub" data-node="Wellness — spaces that restore balance, clarity and longevity."><span class="dot"></span>Wellness</button>
-              <button class="sub" data-node="Residence Experience — the lived atmosphere of the completed home."><span class="dot"></span>Residence Experience</button>
+              <button class="sub" data-node="Architecture — sacred geometry, function and beauty in unity."><span class="dot"></span><span class="lbl">Architecture</span></button>
+              <button class="sub" data-node="Development — land, feasibility and the shaping of the private project."><span class="dot"></span><span class="lbl">Development</span></button>
+              <button class="sub" data-node="Wellness — spaces that restore balance, clarity and longevity."><span class="dot"></span><span class="lbl">Wellness</span></button>
+              <button class="sub" data-node="Residence Experience — the lived atmosphere of the completed home."><span class="dot"></span><span class="lbl">Residence Experience</span></button>
             </div>
           </div>
           <!-- GROUP -->
           <div class="division group">
-            <button class="orb" data-person="group"><span class="sphere"></span><img class="em" src="contact-img/emb-group.png" alt="La Doña Santa Group"></button>
+            <div class="orbwrap"><button class="orb" data-person="group"><span class="sphere"></span><img class="em" src="contact-img/emb-group.png" alt="La Doña Santa Group"></button></div>
             <span class="divname"><b>La Doña Santa</b>Group</span>
             <div class="subs">
-              <button class="sub" data-node="Vision & Strategy — the governing vision that unites every discipline."><span class="dot"></span>Vision &amp; Strategy</button>
-              <button class="sub" data-node="Private Living System — the integrated model behind every residence."><span class="dot"></span>Private Living System</button>
-              <button class="sub" data-node="Global Stewardship — protecting the standard across every project."><span class="dot"></span>Global Stewardship</button>
-              <button class="sub" data-node="Investor Council — the capital structure behind the ecosystem."><span class="dot"></span>Investor Council</button>
+              <button class="sub" data-node="Vision & Strategy — the governing vision that unites every discipline."><span class="dot"></span><span class="lbl">Vision &amp; Strategy</span></button>
+              <button class="sub" data-node="Private Living System — the integrated model behind every residence."><span class="dot"></span><span class="lbl">Private Living System</span></button>
+              <button class="sub" data-node="Global Stewardship — protecting the standard across every project."><span class="dot"></span><span class="lbl">Global Stewardship</span></button>
+              <button class="sub" data-node="Investor Council — the capital structure behind the ecosystem."><span class="dot"></span><span class="lbl">Investor Council</span></button>
             </div>
           </div>
           <!-- GUARDIAN -->
           <div class="division">
-            <button class="orb" data-person="mateo"><span class="sphere"></span><img class="em" src="contact-img/emb-guardian.png" alt="La Doña Santa Guardian"></button>
+            <div class="orbwrap"><button class="orb" data-person="mateo"><span class="sphere"></span><img class="em" src="contact-img/emb-guardian.png" alt="La Doña Santa Guardian"></button></div>
             <span class="divname"><b>La Doña Santa</b>Guardian</span>
             <div class="subs">
-              <button class="sub" data-node="Preservation — protecting the architecture, systems and atmosphere."><span class="dot"></span>Preservation</button>
-              <button class="sub" data-node="Security — discretion, access and protection of the private world."><span class="dot"></span>Security</button>
-              <button class="sub" data-node="Lifelong Care — continuing wellbeing across generations."><span class="dot"></span>Lifelong Care</button>
-              <button class="sub" data-node="Heritage Stewardship — carrying the residence across time."><span class="dot"></span>Heritage Stewardship</button>
+              <button class="sub" data-node="Preservation — protecting the architecture, systems and atmosphere."><span class="dot"></span><span class="lbl">Preservation</span></button>
+              <button class="sub" data-node="Security — discretion, access and protection of the private world."><span class="dot"></span><span class="lbl">Security</span></button>
+              <button class="sub" data-node="Lifelong Care — continuing wellbeing across generations."><span class="dot"></span><span class="lbl">Lifelong Care</span></button>
+              <button class="sub" data-node="Heritage Stewardship — carrying the residence across time."><span class="dot"></span><span class="lbl">Heritage Stewardship</span></button>
             </div>
           </div>
-        </div>
-
-        <div class="people">
-          <button class="person" data-person="isabella">
-            <span class="avatar">IM</span>
-            <span><span class="pn">Isabella Montearos</span><span class="pr">Chief Architect · La Doña Santa Ark</span><span class="vb">View bio →</span></span>
-          </button>
-          <button class="person" data-person="mateo">
-            <span class="avatar">MV</span>
-            <span><span class="pn">Mateo Valderrama</span><span class="pr">Chief Protector · La Doña Santa Guardian</span><span class="vb">View bio →</span></span>
-          </button>
         </div>
         <p class="maphint rv">Every person and division on the map is clickable — select a name to open their profile.</p>
       </div>
