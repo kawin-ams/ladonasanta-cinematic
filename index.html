@@ -29,6 +29,12 @@
   #preload.gone{opacity:0;pointer-events:none}
   #preload .mark{width:34px;height:34px;border-radius:50%;border:1px solid var(--platinum);border-top-color:transparent;animation:spin 1.4s linear infinite;opacity:.5}
   @keyframes spin{to{transform:rotate(360deg)}}
+  /* fallback if the video is blocked/stalled — never leave a blank white screen */
+  #tapEnter{position:fixed;inset:0;z-index:45;display:none;flex-direction:column;align-items:center;justify-content:center;gap:1.2rem;background:#F8F4EC;text-align:center;padding:6vw}
+  #tapEnter.show{display:flex}
+  #tapEnter button{cursor:pointer;border:0;border-bottom:1px solid rgba(20,19,14,.5);background:transparent;color:var(--ink);font-family:var(--serif);font-weight:300;font-size:clamp(1.6rem,4vw,2.6rem);letter-spacing:.04em;padding:.4rem 1.5rem;transition:color .2s,border-color .2s}
+  #tapEnter button:hover{color:var(--muted);border-color:var(--muted)}
+  #tapEnter p{font-family:var(--sans);font-weight:300;font-size:.74rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);margin:0}
 
   /* ===== entrance overlays (hidden once we enter scroll mode) ===== */
   .fmap{position:fixed;transform:translate(-50%,-50%);z-index:20}
@@ -175,7 +181,7 @@
 </head>
 <body>
   <video id="film" playsinline preload="auto" muted poster="assets/poster-white.jpg">
-    <source src="assets/entrance-master-1080.mp4" type="video/mp4">
+    <source src="assets/entrance-master-1080.mp4?v=3" type="video/mp4">
   </video>
   <div id="veil"></div>
 
@@ -201,6 +207,7 @@
   <button class="ctl" id="skip">Skip</button>
   <button class="ctl" id="sound"><span class="dot"></span><span>Sound</span></button>
   <div id="preload"><div class="mark"></div></div>
+  <div id="tapEnter"><button id="tapBtn" type="button">Enter</button><p>Tap to begin the experience</p></div>
   <audio id="audio" preload="auto">
     <source src="assets/entrance-audio.opus" type="audio/ogg; codecs=opus">
     <source src="assets/entrance-audio.mp3" type="audio/mpeg">
@@ -244,7 +251,7 @@
         <circle cx="50" cy="50" r="23.5" fill="none" stroke="rgba(255,246,230,.3)" stroke-width=".25" stroke-dasharray="1 1.6"/>
       </svg>
       <button class="bp-film" id="bpFilm" type="button" aria-label="The Private Origin of Architecture — six-minute film">
-        <img src="living-frames/f_070.jpg" alt="">
+        <img src="source-frames/f_110.jpg" alt="">
         <span class="pl">&#9654;</span>
         <span class="ft">The Private Origin of Architecture</span>
         <span class="fs">The Six-Minute Film</span>
@@ -290,8 +297,9 @@
 (() => {
   const HOLD_LOGO = 62.0, HOLD_PORTALS = 74.0, WORLD_ARRIVE = 97.0;
   // freeze points in the film where it pauses and text appears (click to continue)
-  // LS waits until the pull-back has settled on the established aerial so the property reveal stays clean (web.pdf p1)
-  const FREEZE_LS = 107.0, FREEZE_BP = 111.0, FREEZE_SC = 118.0, FILM_END = 143.5, SC_LOOP = 112.0;
+  // LS text on the settled aerial (p2); the 5-discipline / 6-min-film composition on the CIRCULAR ivory portal that
+  // comes after it (p3 "inside the circular frame"), NOT on the aerial; Source Chamber deeper in the chamber (p4)
+  const FREEZE_LS = 107.0, FREEZE_BP = 127.0, FREEZE_SC = 134.0, FILM_END = 143.5, SC_LOOP = 119.0;
 
   const film = document.getElementById('film');
   const audio = document.getElementById('audio');
@@ -413,12 +421,28 @@
   const bpFilm=document.getElementById('bpFilm'), bpNote=document.getElementById('bpNote');
   if(bpFilm) bpFilm.addEventListener('click',()=>{ bpNote.classList.add('show'); clearTimeout(bpFilm._t); bpFilm._t=setTimeout(()=>bpNote.classList.remove('show'),3400); });
 
+  /* ---- robustness: never leave a blank white screen if the video is blocked or stalls ---- */
+  const tapEnter=document.getElementById('tapEnter'), tapBtn=document.getElementById('tapBtn');
+  let watchIv=null;
+  function startWatchdog(){ clearInterval(watchIv); let ticks=0;
+    watchIv=setInterval(()=>{ ticks++;
+      if(film.currentTime>0.4 && !film.paused){ clearInterval(watchIv); return; }   // playing fine
+      if(film.error || film.networkState===3 || ticks>=6){ clearInterval(watchIv); tapEnter.classList.add('show'); }
+    },1000);
+  }
+  tapBtn.addEventListener('click',()=>{
+    tapEnter.classList.remove('show');
+    film.play().catch(()=>{ try{ film.load(); film.play(); }catch(e){ location.reload(); } });
+    startWatchdog();
+  });
+  film.addEventListener('error',()=>tapEnter.classList.add('show'));
+
   /* ---- boot ---- */
   function boot(){
     preload.classList.add('gone'); setTimeout(()=>preload.remove(),1300);
     layout();
     if(reduced){ film.currentTime=HOLD_PORTALS-0.05; playTo(HOLD_PORTALS,arrivePortals); return; }
-    show(skipBtn); playTo(HOLD_LOGO, arriveLogo);
+    show(skipBtn); playTo(HOLD_LOGO, arriveLogo); startWatchdog();
   }
   if(film.readyState>=2) boot(); else film.addEventListener('canplay',boot,{once:true});
   setTimeout(()=>{ if(preload.isConnected) boot(); }, 6000);
