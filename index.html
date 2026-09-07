@@ -108,7 +108,7 @@
   .disc span{display:block;font-family:var(--sans);font-weight:300;font-size:clamp(.7rem,1.05vw,.84rem);line-height:1.45;color:rgba(255,255,255,.92);margin-top:.35rem;text-shadow:0 1px 14px rgba(10,8,5,.65)}
   .bp-note{position:absolute;left:50%;bottom:-5%;transform:translateX(-50%);white-space:nowrap;font-family:var(--sans);font-style:italic;font-size:.72rem;color:rgba(255,255,255,.72);opacity:0;transition:opacity .3s}
   .bp-note.show{opacity:1}
-  @media (max-width:640px){.disc{width:40%}.disc b{font-size:.95rem}.disc span{font-size:.64rem}}
+  @media (max-width:640px){.bp-beat{padding:4vh 2vw}.bp{width:min(82vh,94vw)}.disc{width:30%}.disc b{font-size:.86rem}.disc span{font-size:.56rem;line-height:1.32}.bp-film .ft{font-size:.72rem}.bp-note{white-space:normal;width:80%;bottom:-9%}}
   /* ===== play-through freeze overlays (video keeps playing; freeze on a frame, text appears, click to continue) ===== */
   .freeze{position:fixed;inset:0;z-index:26;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10vh 6vw;opacity:0;transition:opacity 1s ease}
   .freeze.show{display:flex;opacity:1}
@@ -314,9 +314,12 @@
   /* ---- cover-map entrance overlays to the film's 16:9 frame ---- */
   const FILM_AR = 16/9;
   function layout(){
-    const W=innerWidth,H=innerHeight; let rw,rh;
-    if(W/H>FILM_AR){rw=W;rh=W/FILM_AR;}else{rh=H;rw=H*FILM_AR;}
-    const ox=(W-rw)/2, oy=(H-rh)/2;
+    const W=innerWidth,H=innerHeight; let rw,rh,ox,oy;
+    // On phones / portrait the 16:9 film would cover-crop so hard the side portals fall off-screen —
+    // letterbox (contain) there so the whole frame and both portals stay visible and tappable.
+    const contain = (W < H) || (W < 680);
+    if(contain){ film.style.objectFit='contain'; rw=W; rh=W/FILM_AR; ox=0; oy=(H-rh)/2; }
+    else { film.style.objectFit='cover'; if(W/H>FILM_AR){rw=W;rh=W/FILM_AR;}else{rh=H;rw=H*FILM_AR;} ox=(W-rw)/2; oy=(H-rh)/2; }
     document.querySelectorAll('.fmap').forEach(el=>{const fx=+el.dataset.fx,fy=+el.dataset.fy,fs=+el.dataset.fs;
       el.style.left=(ox+fx*rw)+'px'; el.style.top=(oy+fy*rh)+'px'; if(fs){const s=fs*rw;el.style.width=s+'px';el.style.height=s+'px';}});
   }
