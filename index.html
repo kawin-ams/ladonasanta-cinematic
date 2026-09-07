@@ -18,13 +18,11 @@
   body{font-family:var(--sans);font-weight:300;color:var(--ink-soft);-webkit-font-smoothing:antialiased}
   body.scrolling,html.scrolling{overflow:auto}
 
-  /* fixed backdrops */
-  #film{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#F6F1E9;z-index:1;transition:opacity .5s ease}
-  #bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:none;background:var(--paper)}
-  #veil{position:fixed;inset:0;z-index:1;pointer-events:none;display:none;
-    background:linear-gradient(180deg, rgba(15,13,9,.10), rgba(15,13,9,0) 24%, rgba(15,13,9,0) 76%, rgba(15,13,9,.16))}
-  body.scrolling #bg,body.scrolling #veil{display:block}
-  body.scrolling #film{display:none}
+  /* the film is the backdrop throughout — it keeps playing (freeze + click-to-continue), never a scroll-scrub */
+  #film{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#F6F1E9;z-index:1}
+  #veil{position:fixed;inset:0;z-index:2;pointer-events:none;display:none;
+    background:linear-gradient(180deg, rgba(14,12,8,.52), rgba(14,12,8,.34) 26%, rgba(14,12,8,.34) 72%, rgba(14,12,8,.58))}
+  body.scrolling #veil{display:block}
 
   /* white first-frame preloader */
   #preload{position:fixed;inset:0;z-index:40;background:#F8F4EC;display:flex;align-items:center;justify-content:center;transition:opacity 1.2s ease}
@@ -111,6 +109,23 @@
   .bp-note{position:absolute;left:50%;bottom:-5%;transform:translateX(-50%);white-space:nowrap;font-family:var(--sans);font-style:italic;font-size:.72rem;color:rgba(255,255,255,.72);opacity:0;transition:opacity .3s}
   .bp-note.show{opacity:1}
   @media (max-width:640px){.disc{width:40%}.disc b{font-size:.95rem}.disc span{font-size:.64rem}}
+  /* ===== play-through freeze overlays (video keeps playing; freeze on a frame, text appears, click to continue) ===== */
+  .freeze{position:fixed;inset:0;z-index:26;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10vh 6vw;opacity:0;transition:opacity 1s ease}
+  .freeze.show{display:flex;opacity:1}
+  .freeze.dark{background:radial-gradient(72% 72% at 50% 50%, rgba(12,10,7,.52), rgba(12,10,7,.22) 68%, rgba(12,10,7,0))}
+  .fbox{width:min(92vw,760px)}
+  .fbox.wash{padding:40px 56px;background:radial-gradient(64% 72% at 50% 50%, rgba(245,241,234,.92) 0%, rgba(245,241,234,.68) 48%, rgba(245,241,234,0) 84%)}
+  .fbox .eyebrow{color:var(--ink-soft)}
+  .fbox h1{margin:.2em 0 0}
+  .fbox .lede{color:var(--ink)} .fbox .body{color:var(--ink-soft)}
+  .continue.ink{border-bottom-color:rgba(20,19,14,.5);color:var(--ink)}
+  .continue.ink:hover{color:var(--muted);border-color:var(--muted)}
+  .filmframe{margin:2.2rem auto .4rem;display:flex;flex-direction:column;align-items:center;gap:.55rem}
+  .filmframe .fp{width:52px;height:52px;border-radius:50%;border:1px solid rgba(20,19,14,.5);display:flex;align-items:center;justify-content:center;color:var(--ink);font-size:.8rem;padding-left:3px}
+  .filmframe .fl{font-family:var(--serif);font-weight:400;font-size:1.35rem;color:var(--ink);line-height:1.1}
+  .filmframe .fs2{font-family:var(--sans);font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+  #bpFreeze .bp{margin:0 auto}
+  #bpFreeze .continue{position:absolute;left:50%;bottom:5%;transform:translateX(-50%)}
 
   /* button = design-system .lds-threshold (underline + arrow, no box) */
   .continue{display:inline-flex;align-items:center;justify-content:center;gap:1.25rem;cursor:pointer;
@@ -162,7 +177,6 @@
   <video id="film" playsinline preload="auto" muted poster="assets/poster-white.jpg">
     <source src="assets/entrance-master-1080.mp4" type="video/mp4">
   </video>
-  <canvas id="bg" aria-hidden="true"></canvas>
   <div id="veil"></div>
 
   <!-- entrance interactive overlays -->
@@ -209,14 +223,17 @@
   <!-- Living System title, synced to the hallway → terrace travel (web.pdf p1) -->
   <div id="lsTitle"><p class="eb">La Doña Santa Ark</p><h2>The Living System</h2></div>
 
-  <!-- ===== scroll content ===== -->
-  <main id="scroll">
-    <!-- THE LIVING SYSTEM — title already shown synced to the video; scroll opens on the clean villa then the text -->
-    <section class="beat"><div class="ondark rv"><p class="lede">A residence drawn, calculated, structured and awakened around one life.</p></div></section>
-    <section class="beat"><div class="ondark rv"><p class="body">La Doña Santa ARK unites architecture, development, engineering, construction, wellness and long-term residential intelligence within one uninterrupted process.</p></div></section>
-    <section class="beat"><div class="ondark rv"><p class="body">A single vision governs every discipline, preserving the integrity of the residence from its earliest conception through the way it is inhabited, protected and evolved across generations.</p></div></section>
-    <!-- web.pdf p3: the six-minute film inside the circular frame with the five disciplines around it, blueprint-connected -->
-    <section class="beat bp-beat"><div class="bp rv">
+  <!-- ===== play-through freeze overlays: the film keeps playing, freezes on a frame while text appears, click to continue (web.pdf p2–p4) ===== -->
+  <div class="freeze" id="lsFreeze"><div class="fbox wash">
+    <p class="eyebrow">La Doña Santa Ark</p>
+    <p class="lede">A residence drawn, calculated, structured and awakened around one life.</p>
+    <p class="body">La Doña Santa ARK unites architecture, development, engineering, construction, wellness and long-term residential intelligence within one uninterrupted process.</p>
+    <p class="body">A single vision governs every discipline, preserving the integrity of the residence from its earliest conception through the way it is inhabited, protected and evolved across generations.</p>
+    <button class="continue ink" data-next="bp" type="button">Continue</button>
+  </div></div>
+
+  <div class="freeze dark" id="bpFreeze">
+    <div class="bp">
       <svg class="bp-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
         <g stroke="rgba(255,255,255,.08)" stroke-width=".2" fill="none"><line x1="0" y1="50" x2="100" y2="50"/><line x1="50" y1="0" x2="50" y2="100"/><circle cx="50" cy="50" r="34"/></g>
         <g stroke="rgba(255,246,230,.5)" stroke-width=".3" fill="none" stroke-dasharray="1.4 1.2">
@@ -238,13 +255,20 @@
       <div class="disc" style="left:29%;top:99%;transform:translate(-50%,-100%)"><b>Environment</b><span>Land, water, air and living systems in harmony.</span></div>
       <div class="disc" style="left:17%;top:26%;transform:translate(-50%,-50%)"><b>Legacy</b><span>Timeless value designed to evolve across generations.</span></div>
       <div class="bp-note" id="bpNote">The six-minute film will play here — to be provided by La Doña Santa.</div>
-    </div></section>
-    <section class="beat"><div class="ondark rv"><p class="closing">The floor plan slows. The frame becomes a threshold.</p><button class="continue" id="toChamber" type="button">Enter the Source Chamber</button></div></section>
+    </div>
+    <button class="continue" data-next="sc" type="button">Continue</button>
+  </div>
 
-    <!-- THE SOURCE CHAMBER -->
-    <section class="beat" id="chamberTop"><div class="wash rv"><p class="eyebrow">02 — 05</p><h1>The Source Chamber</h1></div></section>
-    <section class="beat"><div class="ondark rv"><p class="lede">Before La Doña Santa became architecture, it became a responsibility.</p></div></section>
-    <section class="beat"><div class="ondark rv"><p class="chapter-kicker">The Core</p><h2 class="chapter-title">Inside La Doña Santa</h2><p class="filmnote">The Complete Interview Film — 40:00</p></div></section>
+  <div class="freeze" id="scFreeze"><div class="fbox wash">
+    <p class="eyebrow">02 — 05</p>
+    <h1>The Source Chamber</h1>
+    <p class="body">Before La Doña Santa became architecture, it became a responsibility. A responsibility to create environments whose purpose extends far beyond the visible — conceived to support the body, quiet the nervous system, preserve absolute privacy, and bring human life, architecture and nature into a more coherent whole.</p>
+    <div class="filmframe"><span class="fp">&#9654;</span><span class="fl">Inside La Doña Santa</span><span class="fs2">The Complete Interview Film — 40:00</span></div>
+    <button class="continue ink" data-next="chapters" type="button">Enter the chambers</button>
+  </div></div>
+
+  <!-- Source Chamber chapters — revealed by scroll while the film keeps playing behind them (web.pdf p4) -->
+  <main id="scroll">
     <section class="beat"><div class="ondark rv"><p class="chapter-kicker">Architecture once knew more</p><img class="scphoto rv" src="sc-img/space.jpg" alt="" loading="lazy"><h2 class="chapter-title">Space is never neutral</h2><p class="chapter-body">La Doña Santa was born from an understanding that is both ancient and urgently contemporary: space is never neutral. Light, water, sound, material, proportion, air, privacy and natural rhythm do not merely compose an atmosphere. They continuously influence how a person feels, sleeps, thinks, recovers, works, connects and lives.</p><p class="chapter-body">A residence therefore becomes an active force within life, whether intentionally designed or otherwise.</p></div></section>
     <section class="beat"><div class="ondark rv"><img class="scphoto rv" src="sc-img/before.jpg" alt="" loading="lazy"><h2 class="chapter-title">Before buildings became products</h2><p class="chapter-body">Across civilizations, architecture integrated observation of nature — mathematics, astronomy, geometry, proportion, cardinal orientation, solar and lunar cycles, prevailing winds, water, terrain and material behavior informed structure placement and formation.</p><p class="chapter-body">Builders studied shadow movement, observed seasons and sky behavior, and used geometry to establish relationships between human beings, structures and surrounding environments. Sacred architecture emerged from the belief that buildings carried consequence through orientation, proportion, sequence and spatial rhythm.</p></div></section>
     <section class="beat"><div class="ondark rv"><img class="scphoto rv" src="sc-img/memory.jpg" alt="" loading="lazy"><h2 class="chapter-title">The biological memory of nature</h2><p class="chapter-body">Human settlements were historically formed around courtyards, gardens, water, natural materials, changing light, protected thresholds and direct contact with the living world.</p><p class="chapter-body">Biophilia gave a contemporary name to an ancient biological reality: the human being is not separate from nature. For La Doña Santa, biophilia represents restoration of fundamental relationships between human biology, architecture and the natural world — not merely aesthetic categorization.</p></div></section>
@@ -265,10 +289,8 @@
 <script>
 (() => {
   const HOLD_LOGO = 62.0, HOLD_PORTALS = 74.0, WORLD_ARRIVE = 97.0;
-  const LIVING = 150, SOURCE = 256, TOTAL = LIVING + SOURCE;   // combined scroll frames
-  const frameURL = i => i < LIVING
-      ? 'living-frames/f_' + String(i+1).padStart(3,'0') + '.jpg'
-      : 'source-frames/f_' + String(i-LIVING+1).padStart(3,'0') + '.jpg';
+  // freeze points in the film where it pauses and text appears (click to continue)
+  const FREEZE_LS = 102.0, FREEZE_BP = 109.0, FREEZE_SC = 118.0, FILM_END = 143.5, SC_LOOP = 112.0;
 
   const film = document.getElementById('film');
   const audio = document.getElementById('audio');
@@ -277,8 +299,8 @@
   const copyLogo = document.getElementById('copyLogo'), copyPortals = document.getElementById('copyPortals');
   const descArk = document.getElementById('descArk'), descGuardian = document.getElementById('descGuardian');
   const skipBtn = document.getElementById('skip'), soundBtn = document.getElementById('sound');
-  const cv = document.getElementById('bg'), ctx = cv.getContext('2d', { alpha:false });
   const progLabel = document.getElementById('progLabel'), bar = document.querySelector('#progress .bar i');
+  const freezes = { ls:document.getElementById('lsFreeze'), bp:document.getElementById('bpFreeze'), sc:document.getElementById('scFreeze') };
   const arkGate = document.getElementById('arkGate'), arkForm = document.getElementById('arkForm'),
         arkCode = document.getElementById('arkCode'), arkErr = document.getElementById('arkErr'),
         arkBack = document.getElementById('arkBack'), lsTitle = document.getElementById('lsTitle');
@@ -326,7 +348,7 @@
     // ARK — keep the film playing through the portal to the arrival frame, then hand to scroll IN-PAGE (no navigation).
     // During the travel, the Living System title is shown then fades before the terrace (see timeupdate).
     arkTravel = true;
-    playTo(WORLD_ARRIVE, ()=>{ arkTravel=false; lsTitle.style.opacity=0; film.currentTime=WORLD_ARRIVE; enterScroll(); });
+    playTo(WORLD_ARRIVE, ()=>{ arkTravel=false; lsTitle.style.opacity=0; startWorld(); });
   }
 
   /* ARK registration gate (web.pdf p1): the ARK portal opens a code section before travel */
@@ -356,42 +378,33 @@
   skipBtn.addEventListener('click',()=>{ if(phase==='opening'||phase==='holdLogo'||phase==='toPortals'){
     hide(hitMain); hide(copyLogo); film.currentTime=HOLD_PORTALS-0.05; phase='toPortals'; playTo(HOLD_PORTALS,arrivePortals); } });
 
-  /* ---- combined scroll-scrub backdrop (living + source frames) ---- */
-  const imgs = new Array(TOTAL);
-  let W=0,H=0,dpr=1,cur=0,target=0,primed=false;
-  function resize(){ dpr=Math.min(devicePixelRatio||1,2); W=innerWidth; H=innerHeight;
-    cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr); cv.style.width=W+'px'; cv.style.height=H+'px';
-    ctx.setTransform(dpr,0,0,dpr,0,0); paint(cur); }
-  function nearest(i){ i=Math.max(0,Math.min(TOTAL-1,Math.round(i))); if(imgs[i]&&imgs[i].__ok)return imgs[i];
-    for(let d=1;d<TOTAL;d++){const a=imgs[i-d],b=imgs[i+d]; if(a&&a.__ok)return a; if(b&&b.__ok)return b;} return null; }
-  function paint(idx){ const im=nearest(idx); if(!im)return; const iw=im.naturalWidth,ih=im.naturalHeight;
-    const s=Math.max(W/iw,H/ih),w=iw*s,h=ih*s; ctx.drawImage(im,(W-w)/2,(H-h)/2,w,h); }
-  function loadFrames(){ for(let i=0;i<TOTAL;i++){ const im=new Image(); im.decoding='async';
-    im.onload=()=>{ im.__ok=true; if(scrollActive && Math.abs(cur-i)<3) paint(cur); }; im.src=frameURL(i); imgs[i]=im; } }
-  function maxScroll(){ return Math.max(1, document.documentElement.scrollHeight - innerHeight); }
-  function onScroll(){ const p=scrollY/maxScroll(); target=p*(TOTAL-1); bar.style.width=(p*100)+'%';
-    progLabel.textContent = (target < LIVING-4) ? 'The Living System' : 'The Source Chamber'; }
-  let scrollActive=false;
-  function scrollLoop(){ if(!scrollActive)return; cur+=(target-cur)*0.16; if(Math.abs(target-cur)>0.02) paint(cur); requestAnimationFrame(scrollLoop); }
+  /* ---- play-through: the film keeps playing and freezes at each text point (web.pdf p2–p4) ---- */
+  const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); }),{threshold:.28});
+  function showFreeze(k){ freezes[k].classList.add('show'); }
+  function hideFreeze(k){ freezes[k].classList.remove('show'); }
 
-  const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); }),{threshold:.3});
+  // after ARK arrival the film continues; it pauses at the aerial for the Living System text
+  function startWorld(){ phase='world'; progLabel.textContent='The Living System'; playTo(FREEZE_LS, ()=>showFreeze('ls')); }
 
-  function enterScroll(){
-    phase='scroll';
-    resize();                 // size the canvas
-    paint(0);                 // frame 0 == living f_001 == film @97s  → seamless
-    document.body.classList.add('scrolling');
-    document.documentElement.classList.add('scrolling');
-    document.querySelectorAll('.rv').forEach(el=>io.observe(el));
-    addEventListener('scroll', onScroll, {passive:true});
-    addEventListener('resize', ()=>{ resize(); onScroll(); });
-    window.scrollTo(0,0); onScroll();
-    scrollActive=true; requestAnimationFrame(scrollLoop);
+  document.querySelectorAll('.freeze .continue').forEach(btn=>btn.addEventListener('click',()=>{
+    const next=btn.dataset.next;
+    if(next==='bp'){ hideFreeze('ls'); playTo(FREEZE_BP, ()=>showFreeze('bp')); }
+    else if(next==='sc'){ hideFreeze('bp'); progLabel.textContent='The Source Chamber'; playTo(FREEZE_SC, ()=>showFreeze('sc')); }
+    else if(next==='chapters'){ hideFreeze('sc'); enterChapters(); }
+  }));
+
+  let inChapters=false;
+  function enterChapters(){
+    inChapters=true; phase='chapters';
+    document.body.classList.add('scrolling'); document.documentElement.classList.add('scrolling');
+    document.querySelectorAll('#scroll .rv').forEach(el=>io.observe(el));
+    window.scrollTo(0,0);
+    film.playbackRate=0.6; film.play().catch(()=>{});   // the video keeps playing behind the chapters
+    addEventListener('scroll',()=>{ if(!inChapters)return; const m=Math.max(1,document.documentElement.scrollHeight-innerHeight); bar.style.width=((scrollY/m)*100)+'%'; },{passive:true});
   }
+  // loop the source-chamber footage while the chapters are being read
+  film.addEventListener('timeupdate',()=>{ if(inChapters && film.currentTime>=FILM_END){ film.currentTime=SC_LOOP; } });
 
-  document.getElementById('toChamber').addEventListener('click',()=>{
-    document.getElementById('chamberTop').scrollIntoView({behavior:'smooth'});
-  });
   document.getElementById('toVault').addEventListener('click',()=>{
     document.body.style.transition='opacity .8s ease'; document.body.style.opacity='0';
     setTimeout(()=>{ location.href='vault.html'; }, 800);
@@ -402,8 +415,8 @@
   /* ---- boot ---- */
   function boot(){
     preload.classList.add('gone'); setTimeout(()=>preload.remove(),1300);
-    layout(); loadFrames();          // start pulling the scroll frames in the background
-    if(reduced){ enterScroll(); return; }
+    layout();
+    if(reduced){ film.currentTime=HOLD_PORTALS-0.05; playTo(HOLD_PORTALS,arrivePortals); return; }
     show(skipBtn); playTo(HOLD_LOGO, arriveLogo);
   }
   if(film.readyState>=2) boot(); else film.addEventListener('canplay',boot,{once:true});
