@@ -175,7 +175,7 @@
 </head>
 <body>
   <video id="film" playsinline preload="auto" muted poster="assets/poster-white.jpg">
-    <source src="assets/entrance-web.mp4?v=4" type="video/mp4">
+    <source src="assets/entrance-hi.mp4?v=5" type="video/mp4">
   </video>
   <div id="veil"></div>
 
@@ -199,7 +199,6 @@
   <div class="fmap desc" id="descGuardian" data-fx="0.780" data-fy="0.915"><b>Guardian</b><span>Nurturing &amp; lifelong stewardship</span></div>
 
   <button class="ctl" id="skip">Skip</button>
-  <button class="ctl" id="sound"><span class="dot"></span><span>Sound</span></button>
   <div id="preload"><div class="mark"></div></div>
   <audio id="audio" preload="auto">
     <source src="assets/entrance-audio.opus" type="audio/ogg; codecs=opus">
@@ -288,11 +287,11 @@
 
 <script>
 (() => {
-  const HOLD_LOGO = 62.0, HOLD_PORTALS = 74.0, WORLD_ARRIVE = 97.0;
+  const HOLD_LOGO = 62.0, HOLD_PORTALS = 74.0, ARK_PORTAL = 86.0, WORLD_ARRIVE = 97.0;
   // freeze points in the film where it pauses and text appears (click to continue)
   // LS text on the settled aerial (p2); the 5-discipline / 6-min-film composition on the CIRCULAR ivory portal that
   // comes after it (p3 "inside the circular frame"), NOT on the aerial; Source Chamber deeper in the chamber (p4)
-  const FREEZE_LS = 107.0, FREEZE_BP = 127.0, FREEZE_SC = 134.0, FILM_END = 143.5, SC_LOOP = 119.0;
+  const FREEZE_LS = 102.0, FREEZE_BP = 121.0, FREEZE_SC = 134.0, FILM_END = 143.5, SC_LOOP = 119.0;
 
   const film = document.getElementById('film');
   const audio = document.getElementById('audio');
@@ -300,7 +299,7 @@
   const hitMain = document.getElementById('hitMain'), hitArk = document.getElementById('hitArk'), hitGuardian = document.getElementById('hitGuardian');
   const copyLogo = document.getElementById('copyLogo'), copyPortals = document.getElementById('copyPortals');
   const descArk = document.getElementById('descArk'), descGuardian = document.getElementById('descGuardian');
-  const skipBtn = document.getElementById('skip'), soundBtn = document.getElementById('sound');
+  const skipBtn = document.getElementById('skip');
   const progLabel = document.getElementById('progLabel'), bar = document.querySelector('#progress .bar i');
   const freezes = { ls:document.getElementById('lsFreeze'), bp:document.getElementById('bpFreeze'), sc:document.getElementById('scFreeze') };
   const arkGate = document.getElementById('arkGate'), arkForm = document.getElementById('arkForm'),
@@ -325,10 +324,9 @@
   }
   addEventListener('resize', layout); layout();
 
-  /* ---- audio one-shot at logo ---- */
+  /* ---- audio: plays ONCE, only when the user clicks the central circle (hitMain). Nowhere else. ---- */
   function signature(){ if(audioStarted)return; audioStarted=true; audio.currentTime=0;
-    audio.play().then(()=>soundBtn.classList.add('on')).catch(()=>{audioStarted=false;}); }
-  soundBtn.addEventListener('click',()=>{ if(!audioStarted){signature();return;} audio.muted=!audio.muted; soundBtn.classList.toggle('on',!audio.muted); });
+    audio.play().catch(()=>{audioStarted=false;}); }
 
   /* ---- entrance playback holds ---- */
   function playTo(t,onArrive){ gate=t; film._onArrive=onArrive; film.play().catch(()=>{}); }
@@ -341,7 +339,7 @@
     if(gate&&film.currentTime>=gate){ const cb=film._onArrive; gate=0; film._onArrive=null; film.pause(); if(cb)cb(); }
   });
 
-  function arriveLogo(){ phase='holdLogo'; hitMain.classList.add('active'); show(hitMain); show(copyLogo); signature(); }
+  function arriveLogo(){ phase='holdLogo'; hitMain.classList.add('active'); show(hitMain); show(copyLogo); }
   function arrivePortals(){ phase='holdPortals'; hitArk.classList.add('active'); hitGuardian.classList.add('active');
     show(hitArk); show(hitGuardian); show(copyPortals); show(descArk); show(descGuardian); }
 
@@ -357,14 +355,18 @@
   }
 
   /* ARK registration gate (web.pdf p1): the ARK portal opens a code section before travel */
+  // Click ARK → fly the camera through the portal to the circular reveal frame (~86s), freeze there,
+  // THEN present the access code over that frozen frame (per client: code appears after the video freezes on the portal).
   function openArkGate(){
     if(phase!=='holdPortals') return;
-    signature();                                   // the entry voice plays on entering
+    phase='toArkGate';
     hide(hitArk); hide(hitGuardian); hide(copyPortals); hide(descArk); hide(descGuardian);
-    arkGate.classList.add('show'); setTimeout(()=>arkCode.focus(),300);
+    playTo(ARK_PORTAL, ()=>{ phase='arkGate'; arkGate.classList.add('show'); setTimeout(()=>arkCode.focus(),300); });
   }
   function closeArkGate(){
     arkGate.classList.remove('show');
+    // step back to the portal choice (rewind past the fly-through)
+    film.currentTime=HOLD_PORTALS; phase='holdPortals';
     show(hitArk); show(hitGuardian); show(copyPortals); show(descArk); show(descGuardian);
   }
   arkForm.addEventListener('submit',e=>{ e.preventDefault();
