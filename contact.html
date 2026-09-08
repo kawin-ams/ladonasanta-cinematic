@@ -267,8 +267,43 @@
   modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show');});
   addEventListener('keydown',e=>{if(e.key==='Escape')modal.classList.remove('show');});
 
-  document.getElementById('entryForm').addEventListener('submit',e=>{
+  /* ── EMAIL ACTIVATION ───────────────────────────────────────────────
+     Leave ENDPOINT empty and the form confirms on-screen only (current
+     behaviour). To send the automatic confirmation emails the client
+     asked for, create a form endpoint (Formspree: https://formspree.io —
+     free, works on a static Vercel site) and paste its URL below, e.g.
+     "https://formspree.io/f/xxxxxxxx". In Formspree, set the autoresponder
+     to the client's email and CC the La Doña Santa office inbox + the
+     representative email captured in the form. Approved autoresponder copy:
+
+       Subject: Welcome to La Doña Santa.
+       Your request has been received and entered into our private review
+       system. You are now invited to submit your preferred date and time
+       for your first official meeting at the La Doña Santa office in
+       Thailand. Your appointment will be reviewed internally and confirmed
+       upon approval.
+       Kind regards, La Doña Santa — Private Client Division
+
+     The secure meeting link emailed to approved clients points to:
+       /meeting.html   (the private meeting-selection interface)
+     ─────────────────────────────────────────────────────────────────── */
+  const ENDPOINT = "";
+
+  document.getElementById('entryForm').addEventListener('submit',async e=>{
     e.preventDefault();
+    const v=id=>document.getElementById(id).value.trim();
+    const data={
+      _subject:'La Doña Santa — private entry review',
+      stage:'private-entry',
+      first_name:v('fn'), last_name:v('ln'), country:v('country'),
+      client_email:v('email'), representative_name:v('repname'),
+      representative_email:v('repemail'), group_access_code:v('code'),
+      note:v('note')
+    };
+    if(ENDPOINT){
+      try{ await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)}); }
+      catch(_){ /* still confirm on screen; delivery handled server-side */ }
+    }
     e.target.querySelectorAll('input,textarea,.submit').forEach(el=>el.style.display='none');
     document.getElementById('confirm').classList.add('show');
     document.getElementById('confirm').scrollIntoView({behavior:'smooth',block:'center'});

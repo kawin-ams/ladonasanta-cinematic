@@ -1,49 +1,166 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>La Doña Santa — Private Meeting Access</title>
-<link rel="stylesheet" href="site.css" />
-<link rel="stylesheet" href="pages.css" />
-<link rel="stylesheet" href="lds-shared.css" />
+<style>
+  @font-face{font-family:'Ortica Linear';src:url('uploads/OrticaLinear-Light.otf') format('opentype');font-weight:300;font-display:swap}
+  @font-face{font-family:'Ortica Linear';src:url('uploads/OrticaLinear-Regular.otf') format('opentype');font-weight:400;font-display:swap}
+  @font-face{font-family:'Cormorant Brand';src:url('uploads/Cormorant-Light.ttf') format('truetype');font-weight:300;font-display:swap}
+  @font-face{font-family:'Cormorant Brand';src:url('uploads/Cormorant-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+  :root{--serif:'Cormorant Brand','Cormorant',serif;--sans:'Ortica Linear','Jost',sans-serif;
+    --ink:#211D16;--ink-soft:#4A463D;--muted:#8A8172;--champagne:#B08D57;--line:#D8CFBE;--paper:#F3EEE4;--glass:rgba(255,253,248,.62)}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:var(--sans);font-weight:300;color:var(--ink-soft);-webkit-font-smoothing:antialiased;overflow-x:hidden;background:#F3EEE4}
+
+  /* alive ivory hall background — same language as Contact */
+  .hall{position:fixed;inset:0;z-index:0;background:url('contact-img/hall.jpg') center/cover no-repeat;transform:scale(1.06);animation:hallzoom 34s ease-in-out infinite alternate}
+  .hall::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(243,238,228,.78),rgba(243,238,228,.56) 30%,rgba(243,238,228,.66) 72%,rgba(243,238,228,.92))}
+  @keyframes hallzoom{0%{transform:scale(1.06) translateY(0)}100%{transform:scale(1.14) translateY(-2%)}}
+  .motes{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+  .mote{position:absolute;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle,rgba(255,246,224,.9),rgba(255,246,224,0));animation:float linear infinite}
+  @keyframes float{0%{transform:translateY(20vh) scale(.6);opacity:0}20%{opacity:.9}100%{transform:translateY(-90vh) scale(1);opacity:0}}
+
+  .home{position:fixed;top:clamp(16px,2vw,24px);left:clamp(18px,4vw,44px);z-index:50;text-decoration:none;font-family:var(--serif);font-size:clamp(.95rem,1.3vw,1.12rem);letter-spacing:.16em;text-transform:uppercase;color:var(--ink)}
+  .home small{display:block;font-family:var(--sans);font-size:.56rem;letter-spacing:.3em;color:var(--muted);margin-top:2px}
+  .topright{position:fixed;top:clamp(18px,2vw,26px);right:clamp(18px,4vw,44px);z-index:50;font-family:var(--sans);font-size:.62rem;letter-spacing:.32em;text-transform:uppercase;color:var(--muted)}
+
+  .wrap{position:relative;z-index:3;max-width:60rem;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+  .rv{opacity:0;transform:translateY(22px);transition:opacity 1s ease,transform 1s ease}
+  .rv.in{opacity:1;transform:none}
+
+  .stage{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:14vh 0;text-align:center}
+  .kicker{font-family:var(--sans);font-size:.72rem;letter-spacing:.42em;text-transform:uppercase;color:var(--champagne)}
+  h1{font-family:var(--serif);font-weight:300;font-size:clamp(2.2rem,5.4vw,3.8rem);line-height:1.02;letter-spacing:.04em;margin:.5rem 0 0;color:var(--ink);text-wrap:balance}
+  .lede{font-family:var(--sans);font-weight:300;font-size:clamp(.95rem,1.3vw,1.08rem);line-height:1.8;max-width:52ch;margin:1.5rem auto 0;color:var(--ink-soft)}
+
+  form{max-width:46rem;margin:3.2rem auto 0;display:grid;grid-template-columns:1fr 1fr;gap:1rem;text-align:left}
+  .field{position:relative}
+  .field label{position:absolute;left:2.6rem;top:50%;transform:translateY(-50%);font-family:var(--sans);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);pointer-events:none;transition:.2s;background:transparent}
+  .field.area label{top:1.1rem;transform:none}
+  .field .ic{position:absolute;left:1rem;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--muted);opacity:.7;pointer-events:none}
+  .field.area .ic{top:1.1rem;transform:none}
+  input,textarea,select{width:100%;font-family:var(--sans);font-weight:300;font-size:.95rem;color:var(--ink);background:var(--glass);border:1px solid var(--line);border-radius:0;padding:1.05rem 1rem 1.05rem 2.6rem;transition:border-color .3s,background .3s;-webkit-appearance:none;appearance:none}
+  select{cursor:pointer;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238A8172' stroke-width='2'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 1rem center}
+  textarea{min-height:6.5rem;resize:vertical;padding-top:1.1rem}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--champagne);background:rgba(255,254,250,.82)}
+  /* float-label hides once a value is present (date/time always count as filled, so keep their labels static above) */
+  input:focus + label,input:not(:placeholder-shown) + label,textarea:focus + label,textarea:not(:placeholder-shown) + label{opacity:0;visibility:hidden}
+  .field.fixed label{position:static;transform:none;display:block;margin:0 0 .5rem;left:auto}
+  .field.fixed input,.field.fixed select{padding-left:1rem}
+  .field.fixed .ic{display:none}
+  .full{grid-column:1/-1}
+  .submit{grid-column:1/-1;justify-self:center;margin-top:1rem;display:inline-flex;align-items:center;gap:1.1rem;cursor:pointer;min-height:3.4rem;padding:1rem 3rem;border:1px solid var(--ink);border-radius:0;background:transparent;color:var(--ink);font-family:var(--sans);font-weight:400;font-size:.78rem;letter-spacing:.3em;text-transform:uppercase;transition:.25s}
+  .submit::after{content:"→";font-size:1rem}
+  .submit:hover{background:var(--ink);color:var(--paper)}
+
+  /* confirmation (post-submit) — carries the client's approved automated wording */
+  .done{display:none;max-width:44rem;margin:0 auto;text-align:center}
+  .done.show{display:block}
+  .done .seal{width:54px;height:54px;margin:0 auto 1.6rem;color:var(--champagne)}
+  .done h2{font-family:var(--serif);font-weight:300;font-size:clamp(1.9rem,4vw,2.8rem);letter-spacing:.04em;color:var(--ink);margin:0}
+  .done p{font-family:var(--sans);font-weight:300;font-size:clamp(.95rem,1.3vw,1.06rem);line-height:1.85;color:var(--ink-soft);margin:1.3rem auto 0;max-width:46ch}
+  .done .sign{margin-top:2rem;font-family:var(--serif);font-size:1.15rem;color:var(--ink)}
+  .done .sign small{display:block;font-family:var(--sans);font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);margin-top:.4rem}
+
+  .microlabels{display:flex;justify-content:space-between;gap:1rem;max-width:60rem;margin:5vh auto 0;font-family:var(--sans);font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);flex-wrap:wrap;justify-content:center;text-align:center}
+  .microlabels span{flex:1 1 auto}
+
+  @media (max-width:640px){ form{grid-template-columns:1fr} .microlabels{gap:.4rem} }
+  @media (prefers-reduced-motion:reduce){.rv{transition:opacity .3s;transform:none}.hall,.mote{animation:none}}
+  @media (max-width:600px){ .topright{display:none} .home{font-size:1rem} }
+</style>
 </head>
 <body>
-  <div class="pchrome"><a href="index.html" aria-label="Return to the entrance" style="display:inline-flex;line-height:0"><img src="uploads/01 Logo - Group (Final Ver 2).png" alt="La Doña Santa" /></a><span class="tag">Private Meeting Access</span></div>
+  <div class="hall" aria-hidden="true"></div>
+  <div class="motes" id="motes" aria-hidden="true"></div>
+  <a class="home" href="index.html">La Doña Santa<small>Private Meeting Access</small></a>
+  <span class="topright">Private Living System</span>
 
-  <main class="container">
-    <div id="form-view">
-      <p class="eyebrow">Private Meeting Access</p>
-      <h1>Propose a meeting time</h1>
-      <p class="lead" style="margin-top:1rem">Suggest a meeting window that suits you. The La Doña Santa team will review the request and confirm directly with you and your authorized representative.</p>
+  <section class="stage">
+    <div class="wrap">
+      <!-- FORM VIEW -->
+      <div id="formView">
+        <p class="kicker rv">Private Meeting Access</p>
+        <h1 class="rv">Propose your first meeting</h1>
+        <p class="lede rv">Your request has been received and entered into our private review system. You are now invited to submit your preferred date and time for your first official meeting at the La Doña Santa office in Thailand. Your appointment will be reviewed internally and confirmed upon approval.</p>
 
-      <form class="form" onsubmit="return sendProposed(event)">
-        <div class="field"><label for="d">Preferred date</label><input id="d" type="date" /></div>
-        <div class="field"><label for="t">Preferred time</label><input id="t" type="time" /></div>
-        <div class="field"><label for="tz">Time zone</label><input id="tz" type="text" placeholder="e.g. GMT+7" /></div>
-        <div class="field"><label for="mf">Meeting format</label>
-          <select id="mf"><option>In Person — La Doña Santa Office</option><option>Secure Video Meeting</option><option>To Be Confirmed</option></select></div>
-        <div class="field"><label for="cn">Client name</label><input id="cn" type="text" /></div>
-        <div class="field"><label for="ce">Client email</label><input id="ce" type="email" /></div>
-        <div class="field full"><label for="re">Representative email</label><input id="re" type="email" /></div>
-        <div class="field full"><label for="note">Optional scheduling note</label><textarea id="note"></textarea></div>
-        <div class="field full"><button class="btn block" type="submit">Send proposed time</button></div>
-      </form>
+        <form id="meetForm" novalidate>
+          <div class="field fixed"><label for="d">Preferred date</label><input id="d" type="date"></div>
+          <div class="field fixed"><label for="t">Preferred time</label><input id="t" type="time"></div>
+          <div class="field"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg><input id="tz" placeholder=" "><label for="tz">Time zone (e.g. GMT+7)</label></div>
+          <div class="field fixed"><label for="mf">Meeting format</label>
+            <select id="mf"><option>In person — La Doña Santa office, Thailand</option><option>Secure video meeting</option><option>To be confirmed</option></select></div>
+          <div class="field"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><input id="cn" placeholder=" " autocomplete="name"><label for="cn">Client name</label></div>
+          <div class="field"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 7l9 6 9-6"/></svg><input id="ce" type="email" placeholder=" " autocomplete="email"><label for="ce">Client email</label></div>
+          <div class="field full"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 7l9 6 9-6"/></svg><input id="re" type="email" placeholder=" "><label for="re">Representative email (if applicable)</label></div>
+          <div class="field area full"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16M4 10h16M4 15h10"/></svg><textarea id="note" placeholder=" "></textarea><label for="note">Optional scheduling note</label></div>
+          <button class="submit" type="submit">Send proposed time</button>
+        </form>
+      </div>
+
+      <!-- CONFIRMATION VIEW -->
+      <div class="done" id="doneView">
+        <svg class="seal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>
+        <h2>We will confirm your meeting directly</h2>
+        <p>Your preferred meeting window has been received and shared with your authorized representative. The La Doña Santa Private Client Division will review the request and confirm the final appointment upon approval.</p>
+        <div class="sign">La Doña Santa<small>Private Client Division</small></div>
+      </div>
+
+      <div class="microlabels rv">
+        <span>Discretion · Protection · Purpose</span>
+        <span>Built in harmony · Aligned for life</span>
+      </div>
     </div>
-
-    <div id="done-view" style="display:none">
-      <p class="eyebrow">Proposal received</p>
-      <h1>We will confirm your meeting directly</h1>
-      <p class="lead" style="margin-top:1rem">Your preferred meeting window has been received and shared with your authorized representative. The La Doña Santa Private Client Division will confirm the final appointment after internal review.</p>
-    </div>
-  </main>
+  </section>
 
 <script>
-  function sendProposed(e){ e.preventDefault();
-    document.getElementById('form-view').style.display='none';
-    document.getElementById('done-view').style.display='block';
-    window.scrollTo(0,0); return false; }
+  /* ── EMAIL ACTIVATION ───────────────────────────────────────────────
+     Leave ENDPOINT empty and the page confirms on-screen only (current
+     behaviour). To send real emails, create a form endpoint (Formspree:
+     https://formspree.io  →  free, works on a static Vercel site) and
+     paste its URL below, e.g. "https://formspree.io/f/xxxxxxxx".
+     In the Formspree form settings, set the autoresponder to the client
+     and CC the La Doña Santa office inbox + representative. Approved
+     autoresponder copy to paste there:
+
+       Subject: Welcome to La Doña Santa.
+       Your request has been received and entered into our private review
+       system. You are now invited to submit your preferred date and time
+       for your first official meeting at the La Doña Santa office in
+       Thailand. Your appointment will be reviewed internally and
+       confirmed upon approval.
+       Kind regards, La Doña Santa — Private Client Division
+     ─────────────────────────────────────────────────────────────────── */
+  const ENDPOINT = "";
+
+  const motes=document.getElementById('motes');
+  for(let i=0;i<20;i++){const m=document.createElement('div');m.className='mote';m.style.left=(Math.random()*100)+'%';const d=6+Math.random()*10;m.style.animationDuration=d+'s';m.style.animationDelay=(-Math.random()*d)+'s';const s=.5+Math.random()*1.6;m.style.transform='scale('+s+')';m.style.opacity=.3+Math.random()*.5;motes.appendChild(m);}
+
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.14});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+  document.getElementById('meetForm').addEventListener('submit',async e=>{
+    e.preventDefault();
+    const v=id=>document.getElementById(id).value.trim();
+    const data={
+      _subject:'La Doña Santa — proposed meeting time',
+      stage:'meeting-proposal',
+      preferred_date:v('d'), preferred_time:v('t'), time_zone:v('tz'),
+      meeting_format:document.getElementById('mf').value,
+      client_name:v('cn'), client_email:v('ce'),
+      representative_email:v('re'), scheduling_note:v('note')
+    };
+    if(ENDPOINT){
+      try{ await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)}); }
+      catch(_){ /* still show confirmation; email ret/queue handled server-side */ }
+    }
+    document.getElementById('formView').style.display='none';
+    const done=document.getElementById('doneView'); done.classList.add('show');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
 </script>
-<script src="lds-shared.js"></script>
 </body>
 </html>
