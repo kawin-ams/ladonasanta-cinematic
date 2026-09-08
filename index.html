@@ -115,6 +115,11 @@
   .freeze.dark{background:radial-gradient(72% 72% at 50% 50%, rgba(12,10,7,.52), rgba(12,10,7,.22) 68%, rgba(12,10,7,0))}
   /* full-screen even scrim (no localized "cut-off" edge) so white type reads over the bright aerial/chamber */
   .freeze.scrim{background:linear-gradient(180deg, rgba(12,10,7,.5), rgba(12,10,7,.3) 28%, rgba(12,10,7,.3) 72%, rgba(12,10,7,.54))}
+  /* LS freeze is pinned to an exact still of the last warm frame (2455) so the shown frame
+     never depends on where the live video happens to pause — no cut-flash, no off-by-one */
+  #lsFreeze{background:
+    linear-gradient(180deg, rgba(12,10,7,.5), rgba(12,10,7,.3) 28%, rgba(12,10,7,.3) 72%, rgba(12,10,7,.54)),
+    url('assets/ls-freeze.jpg') center/cover no-repeat}
   .fbox{width:min(92vw,760px)}
   .fbox .eyebrow{color:rgba(255,255,255,.85);text-shadow:0 1px 20px rgba(10,8,5,.6)}
   .fbox h1{margin:.2em 0 0;color:#fff;text-shadow:0 1px 30px rgba(10,8,5,.55)}
@@ -294,7 +299,7 @@
   // freeze points in the film where it pauses and text appears (click to continue)
   // LS text on the settled aerial (p2); the 5-discipline / 6-min-film composition on the CIRCULAR ivory portal that
   // comes after it (p3 "inside the circular frame"), NOT on the aerial; Source Chamber deeper in the chamber (p4)
-  const FREEZE_LS = 102.34, FREEZE_BP = 121.0, FREEZE_SC = 134.0, FILM_END = 143.5, SC_LOOP = 119.0;
+  const FREEZE_LS = 102.30, FREEZE_BP = 121.0, FREEZE_SC = 134.0, FILM_END = 143.5, SC_LOOP = 119.0;
 
   const film = document.getElementById('film');
   const audio = document.getElementById('audio');
