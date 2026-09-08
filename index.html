@@ -19,7 +19,8 @@
   body.scrolling,html.scrolling{overflow:auto}
 
   /* the film is the backdrop throughout — it keeps playing (freeze + click-to-continue), never a scroll-scrub */
-  #film{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#F6F1E9;z-index:1}
+  #film,#film2{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#F6F1E9;z-index:1}
+  #film2{opacity:0}
   #veil{position:fixed;inset:0;z-index:2;pointer-events:none;display:none;
     background:linear-gradient(180deg, rgba(14,12,8,.52), rgba(14,12,8,.34) 26%, rgba(14,12,8,.34) 72%, rgba(14,12,8,.58))}
   body.scrolling #veil{display:block}
@@ -177,9 +178,9 @@
 </style>
 </head>
 <body>
-  <video id="film" playsinline preload="auto" muted poster="assets/poster-white.jpg">
-    <source src="assets/entrance-hi.mp4?v=5" type="video/mp4">
-  </video>
+  <!-- double-buffered playlist: the 144s film plays as 13 native-4K clips (c01..c13) with seamless hard-cut swaps -->
+  <video id="film"  playsinline preload="auto" muted poster="assets/poster-white.jpg"></video>
+  <video id="film2" playsinline preload="auto" muted></video>
   <div id="veil"></div>
 
   <!-- entrance interactive overlays -->
@@ -296,7 +297,76 @@
   // comes after it (p3 "inside the circular frame"), NOT on the aerial; Source Chamber deeper in the chamber (p4)
   const FREEZE_LS = 102.39, FREEZE_BP = 121.0, FREEZE_SC = 134.0, FILM_END = 143.5, SC_LOOP = 119.0;
 
-  const film = document.getElementById('film');
+  // ===== virtual-timeline playlist: the 144s film plays as 13 native-4K clips, seamless hard-cut swaps =====
+  const CLIPS = [
+    ['assets/clips/c01.mp4',10.04],['assets/clips/c02.mp4',6.05],['assets/clips/c03.mp4',6.05],
+    ['assets/clips/c04.mp4',14.05],['assets/clips/c05.mp4',12.10],['assets/clips/c06.mp4',8.08],
+    ['assets/clips/c07.mp4',18.05],['assets/clips/c08.mp4',16.06],['assets/clips/c09.mp4',12.06],
+    ['assets/clips/c10.mp4',10.05],['assets/clips/c11.mp4',10.05],['assets/clips/c12.mp4',10.05],
+    ['assets/clips/c13.mp4',12.06]
+  ];
+  const STARTS=[]; (()=>{ let s=0; for(const c of CLIPS){ STARTS.push(s); s+=c[1]; } })();
+  const VTOTAL = STARTS[STARTS.length-1]+CLIPS[CLIPS.length-1][1];
+  function clipAt(g){ for(let k=CLIPS.length-1;k>=0;k--){ if(g>=STARTS[k]) return k; } return 0; }
+
+  const V = [document.getElementById('film'), document.getElementById('film2')];
+  const HAS_RVFC = typeof V[0].requestVideoFrameCallback === 'function';
+  let a=0, curIdx=0, rate=1, playing=false, gate=null, gateCb=null, rvTok=0;
+  const tickFns=[], readyFns=[];
+  let vready=false;
+  const A=()=>V[a], B=()=>V[a^1];
+
+  function setClip(v,idx){ if(v._idx===idx) return; v._idx=idx; v.src=CLIPS[idx][0]; try{v.load();}catch(_){} }
+  function vtime(){ return STARTS[curIdx] + (A().currentTime||0); }
+  function showA(){ A().style.opacity=1; B().style.opacity=0; }
+  function preloadNext(){ const n=curIdx+1; if(n<CLIPS.length) setClip(B(),n); }
+
+  function runTicks(){ for(let i=0;i<tickFns.length;i++){ try{tickFns[i]();}catch(_){} } }
+  function checkGate(){ if(gate!=null && vtime()>=gate){ A().pause(); playing=false;
+      const cb=gateCb; gate=null; gateCb=null; if(cb)cb(); return true; } return false; }
+
+  function rvfcLoop(){ if(!HAS_RVFC) return; const tok=++rvTok;
+    const step=()=>{ if(tok!==rvTok) return; runTicks(); if(checkGate()) return; if(playing) A().requestVideoFrameCallback(step); };
+    A().requestVideoFrameCallback(step); }
+
+  // seamless swap: the standby buffer is pre-loaded with the next clip, flipped in the instant the active clip ends
+  function onEnded(e){ if(e.target!==A()) return; const n=curIdx+1;
+    if(n>=CLIPS.length){ playing=false; return; }
+    const sb=B(); setClip(sb,n); sb.playbackRate=rate; try{sb.currentTime=0;}catch(_){}
+    const fin=()=>{ a^=1; curIdx=n; showA(); preloadNext(); if(playing) rvfcLoop(); };
+    const go=()=>{ const p=sb.play(); if(p&&p.then) p.then(fin).catch(fin); else fin(); };
+    if(sb.readyState>=2) go(); else sb.addEventListener('canplay',go,{once:true}); }
+
+  function onTU(e){ if(e.target!==A()) return; runTicks(); if(!HAS_RVFC) checkGate(); }
+  V.forEach(v=>{ v.addEventListener('ended',onEnded); v.addEventListener('timeupdate',onTU); });
+
+  function vtPlay(){ A().playbackRate=rate; preloadNext(); const p=A().play(); if(p&&p.catch)p.catch(()=>{}); playing=true; rvfcLoop(); }
+  function vtPause(){ A().pause(); playing=false; }
+  function vtSeek(g){ g=Math.max(0,Math.min(g,VTOTAL-0.05)); const idx=clipAt(g), local=g-STARTS[idx], v=A();
+    const doSeek=()=>{ try{v.currentTime=local;}catch(_){} curIdx=idx; showA(); preloadNext(); };
+    if(v._idx===idx && v.readyState>=1){ doSeek(); }
+    else { setClip(v,idx); curIdx=idx; v.addEventListener('loadedmetadata',doSeek,{once:true}); } }
+
+  function playTo(t,onArrive){ gate=t; gateCb=onArrive; vtPlay(); }
+
+  // thin facade so the rest of the entrance logic (gates, ARK branch, freezes, chapters) is unchanged
+  const film = {
+    get currentTime(){ return vtime(); },
+    set currentTime(g){ vtSeek(g); },
+    get readyState(){ return A().readyState; },
+    get playbackRate(){ return rate; },
+    set playbackRate(r){ rate=r; V[0].playbackRate=r; V[1].playbackRate=r; },
+    play(){ vtPlay(); return Promise.resolve(); },
+    pause(){ vtPause(); },
+    addEventListener(ev,fn){ if(ev==='timeupdate') tickFns.push(fn);
+      else if(ev==='canplay'){ if(vready||A().readyState>=3){ fn(); } else readyFns.push(fn); }
+      else A().addEventListener(ev,fn); },
+    style:{ set objectFit(v){ V[0].style.objectFit=v; V[1].style.objectFit=v; }, get objectFit(){ return V[0].style.objectFit; } }
+  };
+
+  // load the first clip; fire canplay-style ready once
+  setClip(V[0],0); curIdx=0; showA();
+  V[0].addEventListener('canplay',()=>{ vready=true; readyFns.splice(0).forEach(fn=>{try{fn();}catch(_){}}); });
   const audio = document.getElementById('audio');
   const preload = document.getElementById('preload');
   const hitMain = document.getElementById('hitMain'), hitArk = document.getElementById('hitArk'), hitGuardian = document.getElementById('hitGuardian');
@@ -310,7 +380,7 @@
         arkBack = document.getElementById('arkBack'), lsTitle = document.getElementById('lsTitle');
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let phase = 'opening', gate = 0, audioStarted = false, arkTravel = false;
+  let phase = 'opening', audioStarted = false, arkTravel = false;
   const show = el => el.classList.add('show'), hide = el => el.classList.remove('show');
 
   /* ---- cover-map entrance overlays to the film's 16:9 frame ---- */
@@ -331,23 +401,12 @@
   function signature(){ if(audioStarted)return; audioStarted=true; audio.currentTime=0;
     audio.play().catch(()=>{audioStarted=false;}); }
 
-  /* ---- entrance playback holds ---- */
-  function consumeGate(){ const cb=film._onArrive; gate=0; film._onArrive=null; film.pause(); if(cb)cb(); }
-  const HAS_RVFC = typeof film.requestVideoFrameCallback === 'function';
-  function playTo(t,onArrive){ gate=t; film._onArrive=onArrive; film.play().catch(()=>{});
-    // Frame-accurate stop: pause ON the presented frame that reaches the gate — no overshoot, no seek.
-    // This lands the freeze exactly on the intended last frame of a camera angle (e.g. before a cut).
-    if(HAS_RVFC){ const step=(now,meta)=>{ if(!gate) return;
-      if(meta.mediaTime>=gate){ consumeGate(); return; } film.requestVideoFrameCallback(step); };
-      film.requestVideoFrameCallback(step); }
-  }
+  /* ---- Living System title synced to the ARK travel (registered as a playlist tick) ----
+     appears as the camera enters the hallway, fades before the terrace so the villa view stays clean (web.pdf p1) */
   film.addEventListener('timeupdate',()=>{
-    // Living System title synced to the ARK travel: appear as the camera enters the hallway,
-    // fade out as it reaches the terrace so the villa view stays clean (web.pdf p1)
     if(arkTravel){ const t=film.currentTime; let op=0;
       if(t>=87&&t<91) op=(t-87)/4; else if(t>=91&&t<95) op=1; else if(t>=95&&t<96.8) op=1-(t-95)/1.8;
       lsTitle.style.opacity=op; }
-    if(gate && !HAS_RVFC && film.currentTime>=gate){ consumeGate(); }
   });
 
   function arriveLogo(){ phase='holdLogo'; hitMain.classList.add('active'); show(hitMain); show(copyLogo); }
