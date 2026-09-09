@@ -1,0 +1,20 @@
+{
+ "founder": 26,
+ "space": 1,
+ "before": 1,
+ "memory": 1,
+ "forgot": 3,
+ "convergence": 2,
+ "legible": 9,
+ "institution": 10,
+ "luxury": 15,
+ "patron": 1,
+ "future": 2,
+ "_sub9": {
+  "originalvision": 3,
+  "atmi": 13,
+  "mep": 6,
+  "precision": 4,
+  "biophilic": 1
+ }
+}
