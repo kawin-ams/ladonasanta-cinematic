@@ -108,7 +108,8 @@
   .beat.scatter > .scgallery{position:absolute;inset:0;z-index:2;margin:0;max-width:none;display:block;overflow:hidden;pointer-events:none;grid-template-columns:none}
   .scphoto-item{position:absolute;object-fit:cover;border:0;border-radius:3px;background:#0d0b08;pointer-events:auto;
     box-shadow:0 30px 55px -26px rgba(0,0,0,.92), 0 8px 20px -12px rgba(0,0,0,.55);
-    animation:floaty var(--fd,7s) ease-in-out infinite;animation-delay:var(--dl,0s)}
+    animation:floaty var(--fd,7s) ease-in-out infinite;animation-delay:var(--dl,0s);animation-play-state:paused}
+  .scphoto-item.vis{animation-play-state:running}   /* only on-screen photos animate → smooth scroll */
   @keyframes floaty{0%,100%{transform:translateY(0) rotate(var(--rot,0deg))}50%{transform:translateY(-11px) rotate(var(--rot,0deg))}}
   /* mobile / narrow: reflow into a centred scattered cluster below the text */
   .beat.scatter.flowbeat{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:13vh 6vw}
@@ -561,6 +562,9 @@
     b.querySelectorAll('.scgallery img, .scgallery video').forEach(el=>{ el.classList.remove('rv'); el.classList.add('scphoto-item'); });
     b.appendChild(b.querySelector('.scgallery'));   // move gallery to beat level (sibling of the text)
   });
+  // only animate photos that are on screen — keeps scrolling smooth (no 200+ live animations at once)
+  const visObs=new IntersectionObserver(es=>es.forEach(e=>{ e.target.classList.toggle('vis', e.isIntersecting); }),{rootMargin:'140px'});
+  beats.forEach(b=>b.querySelectorAll('.scphoto-item').forEach(el=>visObs.observe(el)));
   // deterministic per-photo pseudo-random in [0,1)
   const rnd=(seed)=>{ const x=Math.sin(seed*127.1+31.7)*43758.5453; return x-Math.floor(x); };
   function layout(){
@@ -580,32 +584,32 @@
       b.style.minHeight='';                       // reset so the text defines its natural height first
       const W=innerWidth, vh=innerHeight, n=items.length;
       const ond=b.querySelector('.ondark');
-      const textH=ond?ond.offsetHeight:420;
-      // horizontal keep-out band around the centred text column — photos live only in the side gutters
-      const colW=Math.min(600, Math.round(W*0.46));
-      const bandM=64, cx0=(W-colW)/2-bandM, cx1=(W+colW)/2+bandM;
-      const gutterW=Math.max(90, cx0-14);
-      const maxPW=Math.max(112, Math.min(Math.round(gutterW*0.92), Math.round(820/Math.sqrt(n+1))));
-      // beat height: enough to seat the photos beside the text without heavy overlap, but grows with long text
-      const perSide=Math.ceil(n/2), rowH=maxPW*0.62+30;
-      const beatH=Math.round(Math.max(vh, textH+vh*0.14, Math.min(vh*1.9, perSide*rowH+vh*0.28)));
+      const textH=ond?ond.offsetHeight:400, textW=ond?ond.offsetWidth:560;
+      const maxPW=Math.max(120, Math.min(230, Math.round(860/Math.sqrt(n+1))));  // fewer photos → bigger
+      const M=34, rxT=textW/2+M, ryT=textH/2+M;                 // text half-extents (+margin) — the ring's inner radius
+      // beat height sized so the outer ring of photos fits with the text centred and room all around
+      const beatH=Math.round(Math.max(vh, Math.min(vh*1.7, 2*ryT*1.9 + maxPW + 120)));
       b.style.minHeight=beatH+'px';
-      const pad=18, placed=[];
+      const cxT=W/2, cyT=beatH/2, tx0=cxT-rxT, tx1=cxT+rxT, ty0=cyT-ryT, ty1=cyT+ryT;
+      const pad=16, placed=[];
       items.forEach((el,i)=>{
         const sd=i+bi*131;
         const pw=Math.round((0.60+0.40*rnd(sd*1.3+1))*maxPW);     // clearly varied sizes
         const ph=Math.round(pw*(0.60+0.17*rnd(sd*2.1+2)));        // varied aspect
-        // candidate positions inside the two side gutters only; pick the one most spread from its neighbours
-        let best=null, bestScore=-1e18;
-        for(let k=0;k<30;k++){
-          const cs=sd*37+k, side=(k+i)%2;
-          const x = side ? (cx1 + Math.max(0,(W-pad-pw-cx1))*rnd(cs*1.7+3))
-                         : (pad + Math.max(0,(cx0-pw-pad))*rnd(cs*1.9+3));
-          const y = pad + Math.max(0,(beatH-2*pad-ph))*rnd(cs*3.3+4);
-          let mind=1e18;
-          for(const p of placed){ const ddx=(x+pw/2)-(p.x+p.w/2), ddy=(y+ph/2)-(p.y+p.h/2); const d=ddx*ddx+ddy*ddy; if(d<mind)mind=d; }
-          if(mind>bestScore){ bestScore=mind; best={x,y}; }
+        // each photo owns an angular slot around the text → even coverage top/bottom/both sides; vary radius for depth
+        const baseAng=(i/n)*6.28318 - 1.5708;                    // start at top, go around
+        let best=null;
+        for(let k=0;k<12;k++){
+          const ang=baseAng + (rnd(sd*1.1+k)-0.5)*0.55;
+          const rr=1.04 + rnd(sd*2.3+k)*0.9;                     // 1.04–1.94 → rough two rings
+          let x=cxT+Math.cos(ang)*rxT*rr-pw/2, y=cyT+Math.sin(ang)*ryT*rr-ph/2;
+          x=Math.max(pad,Math.min(W-pad-pw,x)); y=Math.max(pad,Math.min(beatH-pad-ph,y));
+          if(!(x+pw<tx0 || x>tx1 || y+ph<ty0 || y>ty1)) continue;   // clamped onto the text → try another radius
+          let mind=1e18; for(const p of placed){ const dx=(x+pw/2)-(p.x+p.w/2), dy=(y+ph/2)-(p.y+p.h/2); const d=dx*dx+dy*dy; if(d<mind)mind=d; }
+          if(!best || mind>best.s) best={x,y,s:mind};
         }
+        if(!best){ const c=Math.cos(baseAng), s=Math.sin(baseAng);
+          best={x:Math.max(pad,Math.min(W-pad-pw,cxT+c*rxT*1.5-pw/2)), y:Math.max(pad,Math.min(beatH-pad-ph,cyT+s*ryT*1.5-ph/2))}; }
         const rot=(rnd(sd*4.7+5)-0.5)*28;                        // −14°…+14°
         el.style.width=pw+'px'; el.style.height=ph+'px';
         el.style.left=Math.round(best.x)+'px'; el.style.top=Math.round(best.y)+'px';
