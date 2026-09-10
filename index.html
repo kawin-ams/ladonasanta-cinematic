@@ -101,6 +101,20 @@
   .scgallery img,.scgallery video{width:100%;height:100%;aspect-ratio:4/3;object-fit:cover;display:block;
     border:1px solid rgba(255,255,255,.30);box-shadow:0 14px 40px -18px rgba(0,0,0,.7);background:#0d0b08}
   .scgallery.g1 img,.scgallery.g1 video{aspect-ratio:16/10}
+  /* scattered floating collage (client call): text pinned centre, photos drift in the side gutters */
+  .beat.scatter{display:block;padding:0;position:relative}
+  .beat.scatter > .ondark{position:sticky;top:0;min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:13vh clamp(1rem,6vw,4rem);z-index:5}
+  .beat.scatter > .scgallery{position:absolute;inset:0;z-index:2;margin:0;max-width:none;display:block;overflow:hidden;pointer-events:none;grid-template-columns:none}
+  .scphoto-item{position:absolute;object-fit:cover;border:1px solid rgba(255,255,255,.34);box-shadow:0 26px 62px -24px rgba(0,0,0,.85);background:#0d0b08;
+    pointer-events:auto;will-change:transform;animation:floaty var(--fd,7s) ease-in-out infinite;animation-delay:var(--dl,0s)}
+  @keyframes floaty{0%,100%{transform:translateY(0) rotate(var(--rot,0deg))}50%{transform:translateY(-12px) rotate(var(--rot,0deg))}}
+  /* mobile / narrow: reflow into a centred scattered cluster below the text */
+  .beat.scatter.flowbeat{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:13vh 6vw}
+  .beat.scatter.flowbeat > .ondark{position:static;min-height:0}
+  .scgallery.flow{position:static;display:flex;flex-wrap:wrap;justify-content:center;gap:.7rem;max-width:min(94vw,560px);margin:2.2rem auto 0;overflow:visible}
+  .scgallery.flow .scphoto-item{position:relative;left:auto;top:auto;width:clamp(94px,40vw,150px);height:auto;aspect-ratio:4/3;animation-name:floaty-sm}
+  @keyframes floaty-sm{0%,100%{transform:translateY(0) rotate(var(--rot,0deg))}50%{transform:translateY(-6px) rotate(var(--rot,0deg))}}
+  @media (prefers-reduced-motion:reduce){.scphoto-item{animation:none}}
   .scsub{margin:2.6rem auto 0;max-width:52ch}
   .scsub-t{font-family:var(--sans);font-weight:400;font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.82);text-shadow:0 1px 20px rgba(10,8,5,.6);margin:0}
   .scsub-b{font-family:var(--sans);font-weight:300;font-size:clamp(.96rem,1.35vw,1.1rem);line-height:1.66;max-width:48ch;margin:.7rem auto 0;color:#fff;text-shadow:0 1px 28px rgba(10,8,5,.6)}
@@ -513,6 +527,56 @@
   }
   if(film.readyState>=2) boot(); else film.addEventListener('canplay',boot,{once:true});
   setTimeout(()=>{ if(preload.isConnected) boot(); }, 6000);
+})();
+</script>
+<script>
+/* Source Chamber — scatter each chapter's photos as a floating collage in the side gutters (client call).
+   Institution (with its sub-sections) keeps its in-flow grids. Responsive: reflows to a cluster on narrow screens. */
+(() => {
+  const beats=[...document.querySelectorAll('#scroll .beat')].filter(b=>{
+    const g=b.querySelector('.scgallery'); return g && !b.querySelector('.scsub'); });
+  beats.forEach(b=>{
+    b.classList.add('scatter');
+    b.querySelectorAll('.scgallery img, .scgallery video').forEach(el=>{ el.classList.remove('rv'); el.classList.add('scphoto-item'); });
+    b.appendChild(b.querySelector('.scgallery'));   // move gallery to beat level (sibling of the text)
+  });
+  function layout(){
+    const mobile = innerWidth < 900;
+    beats.forEach(b=>{
+      const g=b.querySelector('.scgallery'); const items=[...g.children]; if(!items.length) return;
+      if(mobile){
+        g.classList.add('flow'); b.classList.add('flowbeat'); b.style.minHeight='';
+        items.forEach((el,i)=>{ el.style.left=el.style.top=el.style.width=el.style.height='';
+          el.style.setProperty('--rot',((i%2?1:-1)*(2+(i*37%5))).toFixed(1)+'deg');
+          el.style.setProperty('--fd',(6+(i*13%40)/10)+'s'); el.style.setProperty('--dl',(-(i*29%60)/10)+'s'); });
+        return;
+      }
+      g.classList.remove('flow'); b.classList.remove('flowbeat');
+      const W=innerWidth, vh=innerHeight;
+      const colW=Math.min(560, Math.round(W*0.44));
+      const keepout=colW+56;                       // clear zone around the pinned text column
+      const gutterW=(W-keepout)/2;
+      const pw=Math.round(Math.min(196, Math.max(116, gutterW-14)));
+      const ph=Math.round(pw*0.68);
+      const leftMax=Math.max(8, gutterW-pw-6), rightMin=W-gutterW+6, rightMax=Math.max(rightMin, W-pw-8);
+      const perSide=Math.ceil(items.length/2);
+      const rowH=ph+30, stackH=perSide*rowH;
+      const beatH=Math.max(vh, stackH+vh*0.34);
+      b.style.minHeight=beatH+'px';
+      const top0=(beatH-stackH)/2+12;
+      items.forEach((el,i)=>{
+        const side=i%2, idx=(i/2)|0, s=((i*2654435761)>>>0);
+        const jy=((s>>7)%26)-13, rot=(((s>>13)%130)/10-6.5);
+        const x = side ? (rightMin + (((s>>3)) % Math.max(1, Math.round(rightMax-rightMin)+1)))
+                       : (8 + (s % Math.max(1, Math.round(leftMax-8)+1)));
+        const y = top0 + idx*rowH + jy;
+        el.style.width=pw+'px'; el.style.height=ph+'px'; el.style.left=Math.round(x)+'px'; el.style.top=Math.round(y)+'px';
+        el.style.setProperty('--rot',rot.toFixed(1)+'deg');
+        el.style.setProperty('--fd',(6.5+(s%50)/10)+'s'); el.style.setProperty('--dl',(-(s%60)/10)+'s');
+      });
+    });
+  }
+  layout(); addEventListener('resize', layout);
 })();
 </script>
 </body>
