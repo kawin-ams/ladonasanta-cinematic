@@ -16,7 +16,8 @@
   *{box-sizing:border-box}
   html,body{margin:0;background:var(--paper);overflow:hidden}
   body{font-family:var(--sans);font-weight:300;color:var(--ink-soft);-webkit-font-smoothing:antialiased}
-  body.scrolling,html.scrolling{overflow:auto}
+  html.scrolling{overflow-y:auto}
+  body.scrolling{overflow:visible}
 
   /* the film is the backdrop throughout — it keeps playing (freeze + click-to-continue), never a scroll-scrub */
   #film,#film2{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#F6F1E9;z-index:1}
@@ -522,6 +523,9 @@
   function enterChapters(){
     inChapters=true; phase='chapters';
     document.body.classList.add('scrolling'); document.documentElement.classList.add('scrolling');
+    // prime the scroller so the FIRST wheel scrolls (Chrome otherwise spends the first wheel re-activating it → "scroll twice")
+    void document.documentElement.offsetHeight;           // force reflow with the new overflow
+    document.documentElement.scrollTop=1; document.documentElement.scrollTop=0;
     document.querySelectorAll('#scroll .rv').forEach(el=>io.observe(el));
     /* scvid-observer: play chamber videos only while visible */
     const vio=new IntersectionObserver(es=>es.forEach(e=>{ const v=e.target; if(e.isIntersecting){v.play().catch(()=>{});} else {v.pause();} }),{threshold:.2});
