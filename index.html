@@ -478,8 +478,27 @@
     hitMain.classList.remove('active'); hide(hitMain); hide(copyLogo); phase='toPortals'; playTo(HOLD_PORTALS,arrivePortals); });
   hitArk.addEventListener('click',openArkGate);
   hitGuardian.addEventListener('click',()=>enterWorld('guardian'));
-  skipBtn.addEventListener('click',()=>{ if(phase==='opening'||phase==='holdLogo'||phase==='toPortals'){
-    hide(hitMain); hide(copyLogo); film.currentTime=HOLD_PORTALS-0.05; phase='toPortals'; playTo(HOLD_PORTALS,arrivePortals); } });
+  // Skip works at EVERY stage: during any playing video it jumps to the next freeze/hold;
+  // at a freeze it acts as Continue; at a hold it advances to the next stage.
+  function skipStage(){
+    let acted=false;
+    // at a text freeze (LS/BP/SC) → same as Continue (starts the next segment)
+    for(const k of ['ls','bp','sc']){ if(freezes[k].classList.contains('show')){ const c=freezes[k].querySelector('.continue'); if(c)c.click(); acted=true; break; } }
+    // ARK code screen → skip the code and enter the world
+    if(!acted && arkGate.classList.contains('show')){ arkGate.classList.remove('show'); enterWorld('ark'); acted=true; }
+    // logo hold → head to the portals
+    if(!acted && phase==='holdLogo'){ hide(hitMain); hide(copyLogo); phase='toPortals'; playTo(HOLD_PORTALS,arrivePortals); acted=true; }
+    // portals hold → enter the ARK world
+    if(!acted && phase==='holdPortals'){ hide(hitArk); hide(hitGuardian); hide(copyPortals); hide(descArk); hide(descGuardian); enterWorld('ark'); acted=true; }
+    // now jump through any active gate(s) straight to the next real stop — skipping the video in between
+    let guard=0;
+    while(gate!=null && guard++<8){
+      const g=gate, cb=gateCb; gate=null; gateCb=null; A().pause(); playing=false; vtSeek(g); if(cb)cb();
+      if(['ls','bp','sc'].some(k=>freezes[k].classList.contains('show'))) break;   // reached a text freeze
+      if(arkGate.classList.contains('show')) break;                                // reached the code screen
+    }
+  }
+  skipBtn.addEventListener('click', skipStage);
 
   /* ---- play-through: the film keeps playing and freezes at each text point (web.pdf p2–p4) ---- */
   const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); }),{threshold:.28});
