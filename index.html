@@ -346,7 +346,9 @@
   // freeze points in the film where it pauses and text appears (click to continue)
   // LS text on the settled aerial (p2); the 5-discipline / 6-min-film composition on the CIRCULAR ivory portal that
   // comes after it (p3 "inside the circular frame"), NOT on the aerial; Source Chamber deeper in the chamber (p4)
-  const FREEZE_LS = 102.39, FREEZE_BP = 121.0, FREEZE_SC = 134.7, FILM_END = 143.5, SC_LOOP = 119.0;
+  // FREEZE_SC: the Source Chamber title appears when the leaves have formed (greenery, ~129.6s).
+  // SC_HOLD: after Continue the film plays on and freezes on video-12 @2s (bright marble, 134.7s), holding behind the chapters.
+  const FREEZE_LS = 102.39, FREEZE_BP = 121.0, FREEZE_SC = 129.6, SC_HOLD = 134.7, FILM_END = 143.5, SC_LOOP = 119.0;
 
   // ===== virtual-timeline playlist: the 144s film plays as 13 native-4K clips, seamless hard-cut swaps =====
   const CLIPS = [
@@ -538,7 +540,7 @@
     const next=btn.dataset.next;
     if(next==='bp'){ hideFreeze('ls'); playTo(FREEZE_BP, ()=>showFreeze('bp')); }
     else if(next==='sc'){ hideFreeze('bp'); progLabel.textContent='The Source Chamber'; playTo(FREEZE_SC, ()=>showFreeze('sc')); }
-    else if(next==='chapters'){ hideFreeze('sc'); enterChapters(); }
+    else if(next==='chapters'){ hideFreeze('sc'); playTo(SC_HOLD, ()=>enterChapters()); }   // play greenery→marble, freeze on video-12 @2s, then chapters
   }));
 
   let inChapters=false;
@@ -553,8 +555,8 @@
     const vio=new IntersectionObserver(es=>es.forEach(e=>{ const v=e.target; if(e.isIntersecting){v.play().catch(()=>{});} else {v.pause();} }),{threshold:.2});
     document.querySelectorAll('.scgallery video').forEach(v=>vio.observe(v));
     window.scrollTo(0,0);
-    // the Source Chamber holds on video-12 @2s and stays frozen behind the chapters (no loop); it resumes at the Lumina stage
-    film.currentTime=FREEZE_SC; film.pause();
+    // the film is already frozen on video-12 @2s (SC_HOLD) — keep it held there behind the chapters (no loop); it resumes at the Lumina stage
+    film.pause();
     addEventListener('scroll',()=>{ if(!inChapters)return; const m=Math.max(1,document.documentElement.scrollHeight-innerHeight); bar.style.width=((scrollY/m)*100)+'%'; },{passive:true});
   }
 
