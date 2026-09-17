@@ -160,12 +160,10 @@
   @media (prefers-reduced-motion:reduce){.fbox > *,.freeze.dark .bp{transition-duration:.4s;transform:none}}
   .freeze.dark{background:radial-gradient(72% 72% at 50% 50%, rgba(12,10,7,.52), rgba(12,10,7,.22) 68%, rgba(12,10,7,0))}
   /* full-screen even scrim (no localized "cut-off" edge) so white type reads over the bright aerial/chamber */
-  .freeze.scrim{background:linear-gradient(180deg, rgba(12,10,7,.42), rgba(12,10,7,.22) 28%, rgba(12,10,7,.22) 72%, rgba(12,10,7,.46))}
-  /* wider column + a soft blurred reading scrim right behind the words (keeps the cinematic imagery visible around it) */
+  /* cinematic full-width scrim band: darkens only the text zone, feathered to clear at top & bottom (no cheap blur patch) */
+  .freeze.scrim{background:linear-gradient(180deg,
+    rgba(9,7,5,0) 0%, rgba(9,7,5,.26) 15%, rgba(9,7,5,.55) 34%, rgba(9,7,5,.58) 55%, rgba(9,7,5,.55) 74%, rgba(9,7,5,.28) 90%, rgba(9,7,5,0) 100%)}
   .fbox{position:relative;width:min(94vw,960px)}
-  .fbox::before{content:"";position:absolute;inset:-9% -8%;z-index:-1;border-radius:46%;
-    background:radial-gradient(closest-side, rgba(8,6,4,.62), rgba(8,6,4,.4) 52%, rgba(8,6,4,.16) 78%, rgba(8,6,4,0) 100%);
-    -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
   .fbox .eyebrow{color:rgba(255,255,255,.9);text-shadow:0 1px 2px rgba(0,0,0,.55),0 1px 26px rgba(10,8,5,.6)}
   .fbox h1{margin:.2em 0 0;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.5),0 2px 34px rgba(10,8,5,.55)}
   .fbox .lede{color:#fff;max-width:32ch;text-shadow:0 1px 3px rgba(0,0,0,.5),0 2px 30px rgba(10,8,5,.5)}
@@ -348,7 +346,7 @@
   // freeze points in the film where it pauses and text appears (click to continue)
   // LS text on the settled aerial (p2); the 5-discipline / 6-min-film composition on the CIRCULAR ivory portal that
   // comes after it (p3 "inside the circular frame"), NOT on the aerial; Source Chamber deeper in the chamber (p4)
-  const FREEZE_LS = 102.39, FREEZE_BP = 121.0, FREEZE_SC = 134.0, FILM_END = 143.5, SC_LOOP = 119.0;
+  const FREEZE_LS = 102.39, FREEZE_BP = 121.0, FREEZE_SC = 134.7, FILM_END = 143.5, SC_LOOP = 119.0;
 
   // ===== virtual-timeline playlist: the 144s film plays as 13 native-4K clips, seamless hard-cut swaps =====
   const CLIPS = [
@@ -555,11 +553,10 @@
     const vio=new IntersectionObserver(es=>es.forEach(e=>{ const v=e.target; if(e.isIntersecting){v.play().catch(()=>{});} else {v.pause();} }),{threshold:.2});
     document.querySelectorAll('.scgallery video').forEach(v=>vio.observe(v));
     window.scrollTo(0,0);
-    film.playbackRate=0.6; film.play().catch(()=>{});   // the video keeps playing behind the chapters
+    // the Source Chamber holds on video-12 @2s and stays frozen behind the chapters (no loop); it resumes at the Lumina stage
+    film.currentTime=FREEZE_SC; film.pause();
     addEventListener('scroll',()=>{ if(!inChapters)return; const m=Math.max(1,document.documentElement.scrollHeight-innerHeight); bar.style.width=((scrollY/m)*100)+'%'; },{passive:true});
   }
-  // loop the source-chamber footage while the chapters are being read
-  film.addEventListener('timeupdate',()=>{ if(inChapters && film.currentTime>=FILM_END){ film.currentTime=SC_LOOP; } });
 
   document.getElementById('toVault').addEventListener('click',()=>{
     document.body.style.transition='opacity .8s ease'; document.body.style.opacity='0';
