@@ -402,6 +402,14 @@
 
   function playTo(t,onArrive){ gate=t; gateCb=onArrive; vtPlay(); }
 
+  // Hard-cut to the first frame of clip `idx`, skipping any leftover frames of the current clip.
+  // Uses the pre-loaded standby buffer (already decoded) so the cut is instant and flash-free.
+  function jumpToClipStart(idx){ if(idx>=CLIPS.length) return;
+    const sb=B();
+    const flip=()=>{ try{sb.currentTime=0;}catch(_){} a^=1; curIdx=idx; showA(); preloadNext(); };
+    if(sb._idx===idx && sb.readyState>=2){ flip(); }
+    else { setClip(sb,idx); if(sb.readyState>=1){ flip(); } else sb.addEventListener('loadedmetadata',flip,{once:true}); } }
+
   // thin facade so the rest of the entrance logic (gates, ARK branch, freezes, chapters) is unchanged
   const film = {
     get currentTime(){ return vtime(); },
@@ -561,7 +569,7 @@
 
   document.querySelectorAll('.freeze .continue').forEach(btn=>btn.addEventListener('click',()=>{
     const next=btn.dataset.next;
-    if(next==='bp'){ hideFreeze('ls'); playTo(FREEZE_BP, ()=>showFreeze('bp')); }
+    if(next==='bp'){ hideFreeze('ls'); jumpToClipStart(clipAt(FREEZE_LS)+1); /* video 8 ends here — cut straight to video 9, no leftover frames */ playTo(FREEZE_BP, ()=>showFreeze('bp')); }
     else if(next==='sc'){ hideFreeze('bp'); progLabel.textContent='The Source Chamber'; playTo(FREEZE_SC, ()=>showFreeze('sc')); }
     else if(next==='chapters'){ hideFreeze('sc'); playTo(SC_HOLD, ()=>enterChapters()); }   // play greenery→marble, freeze on video-12 @2s, then chapters
   }));
