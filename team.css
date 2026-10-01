@@ -1,0 +1,123 @@
+/* La Doña Santa company map (team.js). Pearl glass, champagne hairlines, serif names. */
+.eco,.eco-modal{--e-ink:#211D16;--e-ink2:#4A463D;--e-muted:#8A8172;--e-gold:#B08D57;--e-line:#D8CFBE;--e-glass:rgba(255,253,248,.66);
+  --e-serif:'Cormorant Brand','Cormorant',serif;--e-sans:'Ortica Linear','Jost',sans-serif}
+.eco{position:relative;max-width:76rem;margin:clamp(4rem,10vh,7rem) auto 0;text-align:center}
+.eco button{font:inherit;color:inherit}
+
+/* ---------- diagram (brochure p.43) ---------- */
+.eco-title{font-family:var(--e-serif);font-weight:300;font-size:clamp(1.7rem,3.6vw,2.8rem);letter-spacing:.07em;text-transform:uppercase;color:var(--e-ink);margin:0 0 clamp(1.6rem,4vh,2.6rem)}
+.eco-place{font-family:var(--e-sans);font-weight:400;font-size:.72rem;letter-spacing:.42em;text-transform:uppercase;color:var(--e-muted);margin:0 0 .6rem;padding-left:.42em}
+.eco-groupwrap{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(1.2rem,3vw,2.6rem);align-items:center}
+.eco-side{margin:0;max-width:24rem}
+.eco-groupwrap .eco-tag.eco-side{justify-self:end;text-align:right}
+.eco-groupwrap .eco-desc.eco-side{justify-self:start;text-align:left}
+.eco-tag{display:block;font-family:var(--e-sans);font-weight:400;font-size:.7rem;line-height:1.8;letter-spacing:.2em;text-transform:uppercase;color:var(--e-ink2)}
+.eco-desc{display:block;font-family:var(--e-sans);font-weight:300;font-size:clamp(.88rem,1.05vw,.96rem);line-height:1.7;color:var(--e-ink2)}
+
+.eco-ent{--lw:clamp(130px,13vw,176px);position:relative;display:flex;flex-direction:column;align-items:center;gap:.85rem;cursor:pointer;
+  background:none;border:0;padding:.6rem .4rem 1rem;border-radius:4px;transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.eco-ent img{width:var(--lw);height:auto;display:block;opacity:.9;transition:opacity .4s,filter .4s;filter:brightness(.78) contrast(1.25) drop-shadow(0 6px 16px rgba(90,70,35,.22))}
+.eco-top{--lw:clamp(170px,17vw,230px)}
+.eco-ent::before{content:"";position:absolute;left:50%;top:calc(var(--lw) * .33);width:calc(var(--lw) * 1.15);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;
+  background:radial-gradient(circle,rgba(255,250,238,.95),rgba(255,250,238,0) 66%);opacity:0;transition:opacity .5s;z-index:-1;pointer-events:none}
+.eco-ent:hover img,.eco-ent[aria-selected="true"] img{opacity:1}
+.eco-ent[aria-selected="true"]::before{opacity:1}
+.eco-ent:hover{transform:translateY(-3px)}
+.eco-ent:focus-visible{outline:1px solid var(--e-gold);outline-offset:4px}
+.eco-see{font-family:var(--e-sans);font-weight:400;font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;color:var(--e-muted);
+  padding-bottom:.35rem;border-bottom:1px solid transparent;transition:color .3s,border-color .3s}
+.eco-ent:hover .eco-see{color:var(--e-ink2)}
+.eco-ent[aria-selected="true"] .eco-see{color:var(--e-gold);border-color:var(--e-gold)}
+.eco-row .eco-tag,.eco-row .eco-desc{max-width:21rem}
+.eco-row .eco-desc{margin-top:-.2rem}
+
+/* branch: Group down to the three Thai companies, then a hairline between their emblems (as in the brochure) */
+.eco-branch{position:relative;height:clamp(2.6rem,6vh,3.6rem);margin:0 auto .7rem;width:66.6%}
+.eco-branch::before{content:"";position:absolute;left:50%;top:0;height:55%;width:1px;background:rgba(176,141,87,.5)}
+.eco-branch span{position:absolute;left:0;right:0;top:55%;height:45%;border:1px solid rgba(176,141,87,.5);border-bottom:0}
+.eco-row{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,3vw,2.4rem);align-items:start}
+.eco-row .eco-ent::after{content:"";position:absolute;top:calc(.6rem + var(--lw) * .33);left:calc(50% + var(--lw) * .55);
+  width:calc(100% - var(--lw) * 1.1 + clamp(1rem,3vw,2.4rem));height:1px;background:rgba(176,141,87,.45);pointer-events:none}
+.eco-row .eco-ent:last-child::after{display:none}
+
+/* ---------- team panel ---------- */
+.eco-panel{margin:clamp(3rem,7vh,4.5rem) auto 0;max-width:72rem}
+.eco-panel.eco-in{animation:ecoIn .7s cubic-bezier(.22,1,.36,1)}
+@keyframes ecoIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.eco-phead{margin-bottom:clamp(1.4rem,3vw,2rem)}
+.eco-kicker{font-family:var(--e-sans);font-weight:400;font-size:.68rem;letter-spacing:.32em;text-transform:uppercase;color:var(--e-gold);margin:0}
+.eco-phead h3{font-family:var(--e-serif);font-weight:300;font-size:clamp(1.8rem,3.2vw,2.5rem);letter-spacing:.03em;color:var(--e-ink);margin:.35rem 0 0}
+.eco-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,18.5rem),1fr));gap:.85rem;text-align:left}
+.eco-person{display:flex;align-items:center;gap:1rem;width:100%;min-height:5.6rem;padding:.9rem 1.15rem;cursor:pointer;text-align:left;
+  background:var(--e-glass);border:1px solid var(--e-line);border-radius:3px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  transition:transform .35s cubic-bezier(.22,1,.36,1),border-color .3s,box-shadow .35s}
+.eco-person:hover{transform:translateY(-3px);border-color:var(--e-gold);box-shadow:0 22px 50px -30px rgba(150,120,60,.6)}
+.eco-person:focus-visible{outline:1px solid var(--e-gold);outline-offset:3px}
+.eco-av{flex:none;width:62px;height:62px;border-radius:50%;object-fit:cover;object-position:50% 20%;box-shadow:0 0 0 1px rgba(255,255,255,.8),0 6px 16px -8px rgba(90,70,35,.45)}
+.eco-mono{display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 40% 34%,#F6F0E3,#DCCFB7);font-family:var(--e-serif);font-size:1.25rem;color:var(--e-gold)}
+.eco-logo{object-fit:contain;background:#fff;padding:6px}
+.eco-pt{display:flex;flex-direction:column;gap:.3rem;min-width:0}
+.eco-pn{font-family:var(--e-serif);font-weight:400;font-size:1.22rem;line-height:1.15;color:var(--e-ink)}
+.eco-pr{font-family:var(--e-sans);font-weight:400;font-size:.62rem;line-height:1.55;letter-spacing:.13em;text-transform:uppercase;color:var(--e-muted)}
+.eco-ab{font-family:var(--e-sans);font-weight:400;font-size:.6rem;letter-spacing:.2em;color:var(--e-gold)}
+.eco-sub{font-family:var(--e-sans);font-weight:400;font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;color:var(--e-gold);margin:clamp(2.2rem,5vh,3rem) 0 1rem}
+.eco-units{list-style:none;margin:0 auto;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem;max-width:62rem}
+.eco-units li{font-family:var(--e-sans);font-weight:400;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--e-ink2);
+  padding:.55rem .95rem;border:1px solid var(--e-line);border-radius:999px;background:rgba(255,253,248,.45)}
+
+/* ---------- profile ---------- */
+html.eco-lock,html.eco-lock body{overflow:hidden}
+.eco-modal{position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;padding:clamp(.75rem,4vh,2.5rem) clamp(.75rem,4vw,2.5rem);
+  background:rgba(30,26,18,.42);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:0;transition:opacity .3s ease}
+.eco-modal[hidden]{display:none}
+.eco-modal.on{opacity:1}
+.eco-sheet{position:relative;display:grid;grid-template-columns:minmax(0,38%) minmax(0,1fr);width:min(100%,64rem);max-height:min(88vh,52rem);overflow:hidden;
+  background:#FBF7EF;border:1px solid var(--e-line);box-shadow:0 40px 100px -40px rgba(60,48,20,.6);
+  transform:translateY(14px) scale(.985);transition:transform .45s cubic-bezier(.22,1,.36,1)}
+.eco-modal.on .eco-sheet{transform:none}
+.eco-sheet.eco-noimg{grid-template-columns:minmax(0,1fr);width:min(100%,44rem)}
+.eco-photo{position:relative;background:#EFE8DC;min-height:100%}
+.eco-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 18%}
+.eco-wide .eco-photo img{object-fit:contain;object-position:center}
+.eco-photo img.eco-orglogo{object-fit:contain;padding:18%;background:#fff}
+.eco-body{overflow-y:auto;padding:clamp(1.8rem,4vw,3.2rem) clamp(1.4rem,4vw,3.2rem) clamp(2rem,4vw,3rem);text-align:left;overscroll-behavior:contain}
+.eco-body h3{font-family:var(--e-serif);font-weight:300;font-size:clamp(1.9rem,3.4vw,2.6rem);line-height:1.05;color:var(--e-ink);margin:.5rem 0 0}
+.eco-role{font-family:var(--e-sans);font-weight:400;font-size:.7rem;line-height:1.6;letter-spacing:.2em;text-transform:uppercase;color:var(--e-gold);margin:.7rem 0 0}
+.eco-roles{list-style:none;padding:0;margin:1.3rem 0 0;display:grid;gap:.45rem}
+.eco-roles li{font-family:var(--e-sans);font-weight:300;font-size:.86rem;line-height:1.5;color:var(--e-ink2);display:flex;gap:.8rem}
+.eco-roles b{flex:none;min-width:5.2rem;font-weight:400;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--e-muted);padding-top:.2rem}
+.eco-resp{list-style:none;padding:0;margin:1.4rem 0 0;display:grid;gap:.5rem}
+.eco-resp li{position:relative;padding-left:1.1rem;font-family:var(--e-sans);font-weight:300;font-size:.9rem;line-height:1.5;color:var(--e-ink2)}
+.eco-resp li::before{content:"";position:absolute;left:0;top:.6em;width:5px;height:5px;border-radius:50%;background:var(--e-gold)}
+.eco-bio{margin-top:1.6rem;padding-top:1.4rem;border-top:1px solid var(--e-line)}
+.eco-bio p{font-family:var(--e-sans);font-weight:300;font-size:clamp(.95rem,1.1vw,1.02rem);line-height:1.78;color:var(--e-ink2);margin:0 0 1rem;max-width:62ch}
+.eco-body .eco-sub{text-align:left;margin:1.8rem 0 .3rem}
+.eco-pending{font-family:var(--e-sans);font-style:italic;font-size:.88rem;color:var(--e-muted);margin-top:1.6rem}
+.eco-facts{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem 1.6rem;margin:1.5rem 0 0}
+.eco-facts dt{font-family:var(--e-serif);font-weight:300;font-size:1.7rem;color:var(--e-ink);line-height:1}
+.eco-facts dd{margin:.3rem 0 0;font-family:var(--e-sans);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--e-muted)}
+.eco-write{display:inline-flex;align-items:center;gap:1rem;margin-top:1.6rem;padding:.8rem .2rem;border-bottom:1px solid var(--e-ink);color:var(--e-ink);text-decoration:none;
+  font-family:var(--e-sans);font-weight:400;font-size:.74rem;letter-spacing:.26em;text-transform:uppercase;transition:color .25s,border-color .25s}
+.eco-write::after{content:"→";font-size:1rem;letter-spacing:0}
+.eco-write:hover{color:var(--e-gold);border-color:var(--e-gold)}
+.eco-x{position:absolute;top:.9rem;right:.9rem;z-index:2;width:2.75rem;height:2.75rem;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  background:rgba(251,247,239,.92);border:1px solid var(--e-line);color:var(--e-ink2);font-size:.95rem;transition:border-color .25s,color .25s}
+.eco-x:hover{border-color:var(--e-gold);color:var(--e-gold)}
+.eco-x:focus-visible{outline:1px solid var(--e-gold);outline-offset:3px}
+
+@media (max-width:860px){
+  .eco-groupwrap{grid-template-columns:1fr;justify-items:center;gap:1rem}
+  .eco-groupwrap .eco-top{order:-1}
+  .eco-groupwrap .eco-tag.eco-side,.eco-groupwrap .eco-desc.eco-side{justify-self:center;text-align:center}
+  .eco-branch{width:1px;height:2.6rem}
+  .eco-branch span,.eco-row .eco-ent::after{display:none}
+  .eco-branch::before{height:100%}
+  .eco-row{grid-template-columns:1fr;gap:2.2rem}
+  .eco-sheet{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);max-height:92vh}
+  .eco-photo{height:min(42vh,22rem);min-height:0}
+}
+@media (prefers-reduced-motion:reduce){
+  .eco-ent,.eco-person,.eco-sheet{transition:none}
+  .eco-panel.eco-in{animation:none}
+  .eco-ent:hover,.eco-person:hover{transform:none}
+}

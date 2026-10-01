@@ -1,89 +1,220 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>La Doña Santa — Private Contact Map</title>
-<link rel="stylesheet" href="site.css" />
-<link rel="stylesheet" href="pages.css" />
-<link rel="stylesheet" href="lds-shared.css" />
 <style>
-  .accept{display:flex;gap:.7rem;align-items:flex-start;margin-top:1.4rem;font-size:.9rem;color:var(--ink-2)}
-  .accept input{margin-top:.25rem;accent-color:var(--gold)}
-  .terms{background:var(--paper-2);border:1px solid var(--line);border-radius:8px;padding:1.1rem 1.3rem;max-height:180px;overflow:auto;font-size:.86rem;color:var(--ink-2);margin-top:1.4rem}
+  @font-face{font-family:'Ortica Linear';src:url('uploads/OrticaLinear-Light.otf') format('opentype');font-weight:300;font-display:swap}
+  @font-face{font-family:'Ortica Linear';src:url('uploads/OrticaLinear-Regular.otf') format('opentype');font-weight:400;font-display:swap}
+  @font-face{font-family:'Cormorant Brand';src:url('uploads/Cormorant-Light.ttf') format('truetype');font-weight:300;font-display:swap}
+  @font-face{font-family:'Cormorant Brand';src:url('uploads/Cormorant-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+  :root{--serif:'Cormorant Brand','Cormorant',serif;--sans:'Ortica Linear','Jost',sans-serif;
+    --ink:#211D16;--ink-soft:#4A463D;--muted:#8A8172;--champagne:#B08D57;--line:#D8CFBE;--paper:#F3EEE4;--glass:rgba(255,253,248,.62)}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:var(--sans);font-weight:300;color:var(--ink-soft);-webkit-font-smoothing:antialiased;overflow-x:hidden;background:#F3EEE4}
+
+  /* ===== alive ivory hall background ===== */
+  .hall{position:fixed;inset:0;z-index:0;background:url('contact-img/hall.jpg') center/cover no-repeat;transform:scale(1.06);animation:hallzoom 34s ease-in-out infinite alternate}
+  .hall::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(243,238,228,.72),rgba(243,238,228,.5) 30%,rgba(243,238,228,.62) 72%,rgba(243,238,228,.9))}
+  @keyframes hallzoom{0%{transform:scale(1.06) translateY(0)}100%{transform:scale(1.14) translateY(-2%)}}
+  .motes{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+  .mote{position:absolute;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle,rgba(255,246,224,.9),rgba(255,246,224,0));animation:float linear infinite}
+  @keyframes float{0%{transform:translateY(20vh) scale(.6);opacity:0}20%{opacity:.9}100%{transform:translateY(-90vh) scale(1);opacity:0}}
+
+  .home{position:fixed;top:clamp(16px,2vw,24px);left:clamp(18px,4vw,44px);z-index:50;text-decoration:none;font-family:var(--serif);font-size:clamp(.95rem,1.3vw,1.12rem);letter-spacing:.16em;text-transform:uppercase;color:var(--ink)}
+  .home small{display:block;font-family:var(--sans);font-size:.56rem;letter-spacing:.3em;color:var(--muted);margin-top:2px}
+  .topright{position:fixed;top:clamp(18px,2vw,26px);right:clamp(18px,4vw,44px);z-index:50;font-family:var(--sans);font-size:.62rem;letter-spacing:.32em;text-transform:uppercase;color:var(--muted)}
+
+  .wrap{position:relative;z-index:3;max-width:82rem;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem)}
+  .rv{opacity:0;transform:translateY(22px);transition:opacity 1s ease,transform 1s ease}
+  .rv.in{opacity:1;transform:none}
+
+  /* ===== company map ===== */
+  .map{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:15vh 0 8vh;text-align:center}
+  .kicker{font-family:var(--sans);font-size:.72rem;letter-spacing:.42em;text-transform:uppercase;color:var(--champagne)}
+  h1{font-family:var(--serif);font-weight:300;font-size:clamp(2.4rem,6.5vw,5rem);line-height:1;letter-spacing:.05em;margin:.4rem 0 0;color:var(--ink)}
+  .standard{font-family:var(--sans);font-size:clamp(.64rem,1.05vw,.78rem);letter-spacing:.28em;text-transform:uppercase;color:var(--ink-soft);margin:1rem 0 0}
+  .intro{font-family:var(--sans);font-weight:300;font-size:clamp(.98rem,1.3vw,1.1rem);line-height:1.8;max-width:64ch;margin:1.6rem auto 0;color:var(--ink-soft)}
+
+
+  .maphint{font-family:var(--sans);font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:clamp(3.5rem,7vh,5.5rem) 0 0;text-align:center}
+
+  /* ===== private entry review ===== */
+  .entry{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:12vh 0;text-align:center}
+  .welcome{max-width:52rem;margin:0 auto 3.5rem}
+  .welcome h3{font-family:var(--serif);font-weight:300;font-size:clamp(1.7rem,3vw,2.4rem);color:var(--ink);margin:0 0 1rem}
+  .welcome p{font-family:var(--sans);font-weight:300;font-size:clamp(.95rem,1.3vw,1.08rem);line-height:1.8;color:var(--ink-soft);margin:0 auto;max-width:46ch}
+  .entry h2{font-family:var(--serif);font-weight:300;font-size:clamp(2rem,4.4vw,3.2rem);letter-spacing:.05em;color:var(--ink);margin:0}
+  .entry .lede{font-family:var(--sans);font-size:clamp(.86rem,1.15vw,.98rem);line-height:1.7;color:var(--muted);max-width:44ch;margin:1rem auto 0}
+  form{max-width:52rem;margin:3rem auto 0;display:grid;grid-template-columns:1fr 1fr;gap:1rem;text-align:left}
+  .field{position:relative}
+  .field label{position:absolute;left:2.6rem;top:50%;transform:translateY(-50%);font-family:var(--sans);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);pointer-events:none;transition:.2s}
+  .field.area label{top:1.1rem;transform:none}
+  .field .ic{position:absolute;left:1rem;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--muted);opacity:.7}
+  .field.area .ic{top:1.1rem;transform:none}
+  input,textarea{width:100%;font-family:var(--sans);font-weight:300;font-size:.95rem;color:var(--ink);background:var(--glass);border:1px solid var(--line);border-radius:0;padding:1.05rem 1rem 1.05rem 2.6rem;transition:border-color .3s,background .3s}
+  textarea{min-height:6.5rem;resize:vertical;padding-top:1.1rem}
+  input:focus,textarea:focus{outline:none;border-color:var(--champagne);background:rgba(255,254,250,.82)}
+  input:focus + label,input:not(:placeholder-shown) + label,textarea:focus + label,textarea:not(:placeholder-shown) + label{opacity:0;visibility:hidden}
+  .entry + .entry{min-height:auto;padding-top:0}
+  .entry .kicker{margin-bottom:.6rem}
+  .field.select select{width:100%;appearance:none;-webkit-appearance:none;font-family:var(--sans);font-weight:300;font-size:.95rem;color:var(--ink);background:var(--glass);
+    border:1px solid var(--line);border-radius:0;padding:1.05rem 2.6rem 1.05rem 2.6rem;cursor:pointer;
+    background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+    background-position:calc(100% - 1.3rem) 50%,calc(100% - .95rem) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+  .field.select select:focus{outline:none;border-color:var(--champagne)}
+  .field.select .msg{right:2.6rem}
+  .field.bad select,.field.bad textarea{border-color:#B5694F}
+  .field.area .msg{top:1.15rem;transform:none}
+  .terms{text-align:left;font-family:var(--sans);font-weight:300;font-size:.86rem;line-height:1.65;color:var(--ink-soft);background:var(--glass);border:1px solid var(--line);padding:1.1rem 1.3rem;max-height:11rem;overflow:auto}
+  .accept{position:relative;display:flex;gap:.8rem;align-items:flex-start;text-align:left;font-family:var(--sans);font-weight:300;font-size:.92rem;line-height:1.5;color:var(--ink-soft);cursor:pointer;padding:.2rem 0}
+  .accept input{width:18px;height:18px;flex:none;margin:.12rem 0 0;padding:0;accent-color:var(--champagne)}
+  .accept .msg{position:static;transform:none;margin-left:auto;white-space:nowrap}
+  .accept.bad span:not(.msg){color:#9A4A32}
+  .full{grid-column:1/-1}
+  .field .msg{position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-family:var(--sans);font-size:.7rem;letter-spacing:.08em;color:#9A4A32;pointer-events:none}
+  .field.bad input{border-color:#B5694F;background:rgba(255,248,244,.8)}
+  .req-note{grid-column:1/-1;justify-self:center;margin:.6rem 0 0;font-family:var(--sans);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+  .submit{grid-column:1/-1;justify-self:center;margin-top:1rem;display:inline-flex;align-items:center;gap:1.1rem;cursor:pointer;min-height:3.4rem;padding:1rem 3rem;border:1px solid var(--ink);border-radius:0;background:transparent;color:var(--ink);font-family:var(--sans);font-weight:400;font-size:.78rem;letter-spacing:.3em;text-transform:uppercase;transition:.25s}
+  .submit::after{content:"→";font-size:1rem}
+  .submit:hover{background:var(--ink);color:var(--paper)}
+  .confirm{grid-column:1/-1;justify-self:center;margin-top:1.5rem;display:none;align-items:center;gap:.8rem;background:var(--glass);border:1px solid var(--line);padding:1rem 1.6rem;max-width:38rem}
+  .confirm.show{display:flex}
+  .confirm svg{width:22px;height:22px;color:var(--champagne);flex:0 0 auto}
+  .confirm p{margin:0;font-family:var(--sans);font-size:.9rem;line-height:1.5;color:var(--ink-soft)}
+  .confirm b{color:var(--ink);font-weight:400}
+  .microlabels{display:flex;justify-content:space-between;max-width:70rem;margin:5vh auto 0;font-family:var(--sans);font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+
+  @media (max-width:860px){ form{grid-template-columns:1fr} }
+  @media (prefers-reduced-motion:reduce){.rv{transition:opacity .3s;transform:none}.hall,.mote{animation:none}}
+  @media (max-width:600px){ .topright,.idx{display:none} .home{font-size:1rem} }
 </style>
+<link rel="stylesheet" href="team.css">
 </head>
 <body>
-  <div class="pchrome"><a href="index.html" aria-label="Return to the entrance" style="display:inline-flex;line-height:0"><img src="uploads/01 Logo - Group (Final Ver 2).png" alt="La Doña Santa" /></a><span class="tag">Restricted Business-Card Access</span></div>
+  <div class="hall" aria-hidden="true"></div>
+  <div class="motes" id="motes" aria-hidden="true"></div>
+  <a class="home" href="index.html">La Doña Santa<small>Group · Business Card Access</small></a>
+  <span class="topright">Private Living System</span>
 
-  <main class="container">
-    <p class="eyebrow">Restricted Business-Card Access</p>
-    <h1>Private Contact Map</h1>
-    <p class="lead" style="margin-top:1rem">A protected professional entry into the La Doña Santa ecosystem.</p>
-    <p style="margin-top:1.4rem">This page is available only through approved La Doña Santa business-card access. It provides a structured view of the Group, its divisions and the professional functions through which an authorized inquiry may be directed.</p>
+  <!-- COMPANY MAP -->
+  <section class="map">
+    <div class="wrap">
+      <p class="kicker rv">Business Card Access</p>
+      <h1 class="rv">Contact Group Scale</h1>
+      <p class="standard rv">One vision. Multiple operating structures. One protected living standard.</p>
+      <p class="intro rv">La Doña Santa operates as a living company ecosystem. Each division and professional discipline holds one part of the residence life cycle — vision, land, architecture, engineering, construction, wellness, operation, preservation and long-term private client care. Together, these structures allow a project to move from the first reading of the client and the land to architecture, construction, operational handover and the continuing life of the completed residence.</p>
+      <p class="intro rv" style="margin-top:.6rem">This page is available only through approved La Doña Santa business-card access. It provides a structured view of the Group, its divisions and the professional functions through which an authorized inquiry may be directed.</p>
 
-    <!-- company map -->
-    <div class="divisions">
-      <div class="division"><h3>Group</h3><p class="role">Vision &amp; governance</p>
-        <div class="node"><span class="nm">Founder &amp; Executive Chairman</span><br><span class="tt">Group</span></div>
-        <div class="node"><span class="nm">Approved biography</span><br><span class="tt">Chief Executive Function</span></div></div>
-      <div class="division"><h3>ARK</h3><p class="role">Architecture &amp; development</p>
-        <div class="node"><span class="nm">Approved biography</span><br><span class="tt">Architecture</span></div>
-        <div class="node"><span class="nm">Approved biography</span><br><span class="tt">Engineering</span></div></div>
-      <div class="division"><h3>Guardian</h3><p class="role">Stewardship &amp; care</p>
-        <div class="node"><span class="nm">Approved biography</span><br><span class="tt">Operations</span></div>
-        <div class="node"><span class="nm">Approved biography</span><br><span class="tt">Wellness / Lumina</span></div></div>
-      <div class="division"><h3>Partner structure</h3><p class="role">International network</p>
-        <div class="node"><span class="nm">Approved biography</span><br><span class="tt">Advisory</span></div></div>
+      <!-- ecosystem + teams + profiles, from the brochure (team-data.js, team.js) -->
+      <div class="eco rv" id="eco" data-mode="card"></div>
+      <p class="maphint rv">Select a company to see its people, then any name to open the full profile and write to them.</p>
+      </div>
     </div>
-    <p class="hint" style="margin-top:1rem">Approved photographs, names, titles and biographies attach here. No direct personal emails, phone numbers or contact buttons are shown — inquiries are directed through the form below.</p>
+  </section>
 
-    <!-- protected download -->
-    <section class="section">
-      <p class="eyebrow">Protected Company Material</p>
-      <h2>Access the La Doña Santa company presentation</h2>
-      <p style="margin-top:1rem">The official company presentation contains private structural, architectural, operational and development information. Access is restricted, recorded and subject to confidentiality acceptance.</p>
-      <form onsubmit="return acceptDownload(event)">
-        <div class="form">
-          <div class="field"><label>Full legal name</label><input type="text" /></div>
-          <div class="field"><label>Company / organization</label><input type="text" /></div>
-          <div class="field"><label>Position</label><input type="text" /></div>
-          <div class="field"><label>Email</label><input type="email" /></div>
-          <div class="field"><label>Country</label><input type="text" /></div>
-          <div class="field"><label>Purpose of access</label><input type="text" /></div>
-        </div>
-        <div class="terms">Confidentiality Agreement — Web Access and Download. By accepting, you agree that all protected documents, presentations, files, images, videos, drawings, designs and data accessed through this link are confidential; you will not disclose, copy, forward, publish, upload to artificial-intelligence systems, commercially use or provide them to any unauthorized person. You intend to be legally bound by this Agreement.</div>
-        <label class="accept"><input type="checkbox" required /> I have read, understood and accepted the confidentiality terms.</label>
-        <div class="form" style="margin-top:1rem"><div class="field full"><label>Type full legal name (signature)</label><input type="text" placeholder="Sign here" required /></div></div>
-        <button class="btn" type="submit" style="margin-top:1.4rem">Accept and download</button>
-        <p class="hint" id="dl-note" style="margin-top:.8rem"></p>
+  <!-- PROTECTED COMPANY PRESENTATION (NDA) -->
+  <section class="entry" id="presentation">
+    <div class="wrap">
+      <p class="kicker rv">Protected Company Material</p>
+      <h2 class="rv">Access the La Doña Santa company presentation</h2>
+      <p class="lede rv">The official company presentation contains private structural, architectural, operational and development information. Access is restricted, recorded and subject to confidentiality acceptance.</p>
+      <form id="ndaForm" novalidate>
+        <div class="field"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><input id="nName" type="text" placeholder=" " autocomplete="name" required aria-describedby="nName-msg"><label for="nName">Full legal name</label><span class="msg" id="nName-msg" aria-live="polite"></span></div>
+        <div class="field"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2"/></svg><input id="nOrg" type="text" placeholder=" " autocomplete="organization" required aria-describedby="nOrg-msg"><label for="nOrg">Company / organisation</label><span class="msg" id="nOrg-msg" aria-live="polite"></span></div>
+        <div class="field"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="18" height="13" rx="1"/><path d="M9 7V5h6v2"/></svg><input id="nPos" type="text" placeholder=" " autocomplete="organization-title" required aria-describedby="nPos-msg"><label for="nPos">Position</label><span class="msg" id="nPos-msg" aria-live="polite"></span></div>
+        <div class="field"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 7l9 6 9-6"/></svg><input id="nEmail" type="email" placeholder=" " autocomplete="email" required aria-describedby="nEmail-msg"><label for="nEmail">Email</label><span class="msg" id="nEmail-msg" aria-live="polite"></span></div>
+        <div class="field"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg><input id="nCountry" type="text" placeholder=" " autocomplete="country-name" required aria-describedby="nCountry-msg"><label for="nCountry">Country</label><span class="msg" id="nCountry-msg" aria-live="polite"></span></div>
+        <div class="field"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16M4 10h16M4 15h10"/></svg><input id="nPurpose" type="text" placeholder=" " required aria-describedby="nPurpose-msg"><label for="nPurpose">Purpose of access</label><span class="msg" id="nPurpose-msg" aria-live="polite"></span></div>
+        <div class="terms full">Confidentiality Agreement — Web Access and Download. By accepting, you agree that all protected documents, presentations, files, images, videos, drawings, designs and data accessed through this link are confidential; you will not disclose, copy, forward, publish, upload to artificial-intelligence systems, commercially use or provide them to any unauthorized person. You intend to be legally bound by this Agreement.</div>
+        <label class="accept full"><input type="checkbox" id="nAccept" required aria-describedby="nAccept-msg"><span>I have read, understood and accepted the confidentiality terms.</span><span class="msg" id="nAccept-msg" aria-live="polite"></span></label>
+        <div class="field full"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 17c3-1 4-6 6-6s1 5 3 5 3-4 5-4 2 2 4 2"/><path d="M3 21h18"/></svg><input id="nSign" type="text" placeholder=" " required aria-describedby="nSign-msg"><label for="nSign">Type your full legal name to sign</label><span class="msg" id="nSign-msg" aria-live="polite"></span></div>
+        <p class="req-note">All fields are required</p>
+        <button class="submit" type="submit">Accept and download</button>
+        <div class="confirm" id="ndaConfirm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>
+          <p><b>Your acceptance has been recorded.</b><br><span id="ndaNext">The company presentation will be sent to your email.</span></p></div>
       </form>
-    </section>
+    </div>
+  </section>
 
-    <!-- executive inquiry -->
-    <section class="section">
-      <p class="eyebrow">Professional Communication</p>
-      <h2>Executive Inquiry</h2>
-      <p style="margin-top:1rem">Please identify yourself, the purpose of your approach and the La Doña Santa function you wish to reach. Your inquiry will be received centrally and assigned to the selected person or department for direct response.</p>
-      <form class="form" onsubmit="return sendInquiry(event)">
-        <div class="field"><label>Full name</label><input type="text" /></div>
-        <div class="field"><label>Company / organization</label><input type="text" /></div>
-        <div class="field"><label>Position</label><input type="text" /></div>
-        <div class="field"><label>Country</label><input type="text" /></div>
-        <div class="field"><label>Email</label><input type="email" /></div>
-        <div class="field"><label>Telephone <span class="hint">(optional)</span></label><input type="tel" /></div>
-        <div class="field full"><label>Intended recipient or function</label>
-          <select><option>Founder &amp; Executive Chairman</option><option>Chief Executive Function</option><option>Chief Operating Officer</option><option>Chief Financial Officer</option><option>Investment Committee</option><option>Legal</option><option>Architecture</option><option>Interior Design</option><option>Engineering</option><option>Construction</option><option>Project Delivery</option><option>Guardian</option><option>Wellness / Lumina</option><option>Partnership</option><option>Media</option><option>Other</option></select></div>
-        <div class="field full"><label>Message</label><textarea></textarea></div>
-        <div class="field full"><button class="btn block" type="submit">Submit executive inquiry</button><p class="hint" id="inq-note" style="margin-top:.8rem"></p></div>
+  <!-- EXECUTIVE INQUIRY -->
+  <section class="entry" id="inquiry">
+    <div class="wrap">
+      <p class="kicker rv">Professional Communication</p>
+      <h2 class="rv">Executive Inquiry</h2>
+      <p class="lede rv">Please identify yourself, the purpose of your approach and the La Doña Santa function you wish to reach. Your inquiry will be received centrally and assigned to the selected person or department for direct response.</p>
+      <form id="inqForm" novalidate>
+        <div class="field"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><input id="inqName" type="text" placeholder=" " autocomplete="name" required aria-describedby="inqName-msg"><label for="inqName">Full name</label><span class="msg" id="inqName-msg" aria-live="polite"></span></div>
+        <div class="field"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2"/></svg><input id="inqOrg" type="text" placeholder=" " autocomplete="organization" required aria-describedby="inqOrg-msg"><label for="inqOrg">Company / organisation</label><span class="msg" id="inqOrg-msg" aria-live="polite"></span></div>
+        <div class="field"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="18" height="13" rx="1"/><path d="M9 7V5h6v2"/></svg><input id="inqPos" type="text" placeholder=" " autocomplete="organization-title" required aria-describedby="inqPos-msg"><label for="inqPos">Position</label><span class="msg" id="inqPos-msg" aria-live="polite"></span></div>
+        <div class="field"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg><input id="inqCountry" type="text" placeholder=" " autocomplete="country-name" required aria-describedby="inqCountry-msg"><label for="inqCountry">Country</label><span class="msg" id="inqCountry-msg" aria-live="polite"></span></div>
+        <div class="field"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 7l9 6 9-6"/></svg><input id="inqEmail" type="email" placeholder=" " autocomplete="email" required aria-describedby="inqEmail-msg"><label for="inqEmail">Email</label><span class="msg" id="inqEmail-msg" aria-live="polite"></span></div>
+        <div class="field"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2"/></svg><input id="inqPhone" type="tel" placeholder=" " autocomplete="tel"><label for="inqPhone">Telephone (optional)</label><span class="msg" id="inqPhone-msg" aria-live="polite"></span></div>
+        <div class="field full select"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><select id="inqRecipient" required aria-describedby="inqRecipient-msg" aria-label="Person or department to reach">
+          <option value="">Person or department to reach</option>
+          <optgroup label="Departments" data-static><option>Legal</option><option>Architecture</option><option>Interior Design</option><option>Engineering</option><option>Construction</option><option>Project Delivery</option><option>Guardian</option><option>Wellness / Lumina</option><option>Partnership</option><option>Media</option><option>Other</option></optgroup></select><span class="msg" id="inqRecipient-msg" aria-live="polite"></span></div>
+        <div class="field area full"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16M4 10h16M4 15h10"/></svg><textarea id="inqMsg" placeholder=" " required aria-describedby="inqMsg-msg"></textarea><label for="inqMsg">Message</label><span class="msg" id="inqMsg-msg" aria-live="polite"></span></div>
+        <button class="submit" type="submit">Send inquiry</button>
+        <div class="confirm" id="inqConfirm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>
+          <p><b>Your inquiry has been received.</b><br>It has been directed to <span id="inqTo">the selected La Doña Santa function</span>.</p></div>
       </form>
-    </section>
-  </main>
+      <div class="microlabels rv">
+        <span>Your inquiry enters the source</span>
+        <span>Discretion · Protection · Purpose</span>
+        <span>Built in harmony · Aligned for life</span>
+      </div>
+    </div>
+  </section>
 
 <script>
-  function acceptDownload(e){ e.preventDefault(); document.getElementById('dl-note').textContent='Your acceptance has been recorded. The download begins immediately (prototype).'; return false; }
-  function sendInquiry(e){ e.preventDefault(); document.getElementById('inq-note').textContent='Your inquiry has been received and directed to the selected La Doña Santa function.'; return false; }
+  // floating light motes for the alive background
+  const motes=document.getElementById('motes');
+  for(let i=0;i<22;i++){const m=document.createElement('div');m.className='mote';m.style.left=(Math.random()*100)+'%';const d=6+Math.random()*10;m.style.animationDuration=d+'s';m.style.animationDelay=(-Math.random()*d)+'s';const s=.5+Math.random()*1.6;m.style.transform='scale('+s+')';m.style.opacity=.3+Math.random()*.5;motes.appendChild(m);}
+
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.14});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+
+
+  /* ── FORM DELIVERY ────────────────────────────────────────────────
+     FORM_ENDPOINT empty = confirm on screen only. Paste a Formspree (or similar) URL to email each
+     submission to the La Doña Santa office. PRESENTATION_URL: the approved company presentation (PDF).
+     When set, accepting the agreement downloads it; when empty, the visitor is told it will be emailed. */
+  const FORM_ENDPOINT = "";
+  const PRESENTATION_URL = "";
+
+  function check(form){ let first=null;
+    form.querySelectorAll('input[required],select[required],textarea[required]').forEach(el=>{
+      const val=el.type==='checkbox'?(el.checked?'y':''):el.value.trim(); let m='';
+      if(!val) m='Required';
+      else if(el.type==='email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) m='Check this email';
+      const box=el.closest('.field,.accept'); box.classList.toggle('bad',!!m); el.setAttribute('aria-invalid',m?'true':'false');
+      const msg=document.getElementById(el.id+'-msg'); if(msg) msg.textContent=m; if(m&&!first) first=el; });
+    if(first){ first.focus(); return false; } return true; }
+  function clearOnFix(form){ form.addEventListener('input',e=>{ const box=e.target.closest('.field,.accept'); if(box&&box.classList.contains('bad')){
+      box.classList.remove('bad'); e.target.setAttribute('aria-invalid','false'); const msg=document.getElementById(e.target.id+'-msg'); if(msg) msg.textContent=''; } }); }
+  async function send(data){ if(!FORM_ENDPOINT) return;
+    try{ await fetch(FORM_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)}); }catch(_){ } }
+  function done(form,confirmId){ form.querySelectorAll('.field,.terms,.accept,.req-note,.submit').forEach(el=>el.style.display='none');
+    const c=document.getElementById(confirmId); c.classList.add('show'); c.scrollIntoView({behavior:'smooth',block:'center'}); }
+  const v=id=>document.getElementById(id).value.trim();
+
+  const nda=document.getElementById('ndaForm'); clearOnFix(nda);
+  nda.addEventListener('submit',async e=>{ e.preventDefault(); if(!check(nda)) return;
+    await send({_subject:'La Doña Santa: presentation access (NDA accepted)',stage:'business-card-nda',name:v('nName'),organisation:v('nOrg'),position:v('nPos'),
+      email:v('nEmail'),country:v('nCountry'),purpose:v('nPurpose'),signature:v('nSign'),accepted_at:new Date().toISOString()});
+    if(PRESENTATION_URL){ document.getElementById('ndaNext').textContent='Your download is starting.'; const a=document.createElement('a'); a.href=PRESENTATION_URL; a.download=''; document.body.appendChild(a); a.click(); a.remove(); }
+    done(nda,'ndaConfirm'); });
+
+  const inq=document.getElementById('inqForm'); clearOnFix(inq);
+  inq.addEventListener('submit',async e=>{ e.preventDefault(); if(!check(inq)) return;
+    await send({_subject:'La Doña Santa: executive inquiry for '+v('inqRecipient'),stage:'business-card-inquiry',recipient:v('inqRecipient'),name:v('inqName'),
+      organisation:v('inqOrg'),position:v('inqPos'),country:v('inqCountry'),email:v('inqEmail'),telephone:v('inqPhone'),message:v('inqMsg')});
+    document.getElementById('inqTo').textContent=v('inqRecipient'); done(inq,'inqConfirm'); });
 </script>
-<script src="lds-shared.js"></script>
+<script src="team-data.js"></script>
+<script src="team.js"></script>
 </body>
 </html>
