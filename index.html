@@ -508,25 +508,30 @@
   function signature(){ if(audioStarted)return; audioStarted=true; audio.currentTime=0;
     audio.play().catch(()=>{audioStarted=false;}); }
 
-  /* ---- elegant hover chime (synthesised, licence-free): a soft crystalline shimmer on logo hover ---- */
+  /* ---- logo hover sound: the client asked for a tone like the iPhone text tone "Antik" (Apple's "Antic"; "Antik" in TR/HU/MS).
+     Apple's file is licensed for Apple devices only, so this is a licence-free recreation synthesised here: the same gesture
+     (a soft high D5 tap with a lower F#4 ringing under it), envelopes fitted to the original (loudness curve r = 0.96). ---- */
   let actx=null, lastChime=0;
   function ensureAudio(){ try{ if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==='suspended') actx.resume(); }catch(_){} }
   addEventListener('pointerdown', ensureAudio); addEventListener('keydown', ensureAudio);
   function hoverChime(){
     ensureAudio(); if(!actx || actx.state!=='running') return;
     const t=performance.now(); if(t-lastChime<220) return; lastChime=t;   // throttle jitter
-    const now=actx.currentTime;
-    const out=actx.createGain(); out.gain.value=0.13; out.connect(actx.destination);   // subtle
-    // ascending shimmer: B5 · F#6 · B6 — quick attack, long soft bell decay
-    [[987.77,0,0.9],[1479.98,0.05,0.7],[1975.53,0.10,0.5]].forEach(([f,delay,peak])=>{
+    const now=actx.currentTime, strike=now+0.04;
+    const out=actx.createGain(); out.gain.value=0.35; out.connect(actx.destination);   // subtle
+    // one pure tone: linear attack, fast exponential fall, then a slower tail
+    const tone=(f,t0,att,peak,tau1,tb,tau2,end)=>{
       const o=actx.createOscillator(); o.type='sine'; o.frequency.value=f;
       const g=actx.createGain(); o.connect(g); g.connect(out);
-      const t0=now+delay;
-      g.gain.setValueAtTime(0.0001,t0);
-      g.gain.exponentialRampToValueAtTime(peak,t0+0.014);
-      g.gain.exponentialRampToValueAtTime(0.0001,t0+1.15);
-      o.start(t0); o.stop(t0+1.2);
-    });
+      g.gain.setValueAtTime(0,t0); g.gain.linearRampToValueAtTime(peak,t0+att);
+      g.gain.setTargetAtTime(0,t0+att,tau1);
+      g.gain.setValueAtTime(peak*Math.exp(-(tb-att)/tau1),t0+tb); g.gain.setTargetAtTime(0,t0+tb,tau2);
+      if(end){ g.gain.cancelScheduledValues(end); g.gain.setTargetAtTime(0,end,0.01); }
+      o.start(t0); o.stop(t0+tb+tau2*8);
+    };
+    tone(369.99, now,    0.02,  0.06,  0.15,  0.20,  0.10, strike+0.02);   // faint low F# lead-in
+    tone(587.33, strike, 0.004, 0.46,  0.046, 0.124, 0.10);                // D5 tap
+    tone(369.99, strike, 0.04,  0.092, 0.22,  0.16,  0.115);               // F#4 ringing under it
   }
 
   /* ---- Living System title synced to the ARK travel (registered as a playlist tick) ----
