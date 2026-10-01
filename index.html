@@ -39,6 +39,8 @@
   /* Logo hover. Client (25 Sep call): "transparent with a stronger shadow, no white brightness change", fluid; same on Group, Ark, Guardian.
      No circle, no fill, no brighten. When the film pauses on a logo, the logo is lifted out of that exact paused frame into a canvas
      (same pixels, so it always lines up even though the camera is moving there) and only a soft white shadow under its own shape is added (Kawin, 1 Oct). */
+  #holdStill{position:fixed;inset:0;width:100%;height:100%;z-index:1;display:block;pointer-events:none;opacity:0}
+  #holdStill.ready{opacity:1}
   .lcopy{--g:1px;z-index:19;pointer-events:none;opacity:0}
   .lcopy.ready{opacity:1;transition:opacity .25s ease}
   .lcopy canvas{display:block;width:100%;height:100%;
@@ -268,6 +270,7 @@
   <!-- double-buffered playlist: the 144s film plays as 13 native-4K clips (c01..c13) with seamless hard-cut swaps -->
   <video id="film"  playsinline preload="auto" muted poster="assets/poster-white.jpg"></video>
   <video id="film2" playsinline preload="auto" muted></video>
+  <canvas id="holdStill" aria-hidden="true"></canvas>   <!-- the paused frame as a still while a logo is on screen (see liftLogo) -->
   <div id="veil"></div>
 
   <!-- entrance interactive overlays -->
@@ -503,6 +506,7 @@
 
   /* ---- cover-map entrance overlays to the film's 16:9 frame ---- */
   const FILM_AR = 16/9;
+  let filmMap={rw:0,rh:0,ox:0,oy:0};
   function layout(){
     const W=innerWidth,H=innerHeight; let rw,rh,ox,oy;
     // On phones / portrait the 16:9 film would cover-crop so hard the side portals fall off-screen —
@@ -510,6 +514,7 @@
     const contain = (W < H) || (W < 680);
     if(contain){ film.style.objectFit='contain'; rw=W; rh=W/FILM_AR; ox=0; oy=(H-rh)/2; }
     else { film.style.objectFit='cover'; if(W/H>FILM_AR){rw=W;rh=W/FILM_AR;}else{rh=H;rw=H*FILM_AR;} ox=(W-rw)/2; oy=(H-rh)/2; }
+    filmMap={rw,rh,ox,oy};
     document.querySelectorAll('.fmap').forEach(el=>{const fx=+el.dataset.fx,fy=+el.dataset.fy,fs=+el.dataset.fs;
       el.style.left=(ox+fx*rw)+'px'; el.style.top=(oy+fy*rh)+'px'; if(fs){const s=fs*rw;el.style.width=s+'px';el.style.height=(s*(+el.dataset.fa||1))+'px';}});
   }
@@ -600,13 +605,30 @@
   // elegant chime when hovering a logo (only while it's interactive)
   [hitMain,hitArk,hitGuardian].forEach(el=>el.addEventListener('pointerenter',()=>{ if(el.classList.contains('show')) hoverChime(); }));
   // lift each logo out of the paused frame (see .lcopy): copy its pixels, keep only the silver logo (neutral colour, inside its outline area)
+  // While a logo is on screen the paused frame is shown as a still canvas, and each logo is cut from that same still.
+  // (Chrome can hand back a frame one step away from the one on screen; the camera is moving here, so copying from the
+  //  video itself left a ghost double. Background and logo now come from the same pixels, so they always line up.)
+  const holdStill=document.getElementById('holdStill');
+  function captureStill(){
+    const v=A(); if(!v||!v.videoWidth) return false;
+    const dpr=Math.min(2,devicePixelRatio||1), W=Math.round(innerWidth*dpr), H=Math.round(innerHeight*dpr);
+    holdStill.width=W; holdStill.height=H;
+    let ctx; try{ ctx=holdStill.getContext('2d',{willReadFrequently:true}); ctx.fillStyle='#F6F1E9'; ctx.fillRect(0,0,W,H);   // letterbox bars = film background
+      ctx.drawImage(v,0,0,v.videoWidth,v.videoHeight,filmMap.ox*dpr,filmMap.oy*dpr,filmMap.rw*dpr,filmMap.rh*dpr); }catch(_){ return false; }
+    // reject a blank or not-yet-decoded frame: this part of the film is a bright ivory scene
+    const s=ctx.getImageData(Math.round(W*.25),Math.round(H*.25),Math.round(W*.5),Math.round(H*.5)).data; let sum=0,dark=0,n=0;
+    for(let i=0;i<s.length;i+=64){ const l=.299*s[i]+.587*s[i+1]+.114*s[i+2]; sum+=l; if(l<60) dark++; n++; }
+    if(sum/n<140 || dark/n>0.01){ ctx.clearRect(0,0,W,H); return false; }
+    holdStill._ok=true; return true;
+  }
   function liftLogo(el){
-    const v=A(), cv=el.querySelector('canvas'); if(!v||!v.videoWidth||!el._reg||!el._reg.complete) return false;
+    if(!holdStill._ok && !captureStill()) return false;
+    const cv=el.querySelector('canvas'); if(!el._reg||!el._reg.complete) return false;
     const r=el.getBoundingClientRect(), dpr=Math.min(2,devicePixelRatio||1);
     const W=Math.max(2,Math.round(r.width*dpr)), H=Math.max(2,Math.round(r.height*dpr)); cv.width=W; cv.height=H;
-    const fs=+el.dataset.fs, fa=+el.dataset.fa, vw=v.videoWidth, vh=v.videoHeight;
-    const sw=fs*vw, sh=fs*fa*vw, sx=+el.dataset.fx*vw-sw/2, sy=+el.dataset.fy*vh-sh/2, thr=+el.dataset.thr;
-    let ctx; try{ ctx=cv.getContext('2d',{willReadFrequently:true}); ctx.clearRect(0,0,W,H); ctx.drawImage(v,sx,sy,sw,sh,0,0,W,H); }catch(_){ return false; }
+    const thr=+el.dataset.thr;
+    let ctx; try{ ctx=cv.getContext('2d',{willReadFrequently:true}); ctx.clearRect(0,0,W,H);
+      ctx.drawImage(holdStill,r.left*dpr,r.top*dpr,r.width*dpr,r.height*dpr,0,0,W,H); }catch(_){ return false; }
     const img=ctx.getImageData(0,0,W,H), d=img.data;
     // only use a real, decoded frame: this part of the film is a bright ivory scene. A blank or not-yet-decoded frame is rejected.
     let sum=0, dark=0; for(let i=0;i<d.length;i+=16){ const l=.299*d[i]+.587*d[i+1]+.114*d[i+2]; sum+=l; if(l<60) dark++; }
@@ -629,15 +651,17 @@
   [[hitMain,'lcMain'],[hitArk,'lcArk'],[hitGuardian,'lcGuardian']].forEach(([hit,id])=>{ const el=document.getElementById(id);
     el._reg=new Image(); el._reg.src=el.dataset.region;
     let timers=[];
-    const tryLift=()=>{ if(hit.classList.contains('show') && !el.classList.contains('ready') && liftLogo(el)) el.classList.add('ready'); };
+    const tryLift=()=>{ if(hit.classList.contains('show') && !el.classList.contains('ready') && liftLogo(el)){ holdStill.classList.add('ready'); el.classList.add('ready'); } };
     const sync=()=>{ timers.forEach(clearTimeout); timers=[];
       if(hit.classList.contains('show')) timers=[180,500,1000,2000,3500].map(ms=>setTimeout(tryLift,ms));   // once the paused frame is decoded
-      else el.classList.remove('ready','on'); };                                           // hidden instantly, before the film moves on
+      else { el.classList.remove('ready','on'); endHold(); } };                            // hidden instantly, before the film moves on
     new MutationObserver(sync).observe(hit,{attributes:true,attributeFilter:['class']}); sync();
     hit.addEventListener('pointerenter',()=>{ if(!hit.classList.contains('show')) return; tryLift(); el.classList.add('on'); });
     hit.addEventListener('pointerleave',()=>el.classList.remove('on'));
-    hit.addEventListener('pointerdown',()=>el.classList.remove('ready','on'));
-    addEventListener('resize',()=>{ if(el.classList.contains('ready')) liftLogo(el); }); });
+    hit.addEventListener('pointerdown',()=>{ el.classList.remove('ready','on'); endHold(true); });
+    addEventListener('resize',()=>{ if(el.classList.contains('ready')){ holdStill._ok=false; liftLogo(el); } }); });
+  // the still goes away the moment no logo is on screen any more (or a logo is clicked), so the live film takes over
+  function endHold(now){ if(now || !document.querySelector('.hit.show')){ holdStill.classList.remove('ready'); holdStill._ok=false; } }
   // Skip works at EVERY stage: during any playing video it jumps to the next freeze/hold;
   // at a freeze it acts as Continue; at a hold it advances to the next stage.
   function skipStage(){
