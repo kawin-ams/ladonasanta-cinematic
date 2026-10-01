@@ -39,12 +39,14 @@
   /* Logo hover. Client (25 Sep call): "transparent with a stronger shadow, no white brightness change", fluid; same on Group, Ark, Guardian.
      No circle, no fill, no brighten. When the film pauses on a logo, the logo is lifted out of that exact paused frame into a canvas
      (same pixels, so it always lines up even though the camera is moving there) and only a soft white shadow under its own shape is added (Kawin, 1 Oct). */
-  .lcopy{z-index:19;pointer-events:none;opacity:0}
+  .lcopy{--g:1px;z-index:19;pointer-events:none;opacity:0}
   .lcopy.ready{opacity:1;transition:opacity .25s ease}
   .lcopy canvas{display:block;width:100%;height:100%;
-    filter:drop-shadow(0 0 1.5px rgba(255,255,255,.35)) drop-shadow(0 0 7px rgba(255,255,255,.25)) drop-shadow(0 0 20px rgba(255,255,255,0)) drop-shadow(0 8px 40px rgba(255,255,255,0));
+    filter:drop-shadow(0 0 calc(var(--g)*1) rgba(255,255,255,.35)) drop-shadow(0 0 calc(var(--g)*2.5) rgba(255,255,255,.2)) drop-shadow(0 0 calc(var(--g)*6) rgba(255,255,255,0)) drop-shadow(0 0 calc(var(--g)*11) rgba(255,255,255,0));
     transition:filter .8s cubic-bezier(.22,1,.36,1)}
-  .lcopy.on canvas{filter:drop-shadow(0 0 1.5px rgba(255,255,255,1)) drop-shadow(0 0 7px rgba(255,255,255,1)) drop-shadow(0 0 20px rgba(255,255,255,.95)) drop-shadow(0 8px 40px rgba(255,255,255,.9))}   /* layered white glow that follows the logo: crisp rim, mid glow, wide soft bloom */
+  .lcopy.on canvas{filter:drop-shadow(0 0 calc(var(--g)*1) rgba(255,255,255,1)) drop-shadow(0 0 calc(var(--g)*2.5) rgba(255,255,255,1)) drop-shadow(0 0 calc(var(--g)*6) rgba(255,255,255,.8)) drop-shadow(0 0 calc(var(--g)*11) rgba(255,255,255,.3))}
+  /* bright white glow hugging the logo (rim, glow, soft bloom), scaled to each logo so the small ones are not drowned.
+     The copied logo is solid, so it always sits crisp on top of its own glow. */
   @media (prefers-reduced-motion:reduce){.lcopy canvas{transition:none}}
   .copy{position:fixed;left:50%;transform:translateX(-50%);z-index:24;text-align:center;width:min(92vw,720px);
     opacity:0;transition:opacity 1.2s ease;pointer-events:none;padding:32px 48px;
@@ -610,16 +612,18 @@
     let sum=0, dark=0; for(let i=0;i<d.length;i+=16){ const l=.299*d[i]+.587*d[i+1]+.114*d[i+2]; sum+=l; if(l<60) dark++; }
     const n=d.length/16; if(sum/n<150 || dark/n>0.01){ ctx.clearRect(0,0,W,H); return false; }
     const rc=document.createElement('canvas'); rc.width=W; rc.height=H; const rx=rc.getContext('2d'); rx.drawImage(el._reg,0,0,W,H); const rg=rx.getImageData(0,0,W,H).data;
-    const m=new Float32Array(W*H), t=new Float32Array(W*H);
+    let m=new Float32Array(W*H);
     for(let i=0,p=0;p<m.length;i+=4,p++){ const warm=d[i]-d[i+2], lum=.299*d[i]+.587*d[i+1]+.114*d[i+2];
-      m[p]=Math.min(1,Math.max(0,(thr-warm)/8))*Math.min(1,Math.max(0,(238-lum)/10))*Math.min(1,Math.max(0,(lum-110)/20))*(rg[i+3]/255); }
-    const rad=Math.max(1,Math.round(dpr));
-    for(let pass=0;pass<2;pass++){
-      for(let y=0;y<H;y++){ let acc=0; for(let x=-rad;x<=rad;x++) acc+=m[y*W+Math.min(W-1,Math.max(0,x))];
-        for(let x=0;x<W;x++){ t[y*W+x]=acc/(2*rad+1); acc+=m[y*W+Math.min(W-1,x+rad+1)]-m[y*W+Math.max(0,x-rad)]; } }
-      for(let x=0;x<W;x++){ let acc=0; for(let y=-rad;y<=rad;y++) acc+=t[Math.min(H-1,Math.max(0,y))*W+x];
-        for(let y=0;y<H;y++){ m[y*W+x]=acc/(2*rad+1); acc+=t[Math.min(H-1,y+rad+1)*W+x]-t[Math.max(0,y-rad)*W+x]; } } }
-    for(let p=0;p<m.length;p++){ const q=Math.min(1,Math.max(0,(m[p]-.3)/.4)); d[p*4+3]=Math.round(255*q*q*(3-2*q)); }
+      m[p]=((thr-warm)/8>0.45 && lum<238 && lum>110 && rg[i+3]>30)?1:0; }
+    // close small gaps and keep a firm edge about a pixel wider than the strokes: the copy fully covers the logo
+    const box=(a,r,grow)=>{ const t=new Float32Array(a.length), o=new Float32Array(a.length);
+      for(let y=0;y<H;y++){ const row=y*W; for(let x=0;x<W;x++){ let v=grow?0:1; for(let k=-r;k<=r;k++){ const q=a[row+Math.min(W-1,Math.max(0,x+k))]; v=grow?(q>v?q:v):(q<v?q:v); } t[row+x]=v; } }
+      for(let x=0;x<W;x++){ for(let y=0;y<H;y++){ let v=grow?0:1; for(let k=-r;k<=r;k++){ const q=t[Math.min(H-1,Math.max(0,y+k))*W+x]; v=grow?(q>v?q:v):(q<v?q:v); } o[y*W+x]=v; } }
+      return o; };
+    const rr=Math.max(1,Math.round(1.5*dpr));
+    m=box(box(m,rr+1,true),rr,false);
+    for(let p=0;p<m.length;p++) d[p*4+3]=m[p]?255:0;
+    el.style.setProperty('--g',(r.width/300)+'px');
     ctx.putImageData(img,0,0); return true;
   }
   [[hitMain,'lcMain'],[hitArk,'lcArk'],[hitGuardian,'lcGuardian']].forEach(([hit,id])=>{ const el=document.getElementById(id);
