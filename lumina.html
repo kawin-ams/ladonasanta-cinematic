@@ -117,9 +117,20 @@
     .hero .inner > *{transform:none}}
   @media (max-width:600px){ .topright,.idx{display:none} .home{font-size:1rem}
     .hero .title{font-size:1rem;letter-spacing:.22em;padding-left:.22em} .hero .tags{font-size:.8rem;letter-spacing:.14em} .skip{left:12px;bottom:14px} }
+  /* The Lumina / Guardian scene (last frame of the master film) stays behind every page after the Vault.
+     Client, revisions call: "from here, this background needs to stay, and you are scrolling all these pages". */
+  .scene{position:fixed;inset:0;z-index:0;background:url('lumina-img/hero-end.jpg') center/cover no-repeat;transform:scale(1.04);animation:sceneDrift 40s ease-in-out infinite alternate;pointer-events:none}
+  .scene::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(246,241,233,.38),rgba(246,241,233,.22) 40%,rgba(246,241,233,.42))}
+  @keyframes sceneDrift{from{transform:scale(1.04)}to{transform:scale(1.1) translateY(-1.5%)}}
+  @media (prefers-reduced-motion:reduce){.scene{animation:none}}
+  .s,.threshold{position:relative;z-index:1}
+  .s.pearl{background:rgba(246,241,233,.66)}
+  .s.pearl:nth-of-type(even){background:rgba(239,232,220,.7)}
+  .threshold{background:rgba(246,241,233,.66)}
 </style>
 </head>
 <body>
+  <div class="scene" aria-hidden="true"></div>
   <a class="home" href="index.html">La Doña Santa</a>
   <span class="idx">Lumina · Platinum Access</span>
 
