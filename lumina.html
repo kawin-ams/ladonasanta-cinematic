@@ -81,8 +81,42 @@
     transition:color .2s,border-color .2s,transform .2s}
   .lds-threshold::after{content:"→";font-size:1rem;letter-spacing:0}
   .lds-threshold:hover{color:var(--champagne);border-color:var(--champagne);transform:translateY(-2px)}
-  @media (prefers-reduced-motion:reduce){.rv{transition:opacity .4s;transform:none}.s.img .bg{transition:none;transform:none}.scrollcue::after{animation:none}}
-  @media (max-width:600px){ .topright,.idx{display:none} .home{font-size:1rem} }
+  /* hero: the film picks up from the Source Chamber frame, plays to the end and holds the last frame; then the text appears */
+  html.intro,html.intro body{overflow:hidden}
+  html.intro body{touch-action:none}
+  .hero{position:relative;height:100vh;height:100svh;min-height:560px;overflow:hidden;background:var(--paper);
+    display:flex;align-items:center;justify-content:center;text-align:center;padding:0 clamp(1.4rem,6vw,4.5rem)}
+  .hero-end,.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .hero-end{z-index:0}
+  .hero video{z-index:1;transition:opacity .9s ease}
+  .hero video.out{opacity:0}
+  /* soft ivory band behind the text so it reads over clouds and glass lines; clear at top and bottom */
+  .hero .wash{position:absolute;inset:0;z-index:2;opacity:0;transition:opacity 1.8s cubic-bezier(.22,1,.36,1);
+    background:linear-gradient(180deg,rgba(246,241,233,0) 10%,rgba(246,241,233,.46) 30%,rgba(246,241,233,.56) 50%,rgba(246,241,233,.46) 70%,rgba(246,241,233,0) 90%)}
+  .hero .inner{position:relative;z-index:3;max-width:62rem;margin:0 auto}
+  .hero .inner > *{opacity:0;transform:translateY(18px);transition:opacity 1.4s cubic-bezier(.22,1,.36,1),transform 1.4s cubic-bezier(.22,1,.36,1)}
+  .hero.done .wash{opacity:1}
+  .hero.done .inner > *{opacity:1;transform:none}
+  .hero.done .inner > :nth-child(1){transition-delay:.3s}
+  .hero.done .inner > :nth-child(2){transition-delay:.55s}
+  .hero.done .inner > :nth-child(3){transition-delay:.9s}
+  .hero.done .inner > :nth-child(4){transition-delay:1.2s}
+  .hero .title{font-family:var(--sans);font-weight:400;font-size:clamp(1.05rem,1.7vw,1.55rem);letter-spacing:.32em;text-transform:uppercase;color:var(--ink);margin:0;padding-left:.32em}
+  .hero h1{font-weight:400;color:var(--ink);margin:1.4rem auto 0;max-width:19ch;font-size:clamp(2.5rem,5.6vw,4.9rem);line-height:1.04}
+  .hero .tags{font-family:var(--sans);font-weight:400;font-size:clamp(.9rem,1.15vw,1.08rem);letter-spacing:.24em;text-transform:uppercase;color:var(--ink-soft);margin:1.8rem 0 0;line-height:1.9}
+  .hero .tags span{white-space:nowrap}
+  .hero .cue{margin:3rem auto 0;font-family:var(--sans);font-weight:400;font-size:.8rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);
+    display:flex;flex-direction:column;align-items:center;gap:.9rem}
+  .hero .cue::after{content:"";width:1px;height:38px;background:linear-gradient(var(--ink-soft),transparent);animation:cue 2.4s ease-in-out infinite}
+  .skip{position:fixed;z-index:30;left:26px;bottom:24px;background:none;border:0;cursor:pointer;padding:10px;
+    font-family:var(--sans);font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(74,68,56,.5);transition:color .4s ease,opacity .6s ease}
+  .skip:hover{color:rgba(74,68,56,.9)}
+  .skip.gone{opacity:0;pointer-events:none}
+
+  @media (prefers-reduced-motion:reduce){.rv{transition:opacity .4s;transform:none}.s.img .bg{transition:none;transform:none}.scrollcue::after,.hero .cue::after{animation:none}
+    .hero .inner > *{transform:none}}
+  @media (max-width:600px){ .topright,.idx{display:none} .home{font-size:1rem}
+    .hero .title{font-size:1rem;letter-spacing:.22em;padding-left:.22em} .hero .tags{font-size:.8rem;letter-spacing:.14em} .skip{left:12px;bottom:14px} }
 </style>
 </head>
 <body>
@@ -90,16 +124,19 @@
   <span class="idx">Lumina · Platinum Access</span>
 
   <!-- HERO -->
-  <section class="s img center">
-    <div class="bg" style="background-image:url('lumina-img/hero.jpg')"></div>
-    <div class="scrim"></div>
+  <!-- the film resumes from the frame the Source Chamber holds on (master 02:14.67), plays to the end and freezes on the last frame -->
+  <section class="hero" id="hero">
+    <img class="hero-end" src="lumina-img/hero-end.jpg" alt="">
+    <video id="heroFilm" src="assets/clips/lumina-hero.mp4" poster="lumina-img/hero-start.jpg" muted playsinline preload="auto"></video>
+    <div class="wash"></div>
     <div class="inner">
-      <p class="eyebrow rv">Lumina Platinum Access</p>
-      <h1 class="rv" style="transition-delay:.08s">The residence is only one layer of the private world created around you.</h1>
-      <p class="subtitle rv" style="transition-delay:.2s">Private Residence · Wellness · Medical Longevity · Lifestyle</p>
-      <div class="scrollcue rv" style="transition-delay:.34s">Scroll to open the system</div>
+      <p class="title">Lumina Platinum Access</p>
+      <h1>The residence is only one layer of the private world created around you.</h1>
+      <p class="tags"><span>Private Residence ·</span> <span>Wellness ·</span> <span>Medical Longevity ·</span> <span>Lifestyle</span></p>
+      <div class="cue">Scroll to open the system</div>
     </div>
   </section>
+  <button class="skip" id="skip" type="button">Skip</button>
 
   <!-- INTRO -->
   <section class="s pearl"><div class="inner">
@@ -416,6 +453,27 @@
   document.querySelectorAll('.rv').forEach(el=>io.observe(el));
   const io2=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); }),{threshold:.25});
   document.querySelectorAll('.s.img').forEach(el=>io2.observe(el));
+
+  // hero: play the film once, hold its last frame, then bring in the text. Scroll is held until then (Skip ends it early).
+  (()=>{
+    const hero=document.getElementById('hero'), v=document.getElementById('heroFilm'), skip=document.getElementById('skip'), root=document.documentElement;
+    if('scrollRestoration' in history) history.scrollRestoration='manual';
+    let done=false, safety=0;
+    function finish(natural){ if(done) return; done=true; clearTimeout(safety);
+      if(!natural){ try{v.pause();}catch(_){} v.classList.add('out'); }   // skipped or failed: fade to the still of the last frame
+      hero.classList.add('done'); root.classList.remove('intro'); skip.classList.add('gone'); }
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches){ v.style.display='none'; finish(false); return; }
+    root.classList.add('intro');
+    v.addEventListener('ended',()=>finish(true));
+    v.addEventListener('error',()=>finish(false));
+    skip.addEventListener('click',()=>finish(false));
+    function start(){ const p=v.play(); if(p&&p.catch) p.catch(()=>finish(false));
+      safety=setTimeout(()=>finish(false), 30000); }   // never trap the visitor if the film stalls on a slow connection
+    // opened in a background tab: wait until the visitor actually looks at it, so they see the film from the start
+    if(document.hidden){ const onVis=()=>{ if(!document.hidden){ document.removeEventListener('visibilitychange',onVis); start(); } };
+      document.addEventListener('visibilitychange',onVis); }
+    else start();
+  })();
 </script>
 </body>
 </html>
